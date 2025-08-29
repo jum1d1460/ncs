@@ -1,0 +1,28 @@
+---
+import { client } from "../lib/sanityClient";
+import PageRenderer from "../components/PageRenderer.astro";
+
+const { slug } = Astro.params;
+
+const page = await client.fetch(
+    `*[_type == "page" && slug.current == "${slug}"][0]{
+        title,
+        blocks[]{
+            _type,
+            ...
+        }
+    }`,
+    {
+        slug
+    }
+);
+---
+
+<html lang="es">
+    <head>
+        <title>{page?.title}</title>
+    </head>
+    <body>
+        <PageRenderer blocks={page?.blocks} />
+    </body>
+</html>

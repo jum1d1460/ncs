@@ -1,0 +1,14 @@
+---
+import Hero from "./blocks/Hero.astro";
+import TextBlock from "./blocks/TextBlock.astro";
+
+const { blocks } = Astro.props;
+---
+
+{blocks?.map((block) => {
+  switch (block._type) {
+    case "blockHero": return <Hero {...block} />;
+    case "blockText": return <TextBlock {...block} />;
+    default: return null;
+  }
+})}
