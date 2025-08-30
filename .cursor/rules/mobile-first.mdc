@@ -1,0 +1,5 @@
+
+description: El proyecto debe seguir tres principios fundamentales: 1) MOBILE-FIRST: Diseñar primero para dispositivos móviles y escalar hacia pantallas más grandes, usar breakpoints progresivos, priorizar experiencia táctil y optimizar para pantallas pequeñas. 2) SSG (Static Site Generation): Generar sitios estáticos en build time, no usar renderizado en servidor (SSR), optimizar para velocidad y SEO. 3) PROGRESSIVE APP: Implementar características PWA como service workers, manifest, offline functionality, instalación en dispositivos y experiencia app-like.
+globs: ["**/*.{astro,ts,js,css,html,json}"]
+alwaysApply: true
+---

@@ -93,11 +93,12 @@ const imageCaption = image?.caption;
     src={imageUrls.tablet} 
     alt={imageAlt}
     title={imageTitle}
-    class="w-full h-auto object-cover"
+    class={className.includes('hero-bg-image') ? 'w-full h-full object-cover' : 'w-full h-auto object-cover'}
     loading="lazy"
     decoding="async"
     sizes={sizes}
-    style={`aspect-ratio: ${aspectRatio};`}
+    style={aspectRatio !== 'auto' ? `aspect-ratio: ${aspectRatio};` : ''}
+    data-hero-image={className.includes('hero-bg-image') ? 'true' : 'false'}
   />
 </picture>
 

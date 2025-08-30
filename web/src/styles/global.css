@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles using Tailwind @apply */
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-br from-primary-500 to-primary-700 text-white border-none px-8 py-4 rounded-xl font-semibold text-base no-underline inline-block transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 uppercase tracking-wide min-w-[180px] hover:from-primary-600 hover:to-primary-800;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent text-white border-2 border-white px-8 py-4 rounded-xl font-semibold text-base no-underline inline-block transition-all duration-300 uppercase tracking-wide min-w-[180px] hover:bg-white hover:text-secondary-800 hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .hero-main-title {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4 text-shadow-lg text-secondary-50 uppercase tracking-wide;
+  }
+  
+  .hero-subtitle {
+    @apply text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-6 text-shadow-lg text-white;
+  }
+  
+  .hero-description {
+    @apply text-base md:text-lg lg:text-xl leading-relaxed mb-10 text-shadow-md text-secondary-200 max-w-lg;
+  }
+  
+  .hero-buttons {
+    @apply flex gap-6 flex-wrap;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-shadow-sm {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-shadow-md {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-shadow-xl {
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+  }
+}

@@ -11,6 +11,12 @@
   "dependencies": {
     "@sanity/client": "^7.10.0",
     "@sanity/image-url": "^1.2.0",
+    "@shoelace-style/shoelace": "^2.20.1",
     "astro": "^5.13.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.21",
+    "tailwindcss": "^3.4.17"
   }
 }
