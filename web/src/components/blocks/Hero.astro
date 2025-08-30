@@ -1,8 +1,22 @@
 ---
+import ResponsiveImage from '../ResponsiveImage.astro';
+
 const { heading, subheading, image } = Astro.props;
+
+console.log('Hero props:', { heading, subheading, image});
 ---
 <section class="text-center py-12 bg-gray-100">
-  <h1 class="text-4xl font-bold">{heading}</h1>
-  <p class="text-lg mt-2">{subheading}</p>
-  {image && <img src={image.asset.url} alt={heading} class="mx-auto mt-6 rounded-xl" />}
+  <h1 class="text-4xl font-bold text-gray-800 mb-4">{heading}</h1>
+  <p class="text-lg text-gray-600 mb-8">{subheading}</p>
+  {image && (
+    <div class="max-w-4xl mx-auto">
+      <ResponsiveImage
+        image={image}
+        alt={heading}
+        title={heading}
+        class="rounded-xl shadow-lg"
+        aspectRatio="16/9"
+      />
+    </div>
+  )}
 </section>

@@ -9,6 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@sanity/client": "^7.10.0",
+    "@sanity/image-url": "^1.2.0",
     "astro": "^5.13.5"
   }
 }

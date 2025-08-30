@@ -1,28 +1,29 @@
 ---
-import { client } from "../lib/sanityClient";
+import Layout from '../layouts/Layout.astro';
+import { sanityClient } from "../lib/sanityClient";
 import PageRenderer from "../components/PageRenderer.astro";
 
-const { slug } = Astro.params;
-
-const page = await client.fetch(
-    `*[_type == "page" && slug.current == "${slug}"][0]{
-        title,
-        blocks[]{
-            _type,
-            ...
+export async function getStaticPaths() {
+    const pages = await sanityClient.fetch(`
+        *[_type == "page" && slug.current != "inicio"] {
+            slug,
+            title,
+            blocks[]{
+                _type,
+                ...
+            }
         }
-    }`,
-    {
-        slug
-    }
-);
+    `);
+
+    return pages.map((page) => ({
+        params: { slug: page.slug.current },
+        props: { page }
+    }));
+}
+
+const { page } = Astro.props;
 ---
 
-<html lang="es">
-    <head>
-        <title>{page?.title}</title>
-    </head>
-    <body>
-        <PageRenderer blocks={page?.blocks} />
-    </body>
-</html>
+<Layout title={page?.title}>
+  <PageRenderer blocks={page?.blocks} />
+</Layout>

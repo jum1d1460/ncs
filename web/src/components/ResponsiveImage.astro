@@ -1,0 +1,109 @@
+---
+interface Props {
+  image: any;
+  alt?: string;
+  title?: string;
+  class?: string;
+  sizes?: string;
+  aspectRatio?: string;
+}
+
+const { 
+  image, 
+  alt = '', 
+  title = '', 
+  class: className = '', 
+  sizes = '100vw',
+  aspectRatio = '16/9'
+} = Astro.props;
+
+// Función para generar URLs de Sanity usando las variables de entorno
+function getSanityImageUrl(
+    image: { asset?: { _ref: string } }, 
+    width = 800
+) {
+    if (!image || !image.asset) return null;
+    
+    const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+    const dataset = import.meta.env.PUBLIC_SANITY_DATASET;
+    
+    if (image.asset._ref) {
+        // Extraer el ID de la imagen
+        const imageId = image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp');
+        
+        // Construir URL con parámetros de optimización de Sanity
+        return `https://cdn.sanity.io/images/${projectId}/${dataset}/${imageId}?w=${width}&q=80&fit=max&auto=format`;
+    }
+    
+    return null;
+}
+
+// Generar URLs para diferentes breakpoints
+const imageUrls = {
+    mobile: getSanityImageUrl(image, 400),
+    tablet: getSanityImageUrl(image, 800),
+    desktop: getSanityImageUrl(image, 1200),
+    large: getSanityImageUrl(image, 1600)
+};
+
+// Obtener metadatos de la imagen si están disponibles
+const imageAlt = image?.alt || alt;
+const imageTitle = image?.title || title;
+const imageCaption = image?.caption;
+---
+
+<picture class={className}>
+  <!-- WebP para navegadores modernos con optimización -->
+  <source 
+    type="image/webp" 
+    media="(min-width: 1024px)" 
+    srcset={imageUrls.large} 
+  />
+  <source 
+    type="image/webp" 
+    media="(min-width: 768px)" 
+    srcset={imageUrls.desktop} 
+  />
+  <source 
+    type="image/webp" 
+    media="(min-width: 640px)" 
+    srcset={imageUrls.tablet} 
+  />
+  <source 
+    type="image/webp" 
+    srcset={imageUrls.mobile} 
+  />
+  
+  <!-- Fallback para navegadores antiguos -->
+  <source 
+    media="(min-width: 1024px)" 
+    srcset={imageUrls.large} 
+  />
+  <source 
+    media="(min-width: 768px)" 
+    srcset={imageUrls.desktop} 
+  />
+  <source 
+    media="(min-width: 640px)" 
+    srcset={imageUrls.tablet} 
+  />
+  
+  <!-- Imagen por defecto con optimizaciones -->
+  <img 
+    src={imageUrls.tablet} 
+    alt={imageAlt}
+    title={imageTitle}
+    class="w-full h-auto object-cover"
+    loading="lazy"
+    decoding="async"
+    sizes={sizes}
+    style={`aspect-ratio: ${aspectRatio};`}
+  />
+</picture>
+
+{/* Caption opcional si está disponible */}
+{imageCaption && (
+  <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+    {imageCaption}
+  </figcaption>
+)}

@@ -1,23 +1,25 @@
 ---
-import { client } from "../lib/sanityClient";
+import Layout from '../layouts/Layout.astro';
+import { sanityClient } from "../lib/sanityClient";
+import PageRenderer from "../components/PageRenderer.astro";
 
-const page = await client.fetch(
-  `*[_type == "page" && slug.current == "inicio"][0]{
-    title,
-    blocks[]{
-      _type,
-      ...
+// Obtener la página de inicio desde Sanity
+const inicioPage = await sanityClient.fetch(`
+    *[_type == "page" && slug.current == "inicio"][0]{
+        title,
+        blocks[]{
+            _type,
+            ...
+        }
     }
-  }`
-);
+`);
+
+const page = inicioPage || {
+    title: "Inicio",
+    blocks: []
+};
 ---
 
-<html lang="es">
-  <head>
-    <title>{page?.title}</title>
-  </head>
-  <body>
-    <h1>{page?.title}</h1>
-    <pre>{JSON.stringify(page, null, 2)}</pre>
-  </body>
-</html>
+<Layout title={page.title}>
+  <PageRenderer blocks={page.blocks} />
+</Layout>
