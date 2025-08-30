@@ -5,7 +5,7 @@ import TextBlock from "./blocks/TextBlock.astro";
 const { blocks } = Astro.props;
 ---
 
-{blocks?.map((block) => {
+{blocks?.map((block: { _type: string }) => {
   switch (block._type) {
     case "blockHero": return <Hero {...block} />;
     case "blockText": return <TextBlock {...block} />;
