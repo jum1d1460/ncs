@@ -69,17 +69,105 @@ export default defineType({
             description: "Posición de la imagen de silueta respecto a la rejilla central"
         }),
         defineField({
-            name: "overlayColor",
-            title: "Color de Superposición",
-            type: "string",
-            description: "Color de superposición sobre la imagen de fondo (formato hex, rgb, o nombre)"
-        }),
-        defineField({
-            name: "overlayOpacity",
-            title: "Opacidad de Superposición",
-            type: "number",
-            validation: Rule => Rule.min(0).max(1),
-            description: "Opacidad de la superposición (0-1)"
+            name: "overlaySettings",
+            title: "Configuración del Overlay",
+            type: "object",
+            description: "Configuración del overlay y sombras sobre la imagen de fondo",
+            fields: [
+                {
+                    name: "overlayType",
+                    title: "Tipo de Overlay",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Degradado Radial", value: "radial" },
+                            { title: "Degradado Lineal", value: "linear" },
+                            { title: "Color Sólido", value: "solid" },
+                            { title: "Sin Overlay", value: "none" }
+                        ]
+                    },
+                    initialValue: "radial"
+                },
+                {
+                    name: "overlayColor",
+                    title: "Color del Overlay",
+                    type: "string",
+                    description: "Color principal del overlay (formato hex, rgb, o nombre)",
+                    initialValue: "#1e3a8a"
+                },
+                {
+                    name: "overlayOpacity",
+                    title: "Opacidad del Color Principal",
+                    type: "number",
+                    validation: Rule => Rule.min(0).max(1),
+                    description: "Opacidad del color principal (0-1)",
+                    initialValue: 0.8
+                },
+                {
+                    name: "secondaryColor",
+                    title: "Color Secundario",
+                    type: "string",
+                    description: "Color secundario para degradados (formato hex, rgb, o nombre)",
+                    initialValue: "#000000"
+                },
+                {
+                    name: "secondaryOpacity",
+                    title: "Opacidad del Color Secundario",
+                    type: "number",
+                    validation: Rule => Rule.min(0).max(1),
+                    description: "Opacidad del color secundario (0-1)",
+                    initialValue: 0.6
+                },
+                {
+                    name: "gradientDirection",
+                    title: "Dirección del Degradado",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Arriba", value: "to top" },
+                            { title: "Abajo", value: "to bottom" },
+                            { title: "Izquierda", value: "to left" },
+                            { title: "Derecha", value: "to right" },
+                            { title: "Diagonal Superior Derecha", value: "to top right" },
+                            { title: "Diagonal Superior Izquierda", value: "to top left" },
+                            { title: "Diagonal Inferior Derecha", value: "to bottom right" },
+                            { title: "Diagonal Inferior Izquierda", value: "to bottom left" }
+                        ]
+                    },
+                    initialValue: "to bottom",
+                    hidden: ({parent}) => parent?.overlayType !== "linear"
+                },
+                {
+                    name: "radialPosition",
+                    title: "Posición del Degradado Radial",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Centro", value: "center" },
+                            { title: "Superior Izquierda", value: "top left" },
+                            { title: "Superior Derecha", value: "top right" },
+                            { title: "Inferior Izquierda", value: "bottom left" },
+                            { title: "Inferior Derecha", value: "bottom right" }
+                        ]
+                    },
+                    initialValue: "center",
+                    hidden: ({parent}) => parent?.overlayType !== "radial"
+                },
+                {
+                    name: "shadowIntensity",
+                    title: "Intensidad de la Sombra",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Suave", value: "soft" },
+                            { title: "Media", value: "medium" },
+                            { title: "Fuerte", value: "strong" },
+                            { title: "Sin Sombra", value: "none" }
+                        ]
+                    },
+                    initialValue: "medium"
+                }
+            ]
         })
     ]
 })
