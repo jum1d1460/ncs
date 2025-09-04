@@ -34,33 +34,35 @@ const GLOBAL_SETTINGS_QUERY = `*[_type == "globalSettings"][0]{
   defaultMeta{titleSuffix, ogTitle, ogDescription}
 }`;
 
+const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {
+    siteTitle: "NCS Psicóloga Zaragoza",
+    siteDescription: "Psicología para familias y profesionales en Zaragoza",
+    favicon: null,
+    ogImage: null,
+    socialLinks: [],
+    defaultMeta: {
+        titleSuffix: " | NCS",
+        ogTitle: "NCS Psicóloga Zaragoza",
+        ogDescription: "Psicología para familias y profesionales en Zaragoza",
+    }
+};
+
 export async function fetchGlobalSettings(): Promise<GlobalSettings> {
     try {
         const result = await sanityClient.fetch<GlobalSettings>(GLOBAL_SETTINGS_QUERY);
         return {
-            siteTitle: result?.siteTitle ?? "NCS Psicóloga Zaragoza",
-            siteDescription: result?.siteDescription ?? "Psicología para familias y profesionales en Zaragoza",
-            favicon: result?.favicon ?? null,
-            ogImage: result?.ogImage ?? null,
-            socialLinks: result?.socialLinks ?? [],
+            siteTitle: result?.siteTitle ?? DEFAULT_GLOBAL_SETTINGS.siteTitle,
+            siteDescription: result?.siteDescription ?? DEFAULT_GLOBAL_SETTINGS.siteDescription,
+            favicon: result?.favicon ?? DEFAULT_GLOBAL_SETTINGS.favicon,
+            ogImage: result?.ogImage ?? DEFAULT_GLOBAL_SETTINGS.ogImage,
+            socialLinks: result?.socialLinks ?? DEFAULT_GLOBAL_SETTINGS.socialLinks,
             defaultMeta: {
-                titleSuffix: result?.defaultMeta?.titleSuffix ?? " | NCS",
-                ogTitle: result?.defaultMeta?.ogTitle ?? result?.siteTitle ?? "NCS Psicóloga Zaragoza",
-                ogDescription: result?.defaultMeta?.ogDescription ?? result?.siteDescription ?? "Psicología para familias y profesionales en Zaragoza",
+                titleSuffix: result?.defaultMeta?.titleSuffix ?? DEFAULT_GLOBAL_SETTINGS.defaultMeta?.titleSuffix,
+                ogTitle: result?.defaultMeta?.ogTitle ?? result?.siteTitle ?? DEFAULT_GLOBAL_SETTINGS.defaultMeta?.ogTitle,
+                ogDescription: result?.defaultMeta?.ogDescription ?? result?.siteDescription ?? DEFAULT_GLOBAL_SETTINGS.defaultMeta?.ogDescription,
             }
         };
     } catch (_err) {
-        return {
-            siteTitle: "NCS Psicóloga Zaragoza",
-            siteDescription: "Psicología para familias y profesionales en Zaragoza",
-            favicon: null,
-            ogImage: null,
-            socialLinks: [],
-            defaultMeta: {
-                titleSuffix: " | NCS",
-                ogTitle: "NCS Psicóloga Zaragoza",
-                ogDescription: "Psicología para familias y profesionales en Zaragoza",
-            }
-        };
+        return DEFAULT_GLOBAL_SETTINGS;
     }
 }
