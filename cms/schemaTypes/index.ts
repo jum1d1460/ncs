@@ -6,6 +6,7 @@ import author from './author'
 import page from './page'
 import blockHero from './blockHero'
 import blockText from './blockText'
+import globalSettings from './globalSettings'
 
 export const schemaTypes = [
     post, 
@@ -14,5 +15,6 @@ export const schemaTypes = [
     blockContent,
     page,
     blockHero,
-    blockText
+    blockText,
+    globalSettings
 ]
