@@ -4,12 +4,13 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "prebuild": "NODE_ENV=production node ./scripts/remove-dev-pages.cjs",
+    "build": "NODE_ENV=production astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@sanity/client": "^7.10.0",
+    "@sanity/client": "7.11.0",
     "@sanity/image-url": "^1.2.0",
     "@shoelace-style/shoelace": "^2.20.1",
     "astro": "^5.13.5"

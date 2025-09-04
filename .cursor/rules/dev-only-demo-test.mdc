@@ -1,0 +1,20 @@
+---
+description: Prerender solo en desarrollo para páginas de demo y test
+globs:
+- "web/src/pages/demo/**/*.{astro,md,mdx}"
+- "web/src/pages/test/**/*.{astro,md,mdx}"
+alwaysApply: false
+---
+
+# Páginas solo en desarrollo
+
+Asegura que las páginas de `demo/` y `test/` se prerendericen únicamente en desarrollo y no existan en producción.
+
+- Añade, al inicio del archivo:
+
+```astro
+export const prerender = import.meta.env.DEV;
+```
+
+- Estas rutas deben usarse solo para pruebas/demos internas. En producción deben devolver 404.
+

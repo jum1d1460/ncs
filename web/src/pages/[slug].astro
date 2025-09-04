@@ -1,29 +1,44 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { sanityClient } from "../lib/sanityClient";
+import { sanityClient, fetchGlobalSettings } from "../lib/sanityClient";
 import PageRenderer from "../components/PageRenderer.astro";
 
 export async function getStaticPaths() {
-    const pages = await sanityClient.fetch(`
-        *[_type == "page" && slug.current != "inicio"] {
-            slug,
-            title,
-            blocks[]{
-                _type,
-                ...
+    try {
+        const pages = await sanityClient.fetch(`
+            *[_type == "page" && slug.current != "inicio"] {
+                slug,
+                title,
+                blocks[]{
+                    _type,
+                    ...
+                }
             }
-        }
-    `);
+        `);
 
-    return pages.map((page: { slug: { current: string }, title: string, blocks: any[] }) => ({
-        params: { slug: page.slug.current },
-        props: { page }
-    }));
+        return pages.map((page: { slug: { current: string }, title: string, blocks: any[] }) => ({
+            params: { slug: page.slug.current },
+            props: { page }
+        }));
+    } catch (_err) {
+        return [];
+    }
 }
 
-const { page } = Astro.props;
+interface CmsPage {
+    title?: string;
+    blocks?: any[];
+}
+
+const { page } = Astro.props as { page: CmsPage };
+const settings = await fetchGlobalSettings();
 ---
 
-<Layout title={page?.title}>
+<Layout title={page?.title}
+        siteTitle={settings.siteTitle}
+        siteDescription={settings.siteDescription}
+        faviconUrl={settings.favicon?.asset?.url}
+        ogImageUrl={settings.ogImage?.asset?.url}
+>
   <PageRenderer blocks={page?.blocks} />
 </Layout>
