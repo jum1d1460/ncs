@@ -7,7 +7,10 @@
     "prebuild": "NODE_ENV=production node ./scripts/remove-dev-pages.cjs",
     "build": "NODE_ENV=production astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "verify:progress": "node ./scripts/sync-progress.cjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@sanity/client": "7.11.0",
@@ -17,7 +20,9 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^24.3.1",
     "autoprefixer": "^10.4.21",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vitest": "^3.2.4"
   }
 }

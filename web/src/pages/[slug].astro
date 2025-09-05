@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { sanityClient, fetchGlobalSettings } from "../lib/sanityClient";
+import {buildLayoutProps} from "../lib/head";
 import PageRenderer from "../components/PageRenderer.astro";
 
 export async function getStaticPaths() {
@@ -32,13 +33,9 @@ interface CmsPage {
 
 const { page } = Astro.props as { page: CmsPage };
 const settings = await fetchGlobalSettings();
+const layoutProps = buildLayoutProps(page, settings);
 ---
 
-<Layout title={page?.title}
-        siteTitle={settings.siteTitle}
-        siteDescription={settings.siteDescription}
-        faviconUrl={settings.favicon?.asset?.url}
-        ogImageUrl={settings.ogImage?.asset?.url}
->
+<Layout {...layoutProps}>
   <PageRenderer blocks={page?.blocks} />
 </Layout>

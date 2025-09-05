@@ -11,3 +11,21 @@ Execute the next task.
 
 Refer to the instructions located in this file:
 @.agent-os/instructions/core/execute-tasks.md
+
+## Post-completion sync (obligatorio)
+
+Al marcar una tarea como completada, actualizar inmediatamente los documentos de progreso:
+
+1. Sincroniza el spec de tareas:
+   - Edita `@.agent-os/specs/**/tasks.md` correspondiente a la feature y marca con `[x]` las subtareas completadas.
+   - Mantén las subtareas de tests sin marcar si aún no existen o no pasan.
+
+2. Sincroniza el roadmap del producto:
+   - Edita `@.agent-os/product/roadmap.md` y marca con `[x]` los ítems impactados por la tarea (por ejemplo, configuración global en CMS, renderizado dinámico, etc.).
+
+3. Fuente de verdad y estilo:
+   - Usa checkboxes Markdown `[ ]` / `[x]` como única fuente de verdad del estado.
+   - No cambies wording salvo para correcciones menores de ortografía.
+
+4. Automatiza en la sesión:
+   - Realiza los edits como parte del cierre de cada tarea, en la misma PR/commit.

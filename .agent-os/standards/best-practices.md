@@ -57,6 +57,18 @@ ELSE:
 - Automate rebuilds and deployments via GitHub Actions.
 - Trigger builds on Sanity CMS webhooks.
 
+## Progress Sync After Task Completion
+
+- Upon completing a task, update checkboxes in:
+  - `.agent-os/specs/**/tasks.md` for the relevant feature
+  - `.agent-os/product/roadmap.md` for impacted items
+- Keep `[ ]` / `[x]` checkboxes as the single source of truth.
+- Avoid rewriting titles/descriptions unless minor corrections.
+- Local verification:
+  - Script: `web/scripts/sync-progress.cjs`
+  - NPM script: `npm run verify:progress` in `web/`
+  - Optional hook: configure `git config core.hooksPath .githooks` and make it executable
+
 ### DRY (Don't Repeat Yourself)
 
 - Extract repeated logic into reusable utilities.

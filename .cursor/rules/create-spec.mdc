@@ -11,3 +11,12 @@ Create a detailed spec for a new feature with technical specifications and task 
 
 Refer to the instructions located in this file:
 @.agent-os/instructions/core/create-spec.md
+
+## Nota de sincronización de progreso
+
+Incluye en el spec cómo se reflejará el avance en:
+
+- `@.agent-os/specs/**/tasks.md` (subtareas con checkboxes)
+- `@.agent-os/product/roadmap.md` (ítems impactados)
+
+Usa checkboxes `[ ]` / `[x]` como fuente de verdad y sincroniza al completar tareas.

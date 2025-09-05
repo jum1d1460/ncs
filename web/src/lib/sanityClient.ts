@@ -4,7 +4,7 @@ export const sanityClient = createClient({
     projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
     dataset: import.meta.env.PUBLIC_SANITY_DATASET || "production",
     useCdn: true,
-    apiVersion: "2024-03-18"
+    apiVersion: import.meta.env.PUBLIC_SANITY_API_VERSION || "2024-03-18"
 });
 
 export type SocialLink = {

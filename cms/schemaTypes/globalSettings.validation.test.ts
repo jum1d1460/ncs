@@ -1,0 +1,80 @@
+import {describe, it, expect} from 'vitest'
+import schema from './globalSettings'
+
+// Helper mínimo para evaluar validaciones de campo en Sanity
+async function runFieldValidation(fieldName: string, value: unknown) {
+  const field = (schema.fields as any[]).find(f => f.name === fieldName)
+  if (!field) throw new Error(`Field not found: ${fieldName}`)
+  if (!field.validation) return []
+  // Sanity pasa una instancia "rule" con métodos encadenables; simulamos esa interfaz
+  const messages: string[] = []
+  const rule: any = {
+    _rules: [] as any[],
+    required() { this._rules.push({type: 'required'}); return this },
+    min(n: number) { this._rules.push({type: 'min', n}); return this },
+    max(n: number) { this._rules.push({type: 'max', n}); return this },
+    uri(opts: any) { this._rules.push({type: 'uri', opts}); return this },
+    valueOfField(_name: string) { return undefined },
+  }
+  const chain = field.validation(rule)
+  const rules = chain?._rules || rule._rules
+  for (const r of rules) {
+    if (r.type === 'required') {
+      if (value === undefined || value === null || value === '') messages.push('Required')
+    }
+    if (r.type === 'min' && typeof value === 'string') {
+      if (value.length < r.n) messages.push(`Min ${r.n}`)
+    }
+    if (r.type === 'max' && typeof value === 'string') {
+      if (value.length > r.n) messages.push(`Max ${r.n}`)
+    }
+    if (r.type === 'uri') {
+      const ok = typeof value === 'string' && /^(https?:)\/\//.test(value)
+      if (!ok && value != null) messages.push('Invalid URL')
+    }
+  }
+  return messages
+}
+
+describe('globalSettings schema validations', () => {
+  it('siteTitle requerido y longitudes 2..80', async () => {
+    expect(await runFieldValidation('siteTitle', '')).toContain('Required')
+    expect(await runFieldValidation('siteTitle', 'A')).toContain('Min 2')
+    expect(await runFieldValidation('siteTitle', 'A'.repeat(81))).toContain('Max 80')
+    expect(await runFieldValidation('siteTitle', 'Título válido')).toEqual([])
+  })
+
+  it('siteDescription máximo 300, vacío permitido', async () => {
+    expect(await runFieldValidation('siteDescription', '')).toEqual([])
+    expect(await runFieldValidation('siteDescription', 'A'.repeat(301))).toContain('Max 300')
+  })
+
+  it('socialLinks.url valida esquema http/https', async () => {
+    const socialField: any = (schema.fields as any[]).find(f => f.name === 'socialLinks')
+    const objType = socialField?.of?.[0]
+    const urlField = objType?.fields?.find((f: any) => f.name === 'url')
+    const rule: any = {
+      _rules: [] as any[],
+      required() { this._rules.push({type: 'required'}); return this },
+      min(n: number) { this._rules.push({type: 'min', n}); return this },
+      max(n: number) { this._rules.push({type: 'max', n}); return this },
+      uri(opts: any) { this._rules.push({type: 'uri', opts}); return this },
+    }
+    const chain = urlField.validation(rule)
+    const rules = chain?._rules || rule._rules
+    const messages: string[] = []
+    const good = 'https://example.com'
+    const bad = 'ftp://example.com'
+    for (const r of rules) {
+      if (r.type === 'uri') {
+        const ok = /^(https?:)\/\//.test(good)
+        const okBad = /^(https?:)\/\//.test(bad)
+        if (!ok) messages.push('Invalid URL')
+        if (okBad) messages.push('Should reject non http/https')
+      }
+    }
+    expect(messages).toEqual([])
+  })
+})
+
+

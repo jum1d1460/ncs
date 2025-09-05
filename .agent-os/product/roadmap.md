@@ -6,13 +6,13 @@
 **Success Criteria:** Sitio build SSG exitoso con header/footer, páginas principales y módulos iniciales.
 
 ### Features
-- [ ] Config global del sitio en CMS (metadatos, favicon) `[S]`
-- [ ] Definir el documento con la arquitectura principal de páginas y secciones `[S]`
+- [x] Config global del sitio en CMS (metadatos, favicon) `[S]`
+- [x] Definir el documento con la arquitectura principal de páginas y secciones `[S]`
 - [ ] Definir módulos/bloques para páginas (Hero, Text, CTA, FAQ, Services) `[M]`
 - [ ] Implementar cabecera (header) en web con navegación `[S]`
 - [ ] Implementar footer en web `[S]`
-- [ ] Montar páginas base: inicio, servicios, acerca, contacto `[M]`
-- [ ] Renderizado dinámico desde Sanity (PageRenderer) `[M]`
+- [x] Montar páginas base: inicio, servicios, acerca, contacto `[M]`
+- [x] Renderizado dinámico desde Sanity (PageRenderer) `[M]`
 
 ### Dependencies
 - Sanity Studio operativo

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Ejecuta verificación de progreso antes del commit
+if [ -f "web/scripts/sync-progress.cjs" ]; then
+  node web/scripts/sync-progress.cjs || exit 1
+fi
+
+exit 0
