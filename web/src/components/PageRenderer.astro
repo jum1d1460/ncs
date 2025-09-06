@@ -1,14 +1,29 @@
 ---
 import Hero from "./blocks/Hero.astro";
 import TextBlock from "./blocks/TextBlock.astro";
+import Service from "./blocks/Service.astro";
+import ServiceCarousel from "./blocks/ServiceCarousel.astro";
+import Testimonials from "./blocks/Testimonials.astro";
+import Logos from "./blocks/Logos.astro";
 
 const { blocks } = Astro.props;
 ---
 
-{blocks?.map((block: { _type: string }) => {
+{blocks?.map((block: any) => {
   switch (block._type) {
-    case "blockHero": return <Hero {...block} />;
-    case "blockText": return <TextBlock {...block} />;
-    default: return null;
+    case "blockHero":
+      return <Hero {...block} />;
+    case "blockText":
+      return <TextBlock {...block} />;
+    case "serviceBlock":
+      return <Service service={block.service} variant={block.variant} showPrice={block.showPrice} />;
+    case "serviceCarousel":
+      return <ServiceCarousel items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} />;
+    case "blockTestimonials":
+      return <Testimonials items={block.items} />;
+    case "blockLogos":
+      return <Logos title={block.title} logos={block.logos} />;
+    default:
+      return null;
   }
 })}

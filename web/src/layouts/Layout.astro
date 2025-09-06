@@ -6,6 +6,14 @@ interface Props {
   siteDescription?: string;
   faviconUrl?: string | null;
   ogImageUrl?: string | null;
+  // Header/Footer inputs
+  brand?: { logo?: { asset?: { url?: string }, alt?: string } } | null;
+  navMain?: { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } } }[];
+  contact?: { phone?: string; whatsapp?: string; email?: string };
+  bookingUrl?: string;
+  seoFooterText?: string;
+  legalLinks?: { label?: string; url?: string }[];
+  socialLinks?: { type?: string; url?: string }[];
 }
 
 const {
@@ -14,9 +22,18 @@ const {
   siteTitle,
   siteDescription,
   faviconUrl,
-  ogImageUrl
+  ogImageUrl,
+  brand,
+  navMain,
+  contact,
+  bookingUrl,
+  seoFooterText,
+  legalLinks,
+  socialLinks
 } = Astro.props;
 import {buildHeadMeta} from "../lib/head";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 const head = buildHeadMeta({title, description, siteTitle, siteDescription, faviconUrl, ogImageUrl});
 ---
 <!doctype html>
@@ -45,7 +62,26 @@ const head = buildHeadMeta({title, description, siteTitle, siteDescription, favi
 		<link rel="stylesheet" href="/src/styles/global.css" />
 	</head>
 	<body class="font-poppins">
-		<slot />
+		<Header 
+			logoUrl={brand?.logo?.asset?.url}
+			logoAlt={brand?.logo?.alt}
+			navMain={navMain}
+			phone={contact?.phone}
+			whatsapp={contact?.whatsapp}
+			bookingUrl={bookingUrl}
+		/>
+		<main>
+			<slot />
+		</main>
+		<Footer 
+			logoUrl={brand?.logo?.asset?.url}
+			logoAlt={brand?.logo?.alt}
+			seoFooterText={seoFooterText}
+			navMain={navMain}
+			legalLinks={legalLinks}
+			socialLinks={socialLinks}
+			contact={contact}
+		/>
 		
 		<!-- Shoelace JS -->
 		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>

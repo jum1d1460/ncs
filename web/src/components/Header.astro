@@ -1,0 +1,39 @@
+---
+interface NavItem { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } } }
+interface Props {
+  logoUrl?: string | null
+  logoAlt?: string | null
+  navMain?: NavItem[]
+  phone?: string | null
+  whatsapp?: string | null
+  bookingUrl?: string | null
+}
+const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.props as Props
+---
+
+<header class="w-full border-b border-gray-200 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+  <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-2">
+      {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-8 w-auto" />}
+      {!logoUrl && <span class="font-semibold">NCS</span>}
+    </a>
+    <nav aria-label="Principal" class="hidden md:flex items-center gap-6">
+      {navMain?.map((item) => {
+        const href = item.url && item.url.trim().length > 0 
+          ? item.url 
+          : (item.page?.slug?.current ? `/${item.page.slug.current}` : '#')
+        const target = item.target ?? (href.startsWith('http') ? '_blank' : '_self')
+        return (
+          <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined} class="text-sm text-gray-700 hover:text-gray-900">{item.label}</a>
+        )
+      })}
+    </nav>
+    <div class="hidden md:flex items-center gap-2">
+      {phone && <a href={`tel:${phone}`} class="px-3 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-50">Llamar</a>}
+      {whatsapp && <a href={`https://wa.me/${whatsapp}`} class="px-3 py-2 text-sm rounded-md bg-green-600 text-white hover:bg-green-700">WhatsApp</a>}
+      {bookingUrl && <a href={bookingUrl} class="px-3 py-2 text-sm rounded-md bg-indigo-600 text-white hover:bg-indigo-700">Reservar</a>}
+    </div>
+  </div>
+</header>
+
+

@@ -1,0 +1,61 @@
+---
+interface NavItem { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } } }
+interface SocialLink { type?: string; url?: string }
+interface Props {
+  logoUrl?: string | null
+  logoAlt?: string | null
+  seoFooterText?: string | null
+  navMain?: NavItem[]
+  legalLinks?: NavItem[]
+  socialLinks?: SocialLink[]
+  contact?: { phone?: string | null; whatsapp?: string | null; email?: string | null }
+}
+const { logoUrl, logoAlt, seoFooterText, navMain = [], legalLinks = [], socialLinks = [], contact } = Astro.props as Props
+---
+
+<footer class="w-full border-t border-gray-200 bg-gray-50">
+  <div class="mx-auto max-w-7xl px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="space-y-3">
+      {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-8 w-auto" />}
+      {seoFooterText && <p class="text-sm text-gray-700">{seoFooterText}</p>}
+    </div>
+    <nav aria-label="Principal" class="space-y-2">
+      <h3 class="text-sm font-semibold text-gray-900">Navegación</h3>
+      <ul class="space-y-1">
+        {navMain?.map((item) => {
+          const href = item.url && item.url.trim().length > 0 
+            ? item.url 
+            : (item.page?.slug?.current ? `/${item.page.slug.current}` : '#')
+          const target = item.target ?? (href.startsWith('http') ? '_blank' : '_self')
+          return (
+            <li><a class="text-sm text-gray-700 hover:text-gray-900" href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>{item.label}</a></li>
+          )
+        })}
+      </ul>
+    </nav>
+    <nav aria-label="Legales" class="space-y-2">
+      <h3 class="text-sm font-semibold text-gray-900">Legales</h3>
+      <ul class="space-y-1">
+        {legalLinks?.map((item) => (
+          <li><a class="text-sm text-gray-700 hover:text-gray-900" href={item.url}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="space-y-2">
+      <h3 class="text-sm font-semibold text-gray-900">Contacto</h3>
+      <ul class="space-y-1">
+        {contact?.phone && <li><a class="text-sm text-gray-700 hover:text-gray-900" href={`tel:${contact.phone}`}>Teléfono</a></li>}
+        {contact?.whatsapp && <li><a class="text-sm text-gray-700 hover:text-gray-900" href={`https://wa.me/${contact.whatsapp}`}>WhatsApp</a></li>}
+        {contact?.email && <li><a class="text-sm text-gray-700 hover:text-gray-900" href={`mailto:${contact.email}`}>Email</a></li>}
+      </ul>
+      <div class="flex items-center gap-3 pt-2" aria-label="Redes sociales">
+        {socialLinks?.map((s) => (
+          <a href={s.url} aria-label={s.type} class="text-gray-600 hover:text-gray-900 text-sm underline">{s.type}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+  <div class="text-center text-xs text-gray-500 py-4">© {new Date().getFullYear()} NCS</div>
+</footer>
+
+

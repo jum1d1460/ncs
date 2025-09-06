@@ -38,7 +38,13 @@ describe('fetchGlobalSettings', () => {
     fetchMock.mockResolvedValueOnce(payload)
 
     const result = await fetchGlobalSettings()
-    expect(result).toEqual(payload)
+    // Debe contener al menos lo que viene del payload; el método añade defaults para el resto
+    expect(result).toMatchObject(payload)
+    // Defaults añadidos
+    expect(result.brand).toBeNull()
+    expect(result.navMain).toEqual([])
+    expect(result.legalLinks).toEqual([])
+    expect(result.contact).toEqual({})
   })
 
   it('aplica fallbacks cuando campos vienen ausentes/undefined', async () => {

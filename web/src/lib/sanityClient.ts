@@ -18,6 +18,12 @@ export type GlobalSettings = {
     favicon?: { asset?: { url?: string } } | null;
     ogImage?: { asset?: { url?: string } } | null;
     socialLinks?: SocialLink[];
+    brand?: { logo?: { asset?: { url?: string } } & { alt?: string } } | null;
+    navMain?: { label?: string; url?: string; page?: { slug?: { current?: string } }; target?: string }[];
+    contact?: { phone?: string; whatsapp?: string; email?: string };
+    bookingUrl?: string;
+    seoFooterText?: string;
+    legalLinks?: { label?: string; url?: string }[];
     defaultMeta?: {
         titleSuffix?: string;
         ogTitle?: string;
@@ -31,6 +37,12 @@ const GLOBAL_SETTINGS_QUERY = `*[_type == "globalSettings"][0]{
   favicon{asset->{url}},
   ogImage{asset->{url}},
   socialLinks[]{type, url},
+  brand{logo{asset->{url}, alt}},
+  navMain[]{label, url, target, page->{slug}},
+  contact{phone, whatsapp, email},
+  bookingUrl,
+  seoFooterText,
+  legalLinks[]{label, url},
   defaultMeta{titleSuffix, ogTitle, ogDescription}
 }`;
 
@@ -56,6 +68,12 @@ export async function fetchGlobalSettings(): Promise<GlobalSettings> {
             favicon: result?.favicon ?? DEFAULT_GLOBAL_SETTINGS.favicon,
             ogImage: result?.ogImage ?? DEFAULT_GLOBAL_SETTINGS.ogImage,
             socialLinks: result?.socialLinks ?? DEFAULT_GLOBAL_SETTINGS.socialLinks,
+            brand: result?.brand ?? null,
+            navMain: result?.navMain ?? [],
+            contact: result?.contact ?? {},
+            bookingUrl: result?.bookingUrl ?? undefined,
+            seoFooterText: result?.seoFooterText ?? undefined,
+            legalLinks: result?.legalLinks ?? [],
             defaultMeta: {
                 titleSuffix: result?.defaultMeta?.titleSuffix ?? DEFAULT_GLOBAL_SETTINGS.defaultMeta?.titleSuffix,
                 ogTitle: result?.defaultMeta?.ogTitle ?? result?.siteTitle ?? DEFAULT_GLOBAL_SETTINGS.defaultMeta?.ogTitle,

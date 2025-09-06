@@ -24,7 +24,11 @@ export default defineType({
             type: "array",
             of: [
                 { type: "blockHero"},
-                { type: "blockText"}
+                { type: "blockText"},
+                { type: "serviceBlock"},
+                { type: "serviceCarousel"},
+                { type: "blockTestimonials"},
+                { type: "blockLogos"}
             ]
         })
     ]

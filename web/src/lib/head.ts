@@ -34,18 +34,36 @@ export function buildHeadMeta(input: HeadInput): HeadMeta {
   }
 }
 
-export function buildLayoutProps(page: {title?: string} | null | undefined, settings: {
-  siteTitle?: string
-  siteDescription?: string
-  favicon?: {asset?: {url?: string}} | null
-  ogImage?: {asset?: {url?: string}} | null
-} | null | undefined) {
+export function buildLayoutProps(
+  page: { title?: string } | null | undefined,
+  settings: {
+    siteTitle?: string
+    siteDescription?: string
+    favicon?: { asset?: { url?: string } } | null
+    ogImage?: { asset?: { url?: string } } | null
+    brand?: { logo?: { asset?: { url?: string }, alt?: string } } | null
+    navMain?: { label?: string; url?: string }[]
+    contact?: { phone?: string; whatsapp?: string; email?: string }
+    bookingUrl?: string
+    seoFooterText?: string
+    legalLinks?: { label?: string; url?: string }[]
+    socialLinks?: { type?: string; url?: string }[]
+  } | null | undefined
+) {
   return {
     title: page?.title,
     siteTitle: settings?.siteTitle,
     siteDescription: settings?.siteDescription,
     faviconUrl: settings?.favicon?.asset?.url ?? null,
     ogImageUrl: settings?.ogImage?.asset?.url ?? null,
+    // Header/Footer props
+    brand: settings?.brand ?? null,
+    navMain: settings?.navMain ?? [],
+    contact: settings?.contact ?? {},
+    bookingUrl: settings?.bookingUrl,
+    seoFooterText: settings?.seoFooterText,
+    legalLinks: settings?.legalLinks ?? [],
+    socialLinks: settings?.socialLinks ?? [],
   }
 }
 

@@ -75,6 +75,35 @@ describe('globalSettings schema validations', () => {
     }
     expect(messages).toEqual([])
   })
+
+  it('navMain permite URL absolutas o relativas y/o referencia a página', async () => {
+    const navField: any = (schema.fields as any[]).find(f => f.name === 'navMain')
+    const objType = navField?.of?.[0]
+    const urlField = objType?.fields?.find((f: any) => f.name === 'url')
+    // Construimos un contexto similar al de Sanity para Rule.custom
+    const runCustom = async (value: any, parent: any) => {
+      const messages: string[] = []
+      const rule: any = {
+        _rules: [] as any[],
+        custom(fn: any) { this._rules.push({type: 'custom', fn}); return this },
+      }
+      const chain = urlField.validation(rule)
+      const rules = chain?._rules || rule._rules
+      for (const r of rules) {
+        if (r.type === 'custom') {
+          const res = await r.fn(value, {parent})
+          if (res !== true && res) messages.push(res)
+        }
+      }
+      return messages
+    }
+
+    expect(await runCustom('', {page: null})).toContain('Debes indicar una URL o seleccionar una página')
+    expect(await runCustom('/contacto', {page: null})).toEqual([])
+    expect(await runCustom('https://example.com', {page: null})).toEqual([])
+    expect(await runCustom('ftp://example.com', {page: null})).toContain('La URL debe ser absoluta (http/https) o comenzar por /')
+    expect(await runCustom('', {page: { _type: 'reference', _ref: 'page123' }})).toEqual([])
+  })
 })
 
 

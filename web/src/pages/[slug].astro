@@ -12,7 +12,47 @@ export async function getStaticPaths() {
                 title,
                 blocks[]{
                     _type,
-                    ...
+                    ...,
+                    _type == "serviceBlock" => {
+                      "service": service->{
+                        title,
+                        durationMinutes,
+                        priceType,
+                        price,
+                        shortDescription,
+                        longDescription,
+                        cardImage{..., asset->{_ref, url}},
+                        blockImage{..., asset->{_ref, url}}
+                      },
+                      variant,
+                      showPrice
+                    },
+                    _type == "serviceCarousel" => {
+                      "items": items[]->{
+                        title,
+                        durationMinutes,
+                        priceType,
+                        price,
+                        shortDescription,
+                        longDescription,
+                        cardImage{..., asset->{_ref, url}},
+                        blockImage{..., asset->{_ref, url}}
+                      },
+                      autoplay,
+                      intervalMs,
+                      showPrice
+                    },
+                    _type == "blockTestimonials" => {
+                      "items": items[]{
+                        image{..., asset->{_ref, url}, alt},
+                        quote,
+                        fullName
+                      }
+                    },
+                    _type == "blockLogos" => {
+                      title,
+                      logos[]{..., asset->{_ref, url}, alt}
+                    }
                 }
             }
         `);

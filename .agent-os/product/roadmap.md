@@ -25,7 +25,7 @@
 
 ### Features
 - [ ] SEO local: metadatos, schema, Open Graph, sitemap `[S]`
-- [ ] Testimonios/casos con evidencia y métricas `[S]`
+- [x] Testimonios/casos con evidencia y métricas `[S]`
 - [ ] Formularios de contacto con validación y envío `[S]`
 - [ ] Páginas de servicios detalladas (clínica, TDAH, forense) `[M]`
 - [ ] Contenidos base de blog/noticias (opcional) `[M]`
