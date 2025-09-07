@@ -12,6 +12,10 @@ import serviceBlock from './blockService'
 import serviceCarousel from './blockServiceCarousel'
 import blockTestimonials from './blockTestimonials'
 import blockLogos from './blockLogos'
+import imageWithLayout from './imageWithLayout'
+import columns from './columns'
+import blockImage from './blockImage'
+import quoteBlock from './quoteBlock'
 
 export const schemaTypes = [
     post, 
@@ -27,5 +31,9 @@ export const schemaTypes = [
     serviceCarousel
     ,
     blockTestimonials,
-    blockLogos
+    blockLogos,
+    imageWithLayout,
+    columns,
+    blockImage,
+    quoteBlock
 ]

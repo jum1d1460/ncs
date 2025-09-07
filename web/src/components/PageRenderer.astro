@@ -5,6 +5,10 @@ import Service from "./blocks/Service.astro";
 import ServiceCarousel from "./blocks/ServiceCarousel.astro";
 import Testimonials from "./blocks/Testimonials.astro";
 import Logos from "./blocks/Logos.astro";
+import ImageWithLayout from "./blocks/ImageWithLayout.astro";
+import Columns from "./blocks/Columns.astro";
+import BlockImage from "./blocks/BlockImage.astro";
+import QuoteBlock from "./blocks/QuoteBlock.astro";
 
 const { blocks } = Astro.props;
 ---
@@ -23,6 +27,14 @@ const { blocks } = Astro.props;
       return <Testimonials items={block.items} />;
     case "blockLogos":
       return <Logos title={block.title} logos={block.logos} />;
+    case "imageWithLayout":
+      return <ImageWithLayout {...block} />;
+    case "columns":
+      return <Columns {...block} />;
+    case "blockImage":
+      return <BlockImage {...block} />;
+    case "quoteBlock":
+      return <QuoteBlock {...block} />;
     default:
       return null;
   }

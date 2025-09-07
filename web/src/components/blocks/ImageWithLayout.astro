@@ -1,0 +1,67 @@
+---
+import ResponsiveImage from "../ResponsiveImage.astro";
+
+interface Props {
+  image: any;
+  alt: string;
+  layout?: 'left'|'right'|'center';
+  width?: 'half'|'full';
+  caption?: string;
+  marginY?: 'none'|'sm'|'md'|'lg';
+}
+
+const {
+  image,
+  alt,
+  layout = 'left',
+  width = 'half',
+  caption = '',
+  marginY = 'md'
+} = Astro.props as Props;
+
+const marginMap: Record<string, string> = {
+  none: 'my-0',
+  sm: 'my-6',
+  md: 'my-12',
+  lg: 'my-20',
+};
+
+const isSide = layout === 'left' || layout === 'right';
+const isHalf = width === 'half';
+---
+
+<section class={`w-full ${marginMap[marginY] || ''}`}>
+  {isSide && isHalf ? (
+    <div class={`grid grid-cols-1 gap-6 md:grid-cols-2 items-start`}>
+      {layout === 'left' ? (
+        <>
+          <ResponsiveImage image={image} alt={alt} class="w-full h-auto object-cover" />
+          <div class="prose max-w-none">
+            {caption && <p class="text-sm text-gray-600 italic">{caption}</p>}
+            <slot />
+          </div>
+        </>
+      ) : (
+        <>
+          <div class="prose max-w-none">
+            {caption && <p class="text-sm text-gray-600 italic">{caption}</p>}
+            <slot />
+          </div>
+          <ResponsiveImage image={image} alt={alt} class="w-full h-auto object-cover" />
+        </>
+      )}
+    </div>
+  ) : (
+    <div class="w-full">
+      <div class={width === 'full' ? 'w-full' : 'max-w-screen-lg mx-auto'}>
+        <ResponsiveImage image={image} alt={alt} class="w-full h-auto object-cover" />
+        {caption && <p class="text-sm text-gray-600 italic mt-2 text-center">{caption}</p>}
+        <div class="prose max-w-none mt-4">
+          <slot />
+        </div>
+      </div>
+    </div>
+  )}
+</section>
+
+

@@ -1,0 +1,51 @@
+---
+import ResponsiveImage from "../ResponsiveImage.astro";
+
+interface Props {
+  image: any;
+  alt: string;
+  variant?: 'contained' | 'fullBleed';
+  aspectRatio?: 'auto' | '16:9' | '4:3' | '1:1';
+  marginTop?: 'none'|'sm'|'md'|'lg';
+  marginBottom?: 'none'|'sm'|'md'|'lg';
+  overlayOpacity?: number;
+}
+
+const {
+  image,
+  alt,
+  variant = 'contained',
+  aspectRatio = 'auto',
+  marginTop = 'md',
+  marginBottom = 'md',
+  overlayOpacity = 0,
+} = Astro.props as Props;
+
+const mMap: Record<string,string> = {
+  none: '0',
+  sm: '1.5rem',
+  md: '3rem',
+  lg: '5rem',
+}
+---
+
+{variant === 'fullBleed' ? (
+  <section style={`margin-top:${mMap[marginTop]};margin-bottom:${mMap[marginBottom]};`}>
+    <div class="relative left-1/2 right-1/2 w-screen -mx-[50vw]">
+      <div class="relative">
+        <ResponsiveImage image={image} alt={alt} class="w-full h-auto object-cover" aspectRatio={aspectRatio === 'auto' ? 'auto' : aspectRatio.replace(':','/')} />
+        {overlayOpacity > 0 && (
+          <div class="absolute inset-0 bg-black" style={`opacity:${overlayOpacity/100}`}></div>
+        )}
+      </div>
+    </div>
+  </section>
+) : (
+  <section class="w-full" style={`margin-top:${mMap[marginTop]};margin-bottom:${mMap[marginBottom]};`}>
+    <div class="max-w-screen-xl mx-auto">
+      <ResponsiveImage image={image} alt={alt} class="w-full h-auto object-cover" aspectRatio={aspectRatio === 'auto' ? 'auto' : aspectRatio.replace(':','/')} />
+    </div>
+  </section>
+)}
+
+

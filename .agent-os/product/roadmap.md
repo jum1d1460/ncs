@@ -9,6 +9,7 @@
 - [x] Config global del sitio en CMS (metadatos, favicon) `[S]`
 - [x] Definir el documento con la arquitectura principal de páginas y secciones `[S]`
 - [ ] Definir módulos/bloques para páginas (Hero, Text, CTA, FAQ, Services) `[M]`
+- [ ] Bloques avanzados de contenido (Imagen alineada, Columnas, Corte, Quote) `[M]`
 - [ ] Implementar cabecera (header) en web con navegación `[S]`
 - [ ] Implementar footer en web `[S]`
 - [x] Montar páginas base: inicio, servicios, acerca, contacto `[M]`

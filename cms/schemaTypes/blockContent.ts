@@ -63,5 +63,17 @@ export default defineType({
       type: 'image',
       options: {hotspot: true},
     }),
+    defineArrayMember({
+      type: 'imageWithLayout',
+    }),
+    defineArrayMember({
+      type: 'columns',
+    }),
+    defineArrayMember({
+      type: 'blockImage',
+    }),
+    defineArrayMember({
+      type: 'quoteBlock',
+    }),
   ],
 })

@@ -1,0 +1,26 @@
+---
+interface Column {
+  _key?: string;
+  _type?: string;
+  // array of blocks; render as simple paragraphs for ahora
+}
+
+interface Props {
+  columnsCount: 2 | 3;
+  columns: any[];
+}
+
+const { columnsCount = 2, columns = [] } = Astro.props as Props;
+---
+
+<section class="w-full my-12">
+  <div class={`grid grid-cols-1 gap-6 md:grid-cols-${columnsCount}`}>
+    {columns?.map((col: any, idx: number) => (
+      <div class="prose max-w-none" data-col={idx}>
+        {Array.isArray(col) ? col.map((b: any) => <p>{b?.children?.map((c:any)=>c?.text).join('')}</p>) : null}
+      </div>
+    ))}
+  </div>
+</section>
+
+

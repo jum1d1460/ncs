@@ -29,6 +29,26 @@ Campos en `globalSettings` para cabecera y pie:
 
 Uso: en el documento `Página`, dentro de `Bloques`, añade "Bloque: Testimonios" o "Bloque: Logotipos".
 
+### Bloques avanzados de contenido
+
+- `imageWithLayout`:
+  - Campos: `image` (req), `alt` (req), `layout` (`left|right|center`), `width` (`half|full`), `caption`, `marginY`.
+  - Uso: imagen alineada a izquierda/derecha con texto, o centrada.
+
+- `columns`:
+  - Campos: `columnsCount` (2|3), `columns` (array de arrays de `block`).
+  - Validación: la longitud de `columns` debe coincidir con `columnsCount`.
+
+- `blockImage`:
+  - Campos: `image` (req), `alt` (req), `variant` (`contained|fullBleed`), `aspectRatio` (`auto|16:9|4:3|1:1`), `marginTop`, `marginBottom`, `overlayOpacity` (0–100).
+  - Uso: imagen de corte entre contenidos. `fullBleed` ocupa el 100% del ancho.
+
+- `quoteBlock`:
+  - Campos: `quote` (req), `meta` (autor/fecha), `align` (`left|center`).
+  - Uso: destacar citas en artículos con dato del autor/fecha.
+
+Registro: todos los tipos están disponibles dentro de `blockContent`.
+
 
 ### Documento `service`
 - Campos: `title` (req), `slug` (auto desde `title`), `durationMinutes` (número entero > 0), `priceType` ("fixed" | "consult"), `price` (req si `fixed`), `shortDescription` (<=200 chars), `longDescription` (portable text), `cardImage` (con `alt`), `blockImage` (con `alt`).

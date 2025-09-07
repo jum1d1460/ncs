@@ -88,7 +88,13 @@ Notas:
 - `src/components/blocks/ServiceCarousel.astro`: carrusel horizontal con `scroll-snap` y tarjetas `Service`.
 - `src/components/blocks/Testimonials.astro`: grid de testimonios (imagen, cita y nombre y apellidos).
 - `src/components/blocks/Logos.astro`: grid de logotipos con tamaños consistentes.
-- `src/components/PageRenderer.astro`: mapea `_type` de bloques (`blockHero`, `blockText`, `serviceBlock`, `serviceCarousel`, `blockTestimonials`, `blockLogos`).
+- `src/components/PageRenderer.astro`: mapea `_type` de bloques (`blockHero`, `blockText`, `serviceBlock`, `serviceCarousel`, `blockTestimonials`, `blockLogos`, `imageWithLayout`, `columns`, `blockImage`, `quoteBlock`).
+
+### Bloques avanzados de contenido (render)
+- `ImageWithLayout.astro`: layout izquierda/derecha/centro; usa `ResponsiveImage`. Respeta `width` y `marginY`.
+- `Columns.astro`: grid responsivo de 2/3 columnas.
+- `BlockImage.astro`: variante `contained` o `fullBleed` (a sangre). `overlayOpacity` opcional.
+- `QuoteBlock.astro`: `<blockquote>` con `footer` para `meta`, alineación izquierda/centrada.
 
 ### Datos (GROQ)
 Las páginas (`/` e internas `[slug].astro`) consultan GROQ para hidratar los bloques:

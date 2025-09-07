@@ -1,0 +1,11 @@
+- [x] Crear tipo `imageWithLayout` y añadirlo a `blockContent.of`.
+- [x] Crear tipo `columns` con validación de número de columnas.
+- [x] Crear tipo `blockImage` con variantes contenida/a sangre.
+- [x] Crear tipo `quoteBlock` y añadirlo a `blockContent.of`.
+- [x] Previews/íconos en el Studio para todos los tipos.
+- [x] Extender `PageRenderer.astro` para nuevos tipos.
+- [x] Crear componentes: `ImageWithLayout`, `Columns`, `BlockImage`, `QuoteBlock`.
+- [x] Usar `ResponsiveImage.astro` para imágenes.
+- [ ] Documentar en `cms/README.md` y `web/README.md`.
+- [ ] Actualizar `.agent-os/product/roadmap.md` con este ítem.
+
