@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, defineArrayMember} from 'sanity'
 
 export default defineType({
   name: 'post',
@@ -44,11 +44,20 @@ export default defineType({
       title: 'Published at',
       type: 'datetime',
     }),
-    defineField({
-      name: 'body',
-      title: 'Body',
-      type: 'blockContent',
-    }),
+    defineField(({
+      name: 'blocks',
+      title: 'Bloques',
+      type: 'array',
+      of: [
+        { type: 'blockHero' },
+        { type: 'blockContentSection' },
+        { type: 'blockImage' },
+        { type: 'serviceBlock' },
+        { type: 'serviceCarousel' },
+        { type: 'blockTestimonials' },
+        { type: 'blockLogos' }
+      ]
+    }) as any),
   ],
 
   preview: {

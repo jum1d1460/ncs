@@ -1,4 +1,4 @@
-import {defineField, defineType} from "sanity";
+import {defineField, defineType, defineArrayMember} from "sanity";
 
 export default defineType({
     name: "page",
@@ -18,18 +18,19 @@ export default defineType({
                 source: "title",
             }
         }),
-        defineField({
+        defineField(({
             name: "blocks",
             title: "Bloques",
             type: "array",
             of: [
                 { type: "blockHero"},
-                { type: "blockText"},
+                { type: "blockContentSection"},
+                { type: "blockImage"},
                 { type: "serviceBlock"},
                 { type: "serviceCarousel"},
                 { type: "blockTestimonials"},
                 { type: "blockLogos"}
             ]
-        })
+        }) as any)
     ]
 });

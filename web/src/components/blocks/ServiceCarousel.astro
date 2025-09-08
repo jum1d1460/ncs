@@ -1,12 +1,21 @@
 ---
 import Service from "./Service.astro";
 
+interface NumericRangeOrFixed {
+  mode?: 'fixed' | 'range';
+  value?: number;
+  min?: number;
+  max?: number;
+  currency?: string;
+}
+
 interface ServiceData {
   _id?: string;
   title?: string;
-  durationMinutes?: number;
-  priceType?: 'fixed' | 'consult';
-  price?: number;
+  duration?: NumericRangeOrFixed;
+  price?: NumericRangeOrFixed;
+  url?: string;
+  weight?: number;
   shortDescription?: string;
   longDescription?: any[];
   cardImage?: any;

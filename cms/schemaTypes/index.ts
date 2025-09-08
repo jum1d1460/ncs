@@ -5,7 +5,7 @@ import author from './author'
 
 import page from './page'
 import blockHero from './blockHero'
-import blockText from './blockText'
+import blockContentSection from './blockContentSection'
 import globalSettings from './globalSettings'
 import service from './service'
 import serviceBlock from './blockService'
@@ -24,7 +24,7 @@ export const schemaTypes = [
     blockContent,
     page,
     blockHero,
-    blockText,
+    blockContentSection,
     globalSettings,
     service,
     serviceBlock,

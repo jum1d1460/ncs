@@ -18,34 +18,141 @@ export default defineType({
             options: { source: "title", maxLength: 96 }
         }),
         defineField({
-            name: "durationMinutes",
-            title: "Duración (minutos)",
-            type: "number",
-            validation: r => r.required().integer().positive()
-        }),
-        defineField({
-            name: "priceType",
-            title: "Tipo de precio",
-            type: "string",
-            options: {
-                list: [
-                    { title: "Fijo", value: "fixed" },
-                    { title: "A consultar", value: "consult" }
-                ]
-            },
-            validation: r => r.required()
+            name: "duration",
+            title: "Duración",
+            type: "object",
+            fields: [
+                defineField({
+                    name: "mode",
+                    title: "Modo",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Fijo", value: "fixed" },
+                            { title: "Intervalo", value: "range" }
+                        ],
+                        layout: "radio"
+                    },
+                    validation: r => r.required()
+                }),
+                defineField({
+                    name: "value",
+                    title: "Minutos",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "fixed",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "fixed") {
+                            return typeof value === "number" && value >= 0 ? true : "Requerido y ≥ 0";
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo intervalo";
+                    })
+                }),
+                defineField({
+                    name: "min",
+                    title: "Min (min)",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "range",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "range") {
+                            return typeof value === "number" && value >= 0 ? true : "Requerido y ≥ 0";
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo fijo";
+                    })
+                }),
+                defineField({
+                    name: "max",
+                    title: "Max (min)",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "range",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "range") {
+                            const min = ctx.parent?.min;
+                            if (typeof value !== "number" || value < 0) return "Requerido y ≥ 0";
+                            if (typeof min === "number" && value < min) return "Debe ser ≥ Min";
+                            return true;
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo fijo";
+                    })
+                })
+            ]
         }),
         defineField({
             name: "price",
-            title: "Precio (€)",
+            title: "Precio",
+            type: "object",
+            fields: [
+                defineField({
+                    name: "mode",
+                    title: "Modo",
+                    type: "string",
+                    options: {
+                        list: [
+                            { title: "Fijo", value: "fixed" },
+                            { title: "Intervalo", value: "range" }
+                        ],
+                        layout: "radio"
+                    },
+                    validation: r => r.required()
+                }),
+                defineField({
+                    name: "value",
+                    title: "Importe (€)",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "fixed",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "fixed") {
+                            return typeof value === "number" && value >= 0 ? true : "Requerido y ≥ 0";
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo intervalo";
+                    })
+                }),
+                defineField({
+                    name: "min",
+                    title: "Min (€)",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "range",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "range") {
+                            return typeof value === "number" && value >= 0 ? true : "Requerido y ≥ 0";
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo fijo";
+                    })
+                }),
+                defineField({
+                    name: "max",
+                    title: "Max (€)",
+                    type: "number",
+                    hidden: ({ parent }) => parent?.mode !== "range",
+                    validation: r => r.custom((value, ctx) => {
+                        if (ctx.parent?.mode === "range") {
+                            const min = ctx.parent?.min;
+                            if (typeof value !== "number" || value < 0) return "Requerido y ≥ 0";
+                            if (typeof min === "number" && value < min) return "Debe ser ≥ Min";
+                            return true;
+                        }
+                        return value === undefined || value === null ? true : "No debe establecerse en modo fijo";
+                    })
+                }),
+                defineField({
+                    name: "currency",
+                    title: "Moneda",
+                    type: "string",
+                    initialValue: "EUR"
+                })
+            ]
+        }),
+        defineField({
+            name: "url",
+            title: "Enlace del servicio",
+            type: "url",
+            validation: r => r.uri({ scheme: ["http", "https"] })
+        }),
+        defineField({
+            name: "weight",
+            title: "Peso (orden)",
             type: "number",
-            hidden: ({ parent }) => parent?.priceType !== "fixed",
-            validation: r => r.custom((value, ctx) => {
-                if (ctx.parent?.priceType === "fixed") {
-                    return value && value > 0 ? true : "Requerido y > 0";
-                }
-                return value ? "No debe establecerse cuando el precio es 'A consultar'" : true;
-            })
+            initialValue: 100,
+            validation: r => r.min(0)
         }),
         defineField({
             name: "shortDescription",
@@ -93,9 +200,16 @@ export default defineType({
         })
     ],
     preview: {
-        select: { title: "title", priceType: "priceType", price: "price" },
-        prepare({ title, priceType, price }) {
-            const subtitle = priceType === "fixed" ? `${price} €` : "A consultar";
+        select: { title: "title", priceMode: "price.mode", priceValue: "price.value", priceMin: "price.min", priceMax: "price.max" },
+        prepare({ title, priceMode, priceValue, priceMin, priceMax }) {
+            let subtitle = "";
+            if (priceMode === "fixed" && typeof priceValue === "number") {
+                subtitle = `${priceValue} €`;
+            } else if (priceMode === "range" && typeof priceMin === "number" && typeof priceMax === "number") {
+                subtitle = `${priceMin}–${priceMax} €`;
+            } else {
+                subtitle = "Sin precio";
+            }
             return { title, subtitle };
         }
     }

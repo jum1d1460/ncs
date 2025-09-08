@@ -29,6 +29,7 @@ export default defineType({
       name: 'navMain',
       title: 'Main Navigation',
       type: 'array',
+      description: 'Prioridad del enlace: URL > Página (slug). Si ambas están definidas, se utilizará la URL. Para enlaces externos, se recomienda target = "_blank".',
       of: [{
         type: 'object',
         name: 'navItem',
@@ -39,7 +40,7 @@ export default defineType({
             name: 'url',
             title: 'URL (absoluta o relativa)',
             type: 'string',
-            description: 'Ejemplos: https://example.com o /contacto',
+            description: 'Ejemplos: https://example.com o /contacto. Si también se selecciona "Página", se usará esta URL.',
             validation: (Rule) => Rule.custom((value, context) => {
               const v = (value || '').trim()
               const hasPage = Boolean((context as any)?.parent?.page)
@@ -55,7 +56,7 @@ export default defineType({
             title: 'Página',
             type: 'reference',
             to: [{type: 'page'}],
-            description: 'Opcional. Si se selecciona, se usará su slug como enlace cuando no haya URL',
+            description: 'Opcional. Se usará su slug como enlace cuando no haya URL.',
           }),
           defineField({
             name: 'target',
@@ -68,7 +69,17 @@ export default defineType({
               ],
               layout: 'radio'
             },
-            initialValue: '_self'
+            initialValue: '_self',
+            description: 'Para enlaces externos (http/https) se recomienda "Nueva pestaña" (_blank).',
+            validation: (Rule) => Rule.custom((value, context) => {
+              const url = String(((context as any)?.parent?.url || '')).trim()
+              if (!url) return true
+              const isAbsolute = /^https?:\/\//.test(url)
+              if (isAbsolute && value !== '_blank') {
+                return 'Para enlaces externos (http/https), el target debe ser "Nueva pestaña" (_blank).'
+              }
+              return true
+            }),
           }),
         ]
       }]

@@ -20,10 +20,12 @@ export default defineType({
         defineArrayMember({
           name: 'column',
           title: 'Columna',
-          type: 'array',
-          of: [
-            defineArrayMember({
-              type: 'block',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'content',
+              title: 'Contenido',
+              type: 'blockContent',
             }),
           ],
         }),

@@ -11,7 +11,8 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "migrate:services": "node scripts/migrate-services.js"
   },
   "keywords": [
     "sanity"
