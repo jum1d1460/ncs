@@ -50,6 +50,14 @@ export async function fetchBlogPostsForBlock(block: BlockBlogPosts): Promise<Blo
     const featuredMatched = Array.isArray(result?.featuredMatched) ? result.featuredMatched : [];
     const filler = Array.isArray(result?.filler) ? result.filler : [];
 
-    const combined: BlogPost[] = [...featuredMatched, ...filler];
+    // Combina priorizando destacados y elimina duplicados por _id
+    const combined: BlogPost[] = [];
+    const seenIds = new Set<string>();
+    for (const post of [...featuredMatched, ...filler]) {
+        const id = post?._id;
+        if (!id || seenIds.has(id)) continue;
+        seenIds.add(id);
+        combined.push(post);
+    }
     return combined.slice(0, n);
 }
