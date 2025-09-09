@@ -9,7 +9,8 @@ const apiVersion = (import.meta.env.PUBLIC_SANITY_API_VERSION as string | undefi
 type MinimalClient = { fetch: <T = unknown>(_q: string, _p?: Record<string, unknown>) => Promise<T> };
 
 let sanityClient: MinimalClient;
-if (projectId) {
+const isTestEnv = typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'test';
+if (projectId || isTestEnv) {
     sanityClient = createClient({
         projectId,
         dataset,
