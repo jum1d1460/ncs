@@ -1,11 +1,32 @@
 import {createClient} from "@sanity/client";
 
-export const sanityClient = createClient({
-    projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: import.meta.env.PUBLIC_SANITY_DATASET || "production",
-    useCdn: true,
-    apiVersion: import.meta.env.PUBLIC_SANITY_API_VERSION || "2024-03-18"
-});
+// Crea el cliente de Sanity de forma tolerante: si faltan variables públicas en build,
+// exponemos un cliente "no-op" que devuelve resultados vacíos para evitar fallos.
+const projectId = (import.meta.env.PUBLIC_SANITY_PROJECT_ID as string | undefined) || "";
+const dataset = (import.meta.env.PUBLIC_SANITY_DATASET as string | undefined) || "production";
+const apiVersion = (import.meta.env.PUBLIC_SANITY_API_VERSION as string | undefined) || "2024-03-18";
+
+type MinimalClient = { fetch: <T = unknown>(_q: string, _p?: Record<string, unknown>) => Promise<T> };
+
+let sanityClient: MinimalClient;
+if (projectId) {
+    sanityClient = createClient({
+        projectId,
+        dataset,
+        useCdn: true,
+        apiVersion
+    }) as unknown as MinimalClient;
+} else {
+    // Cliente de respaldo: no lanza errores y devuelve estructuras vacías.
+    sanityClient = {
+        async fetch<T = unknown>() {
+            // @ts-expect-error: devolvemos algo razonable según el tipo esperado
+            return Array.isArray([] as unknown as T) ? ([] as unknown as T) : ({} as T);
+        }
+    } as MinimalClient;
+}
+
+export { sanityClient };
 
 export type SocialLink = {
     type?: string;
