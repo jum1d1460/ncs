@@ -48,6 +48,17 @@ jobs:
           PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
         run: npm run build
 
+      - name: Debug env var presence (no values)
+        run: |
+          echo "Checking required env vars (SET/EMPTY):"
+          for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN CLOUDFLARE_PAGES_PROJECT_NAME CLOUDFLARE_PAGES_DEPLOY_HOOK_URL SANITY_PROJECT_ID SANITY_DATASET SANITY_API_VERSION; do
+            if [ -z "${!name}" ]; then
+              echo "::notice title=EnvVar::${name}=EMPTY"
+            else
+              echo "::notice title=EnvVar::${name}=SET"
+            fi
+          done
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
