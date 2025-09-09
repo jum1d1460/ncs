@@ -1,7 +1,11 @@
-name = "ncs-web-worker"
+name = "ncs"
 compatibility_date = "2024-09-01"
 
 # Sirve los archivos generados por Astro en web/dist
 assets = { directory = "web/dist" }
+
+routes = [
+  { pattern = "ncs.jum1d1460.com/*", zone_name = "jum1d1460.com" }
+]
 
 
