@@ -1,4 +1,5 @@
 import {defineField, defineType} from "sanity";
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
     name: "blockText",
@@ -10,5 +11,6 @@ export default defineType({
             title: "Contenido",
             type: "text",
         })
+        , ...blockPresentationFields
     ]
 })

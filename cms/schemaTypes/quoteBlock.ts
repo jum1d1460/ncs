@@ -1,4 +1,5 @@
 import {defineType} from 'sanity'
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
   name: 'quoteBlock',
@@ -30,6 +31,7 @@ export default defineType({
       },
       initialValue: 'left',
     },
+  ...blockPresentationFields
   ],
   preview: {
     select: {title: 'quote', subtitle: 'meta'},

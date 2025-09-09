@@ -1,4 +1,5 @@
 import {defineField, defineType} from "sanity";
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
     name: "blockLogos",
@@ -29,6 +30,7 @@ export default defineType({
             }],
             validation: r => r.required().min(1)
         })
+        , ...blockPresentationFields
     ],
     preview: {
         select: { title: "title", logos: "logos" },

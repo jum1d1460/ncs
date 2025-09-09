@@ -16,6 +16,8 @@ import imageWithLayout from './imageWithLayout'
 import columns from './columns'
 import blockImage from './blockImage'
 import quoteBlock from './quoteBlock'
+import blockBlogPosts from './blockBlogPosts'
+import blockContact from './blockContact'
 
 export const schemaTypes = [
     post, 
@@ -28,12 +30,13 @@ export const schemaTypes = [
     globalSettings,
     service,
     serviceBlock,
-    serviceCarousel
-    ,
+    serviceCarousel,
     blockTestimonials,
     blockLogos,
     imageWithLayout,
     columns,
     blockImage,
-    quoteBlock
+    quoteBlock,
+    blockBlogPosts,
+    blockContact
 ]

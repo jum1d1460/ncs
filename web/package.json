@@ -16,7 +16,8 @@
     "@sanity/client": "7.11.0",
     "@sanity/image-url": "^1.2.0",
     "@shoelace-style/shoelace": "^2.20.1",
-    "astro": "^5.13.5"
+    "astro": "^5.13.5",
+    "motion": "^12.23.12"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

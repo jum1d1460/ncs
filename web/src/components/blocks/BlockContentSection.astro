@@ -1,0 +1,9 @@
+---
+const { title, headingLevel } = Astro.props as { title?: string; headingLevel?: string };
+const Tag = (title && (headingLevel as any)) || 'h2';
+---
+<section class="prose mx-auto p-8">
+  {title && (<Tag class="mb-4">{title}</Tag>)}
+</section>
+
+

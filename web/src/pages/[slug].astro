@@ -11,6 +11,9 @@ export async function getStaticPaths() {
                 slug,
                 title,
                 blocks[]{
+                    'backgroundColor': coalesce(backgroundColor, 'none'),
+                    'backgroundLayout': coalesce(backgroundLayout, 'grid'),
+                    'contentLayout': coalesce(contentLayout, 'grid'),
                     _type,
                     ...,
                     _type == "serviceBlock" => {

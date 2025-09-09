@@ -1,4 +1,5 @@
 import {defineField, defineType} from "sanity";
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
     name: "serviceBlock",
@@ -30,6 +31,7 @@ export default defineType({
             type: "boolean",
             initialValue: true
         })
+        , ...blockPresentationFields
     ],
     preview: {
         select: { title: "service.title", variant: "variant" },

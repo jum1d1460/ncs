@@ -1,0 +1,30 @@
+---
+const {
+  backgroundColor = 'none',
+  backgroundLayout = 'grid',
+  contentLayout = 'grid',
+} = Astro.props as {
+  backgroundColor?: 'none' | 'color1' | 'color2'
+  backgroundLayout?: 'grid' | 'full'
+  contentLayout?: 'grid' | 'full'
+}
+
+const bgClass = backgroundColor === 'color1'
+  ? 'bg-slate-50'
+  : backgroundColor === 'color2'
+    ? 'bg-slate-100'
+    : ''
+
+const outerClass = backgroundLayout === 'full' ? 'w-full' : ''
+const innerClass = contentLayout === 'full'
+  ? 'w-full'
+  : 'container mx-auto px-4 sm:px-6 lg:px-8'
+---
+<section class={`relative ${bgClass} ${outerClass}`}>
+  <div class={innerClass}>
+    <slot />
+  </div>
+  
+</section>
+
+

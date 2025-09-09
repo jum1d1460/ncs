@@ -128,10 +128,10 @@ const getShadowClass = (intensity: string) => {
 ---
 
 <!-- Hero Section simplificado y optimizado -->
-<section class="hero-section">
+<section class="hero-section z-0 relative overflow-hidden">
   <!-- Fondo de imagen -->
   {backgroundImage && (
-    <div class="hero-background">
+    <div class="hero-background will-change-transform">
       <ResponsiveImage
         image={backgroundImage}
         alt="Fondo del Hero"
@@ -145,7 +145,7 @@ const getShadowClass = (intensity: string) => {
   
   <!-- Silueta de fondo (solo en desktop) -->
   {silhouetteImage && (
-    <div class="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-20">
+    <div class="hero-silhouette hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-30 will-change-transform">
       <div class={`absolute top-0 w-1/2 ${silhouettePosition === 'left' ? 'left-0' : 'right-0'} flex items-start justify-center`}>
         <div class="relative w-full flex items-start justify-center transform scale-125 origin-top">
           <ResponsiveImage
@@ -212,6 +212,9 @@ const getShadowClass = (intensity: string) => {
   </div>
 </section>
 
+<!-- Sentinel para comportamiento del header sticky -->
+<div class="hero-sentinel" aria-hidden="true"></div>
+
 <style>
   /* Animaciones simplificadas */
   .animate-fade-in-up {
@@ -256,3 +259,35 @@ const getShadowClass = (intensity: string) => {
     }
   }
 </style>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const section = (document.currentScript && typeof (document.currentScript as any).closest === 'function'
+      ? (document.currentScript as any).closest('section')
+      : document.querySelector('.hero-section'));
+    const bg = section ? section.querySelector('.hero-background') : null;
+    const sil = section ? section.querySelector('.hero-silhouette') : null;
+    if (section && !reduceMotion) {
+      let frame = 0;
+      const onScroll = () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          const top = (section as HTMLElement).offsetTop;
+          const height = (section as HTMLElement).offsetHeight || 1;
+          const y = window.scrollY || window.pageYOffset;
+          const raw = (y - top + window.innerHeight) / (height + window.innerHeight);
+          const progress = Math.max(0, Math.min(1, raw));
+          const bgY = (-6 + 10 * progress).toFixed(2);
+          const silY = (-2 + 4 * progress).toFixed(2);
+          if (bg) (bg as HTMLElement).style.transform = `translateY(${bgY}vh)`;
+          if (sil) (sil as HTMLElement).style.transform = `translateY(${silY}vh)`;
+        });
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    }
+  }
+  </script>

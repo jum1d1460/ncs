@@ -1,4 +1,5 @@
 import {defineType} from 'sanity'
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
   name: 'blockImage',
@@ -80,7 +81,9 @@ export default defineType({
       type: 'number',
       description: '0–100 para un velo opcional',
       validation: (Rule) => Rule.min(0).max(100),
-    },
+    }
+  ,
+  ...blockPresentationFields
   ],
   preview: {
     select: {title: 'alt', subtitle: 'variant', media: 'image'},

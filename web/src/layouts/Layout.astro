@@ -62,6 +62,7 @@ const head = buildHeadMeta({title, description, siteTitle, siteDescription, favi
 		<link rel="stylesheet" href="/src/styles/global.css" />
 	</head>
 	<body class="font-poppins">
+		<script type="module">import '/src/lib/motionClient.ts';</script>
 		<Header 
 			logoUrl={brand?.logo?.asset?.url}
 			logoAlt={brand?.logo?.alt}

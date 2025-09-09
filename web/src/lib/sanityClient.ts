@@ -31,6 +31,29 @@ export type GlobalSettings = {
     };
 }
 
+export type BlockContact = {
+    _type: 'blockContact';
+    title?: string;
+    subtitle?: string;
+    theme?: 'light' | 'dark' | 'brand';
+    form?: {
+        subjectPlaceholder?: string;
+        topicOptions?: string[];
+        submitLabel?: string;
+        disclaimer?: string;
+    };
+    contact?: {
+        phone?: string;
+        email?: string;
+        address?: string;
+        schedule?: string;
+    };
+    map?: {
+        embedUrl?: string;
+        title?: string;
+    };
+}
+
 const GLOBAL_SETTINGS_QUERY = `*[_type == "globalSettings"][0]{
   siteTitle,
   siteDescription,

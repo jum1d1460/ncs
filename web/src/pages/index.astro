@@ -11,6 +11,9 @@ try {
         *[_type == "page" && slug.current == "inicio"][0]{
             title,
             blocks[]{
+                'backgroundColor': coalesce(backgroundColor, 'none'),
+                'backgroundLayout': coalesce(backgroundLayout, 'grid'),
+                'contentLayout': coalesce(contentLayout, 'grid'),
                 _type,
                 ...,
                 _type == "serviceBlock" => {

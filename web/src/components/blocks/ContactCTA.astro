@@ -1,0 +1,120 @@
+---
+import type { BlockContact } from "../../lib/sanityClient";
+
+const { block } = Astro.props as { block: BlockContact };
+
+const action = import.meta.env.PUBLIC_CONTACT_FORM_ACTION;
+const submitLabel = block?.form?.submitLabel || "Enviar mensaje";
+const subjectPlaceholder = block?.form?.subjectPlaceholder || "Asunto";
+const topicOptions = Array.isArray(block?.form?.topicOptions) ? block.form!.topicOptions! : [];
+const disclaimer = block?.form?.disclaimer;
+const theme = block?.theme || 'light';
+
+const sectionClasses = `py-16 sm:py-20 ${theme === 'dark' ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`;
+const cardClasses = `${theme === 'dark' ? 'bg-slate-800 ring-white/10' : 'bg-white ring-black/5'} rounded-xl shadow-sm ring-1`;
+---
+
+<section class={sectionClasses} aria-labelledby="contact-title">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl">
+      {block?.title && <h2 id="contact-title" class="text-3xl font-semibold tracking-tight sm:text-4xl">{block.title}</h2>}
+      {block?.subtitle && <p class="mt-2 text-base opacity-80">{block.subtitle}</p>}
+    </div>
+
+    <div class="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div class={cardClasses}>
+        <form id="contact-form" class="p-6 sm:p-8 space-y-4" method="post" action={action} target={!action ? undefined : '_self'} data-email={block?.contact?.email || ''}>
+          <div>
+            <label for="name" class="block text-sm font-medium">Nombre completo</label>
+            <input id="name" name="name" required type="text" class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500" />
+          </div>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label for="email" class="block text-sm font-medium">Correo electrónico</label>
+              <input id="email" name="email" required type="email" class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label for="phone" class="block text-sm font-medium">Teléfono (opcional)</label>
+              <input id="phone" name="phone" type="tel" class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500" />
+            </div>
+          </div>
+
+          <div>
+            <label for="topic" class="block text-sm font-medium">Tipo de consulta</label>
+            <select id="topic" name="topic" class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-primary-500">
+              <option value="">Selecciona...</option>
+              {topicOptions.map((opt) => <option value={opt}>{opt}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label for="subject" class="block text-sm font-medium">Asunto</label>
+            <input id="subject" name="subject" required type="text" placeholder={subjectPlaceholder} class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500" />
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium">Mensaje</label>
+            <textarea id="message" name="message" required rows={5} class="mt-1 w-full rounded-md border-0 px-3 py-2 text-sm shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500"></textarea>
+          </div>
+
+          <fieldset>
+            <legend class="text-sm font-medium">¿Cómo prefieres que te contacte?</legend>
+            <div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <label class="flex items-center gap-2 text-sm"><input type="radio" name="preference" value="email" class="h-4 w-4" /> Email</label>
+              <label class="flex items-center gap-2 text-sm"><input type="radio" name="preference" value="phone" class="h-4 w-4" /> Teléfono</label>
+              <label class="flex items-center gap-2 text-sm"><input type="radio" name="preference" value="any" class="h-4 w-4" /> Cualquiera</label>
+            </div>
+          </fieldset>
+
+          {disclaimer && <p class="text-xs opacity-70">{disclaimer}</p>}
+
+          <div class="pt-2">
+            <button type="submit" class="inline-flex items-center justify-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600">{submitLabel}</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="space-y-4">
+        <div class={cardClasses}>
+          <div class="p-6 sm:p-8 space-y-3 text-sm">
+            {block?.contact?.phone && <p><span class="font-medium">Teléfono:</span> <a class="text-primary-600 hover:underline" href={`tel:${block.contact.phone}`}>{block.contact.phone}</a></p>}
+            {block?.contact?.email && <p><span class="font-medium">Email:</span> <a class="text-primary-600 hover:underline" href={`mailto:${block.contact.email}`}>{block.contact.email}</a></p>}
+            {block?.contact?.schedule && <p><span class="font-medium">Horario:</span> {block.contact.schedule}</p>}
+            {block?.contact?.address && <p><span class="font-medium">Dirección:</span> {block.contact.address}</p>}
+          </div>
+        </div>
+
+        {block?.map?.embedUrl && (
+          <div class={`${cardClasses} overflow-hidden`}>
+            <div class="aspect-[4/3] sm:aspect-[16/9]">
+              <iframe src={block.map.embedUrl} title={block.map.title || 'Mapa'} loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="h-full w-full border-0"></iframe>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+{!action && (
+  <script>
+    const form = document.getElementById('contact-form');
+    if (form instanceof HTMLFormElement) {
+      form.addEventListener('submit', (e) => {
+        const f = e.currentTarget;
+        if (!(f instanceof HTMLFormElement)) return;
+        const email = f.dataset.email || '';
+        if (!email) return; // sin email, dejar que haga submit normal (no debería)
+        const data = new FormData(f);
+        const values = Object.fromEntries(data.entries());
+        const subject = String(values.subject || 'Consulta');
+        const body = `Nombre: ${values.name || ''}\nEmail: ${values.email || ''}\nTeléfono: ${values.phone || ''}\nTipo: ${values.topic || ''}\nPreferencia: ${values.preference || ''}\n\nMensaje:\n${values.message || ''}`;
+        const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        e.preventDefault();
+        window.location.href = mailto;
+      });
+    }
+  </script>
+)}
+
+

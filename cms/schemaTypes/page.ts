@@ -29,7 +29,9 @@ export default defineType({
                 { type: "serviceBlock"},
                 { type: "serviceCarousel"},
                 { type: "blockTestimonials"},
-                { type: "blockLogos"}
+                { type: "blockLogos"},
+                { type: "blockBlogPosts"},
+                { type: "blockContact"}
             ]
         }) as any)
     ]

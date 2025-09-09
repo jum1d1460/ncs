@@ -1,4 +1,5 @@
 import {defineType, defineField, defineArrayMember} from 'sanity'
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
   name: 'columns',
@@ -38,6 +39,7 @@ export default defineType({
           return true
         }),
     }),
+  ...blockPresentationFields
   ],
   preview: {
     select: {count: 'columnsCount'},

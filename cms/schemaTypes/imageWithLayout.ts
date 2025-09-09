@@ -1,4 +1,5 @@
 import {defineType} from 'sanity'
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
   name: 'imageWithLayout',
@@ -64,7 +65,9 @@ export default defineType({
         layout: 'radio',
       },
       initialValue: 'md',
-    },
+    }
+  ,
+  ...blockPresentationFields
   ],
   preview: {
     select: {title: 'caption', subtitle: 'layout', media: 'image'},

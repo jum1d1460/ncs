@@ -9,32 +9,84 @@ import ImageWithLayout from "./blocks/ImageWithLayout.astro";
 import Columns from "./blocks/Columns.astro";
 import BlockImage from "./blocks/BlockImage.astro";
 import QuoteBlock from "./blocks/QuoteBlock.astro";
+import BlockContentSection from "./blocks/BlockContentSection.astro";
+import BlogPosts from "./blocks/BlogPosts.astro";
+import ContactCTA from "./blocks/ContactCTA.astro";
+import BlockWrapper from "./blocks/BlockWrapper.astro";
+import { fetchBlogPostsForBlock } from "../lib/blog";
 
 const { blocks } = Astro.props;
+
+// Resolver posts para bloques de blog en SSG
+const resolvedBlocks = await Promise.all((blocks ?? []).map(async (b: any) => {
+  if (b?._type === 'blockBlogPosts') {
+    const posts = await fetchBlogPostsForBlock({
+      _type: 'blockBlogPosts',
+      title: b?.title,
+      limit: b?.limit,
+      category: b?.category,
+      displayMode: b?.displayMode,
+      featuredPosts: b?.featuredPosts
+    });
+    return { ...b, __posts: posts };
+  }
+  return b;
+}));
+
+if (import.meta.env.DEV) {
+  try {
+    const h1Count = Array.isArray(blocks)
+      ? blocks.filter((b: any) => b?._type === 'blockContentSection' && b?.headingLevel === 'h1').length
+      : 0;
+    if (h1Count > 1) {
+      console.warn(`[PageRenderer] Hay ${h1Count} encabezados h1 en esta página. Considera reducir a uno por accesibilidad/SEO.`);
+    }
+  } catch (_err) {}
+}
 ---
 
-{blocks?.map((block: any) => {
+{(resolvedBlocks ?? blocks)?.map((block: any) => {
+  const commonProps = {
+    backgroundColor: block.backgroundColor ?? 'none',
+    backgroundLayout: block.backgroundLayout ?? 'grid',
+    contentLayout: block.contentLayout ?? 'grid',
+  };
+  
   switch (block._type) {
     case "blockHero":
-      return <Hero {...block} />;
+      return (
+        <BlockWrapper
+          backgroundColor={block.backgroundColor ?? 'none'}
+          backgroundLayout="full"
+          contentLayout="grid"
+        >
+          <Hero {...block} />
+        </BlockWrapper>
+      );
     case "blockText":
-      return <TextBlock {...block} />;
+      return <BlockWrapper {...commonProps}><TextBlock {...block} /></BlockWrapper>;
     case "serviceBlock":
-      return <Service service={block.service} variant={block.variant} showPrice={block.showPrice} />;
+      return <BlockWrapper {...commonProps}><Service service={block.service} variant={block.variant} showPrice={block.showPrice} /></BlockWrapper>;
     case "serviceCarousel":
-      return <ServiceCarousel items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} />;
+      return <BlockWrapper {...commonProps}><ServiceCarousel items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} /></BlockWrapper>;
     case "blockTestimonials":
-      return <Testimonials items={block.items} />;
+      return <BlockWrapper {...commonProps}><Testimonials items={block.items} /></BlockWrapper>;
     case "blockLogos":
-      return <Logos title={block.title} logos={block.logos} />;
+      return <BlockWrapper {...commonProps}><Logos title={block.title} logos={block.logos} /></BlockWrapper>;
     case "imageWithLayout":
-      return <ImageWithLayout {...block} />;
+      return <BlockWrapper {...commonProps}><ImageWithLayout {...block} /></BlockWrapper>;
     case "columns":
-      return <Columns {...block} />;
+      return <BlockWrapper {...commonProps}><Columns {...block} /></BlockWrapper>;
     case "blockImage":
-      return <BlockImage {...block} />;
+      return <BlockWrapper {...commonProps}><BlockImage {...block} /></BlockWrapper>;
     case "quoteBlock":
-      return <QuoteBlock {...block} />;
+      return <BlockWrapper {...commonProps}><QuoteBlock {...block} /></BlockWrapper>;
+    case "blockContentSection":
+      return <BlockWrapper {...commonProps}><BlockContentSection title={block.title} headingLevel={block.headingLevel} /></BlockWrapper>;
+    case "blockBlogPosts":
+      return <BlockWrapper {...commonProps}><BlogPosts title={block.title} posts={block.__posts || []} displayMode={block.displayMode} /></BlockWrapper>;
+    case "blockContact":
+      return <BlockWrapper {...commonProps}><ContactCTA block={block} /></BlockWrapper>;
     default:
       return null;
   }

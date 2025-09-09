@@ -1,4 +1,5 @@
 import {defineField, defineType} from "sanity";
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
     name: "blockHero",
@@ -169,5 +170,6 @@ export default defineType({
                 }
             ]
         })
+        , ...blockPresentationFields
     ]
 })

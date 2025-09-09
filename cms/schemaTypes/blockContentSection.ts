@@ -1,4 +1,5 @@
 import {defineType, defineField} from 'sanity'
+import {blockPresentationFields} from './fields/blockPresentation'
 
 export default defineType({
   name: 'blockContentSection',
@@ -9,6 +10,29 @@ export default defineType({
       name: 'title',
       title: 'Título',
       type: 'string',
+    }),
+    defineField({
+      name: 'headingLevel',
+      title: 'Nivel de encabezado',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'H1', value: 'h1'},
+          {title: 'H2', value: 'h2'},
+          {title: 'H3', value: 'h3'},
+          {title: 'H4', value: 'h4'},
+          {title: 'H5', value: 'h5'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'h2',
+      hidden: ({parent}) => !parent?.title,
+      validation: (Rule) => (Rule as any).custom((value: unknown, context: any) => {
+        const hasTitle = Boolean(context?.parent?.title)
+        if (!hasTitle) return true
+        const allowed = ['h1','h2','h3','h4','h5']
+        return allowed.includes(String(value)) || 'Selecciona un nivel de encabezado válido'
+      })
     }),
     defineField({
       name: 'image',
@@ -68,6 +92,7 @@ export default defineType({
       title: 'Contenido',
       type: 'blockContent',
     }),
+    ...blockPresentationFields
   ],
   preview: {
     select: {title: 'title', hasImage: 'image', cols: 'columnsCount'},
