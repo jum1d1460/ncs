@@ -10,6 +10,8 @@ on:
 jobs:
   deploy:
     name: Build and deploy to Cloudflare Pages
+    environment:
+      name: production
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,15 +51,33 @@ jobs:
         run: npm run build
 
       - name: Debug env var presence (no values)
+        env:
+          HAS_SECRET_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+          HAS_SECRET_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          HAS_SECRET_CLOUDFLARE_PAGES_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
+          HAS_SECRET_CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
+          HAS_SECRET_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID != '' }}
+          HAS_SECRET_SANITY_DATASET: ${{ secrets.SANITY_DATASET != '' }}
+          HAS_SECRET_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION != '' }}
+          HAS_VAR_CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID != '' }}
+          HAS_VAR_CLOUDFLARE_API_TOKEN: ${{ vars.CLOUDFLARE_API_TOKEN != '' }}
+          HAS_VAR_CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
+          HAS_VAR_CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ vars.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
+          HAS_VAR_SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID != '' }}
+          HAS_VAR_SANITY_DATASET: ${{ vars.SANITY_DATASET != '' }}
+          HAS_VAR_SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION != '' }}
         run: |
-          echo "Checking required env vars (SET/EMPTY):"
+          echo "Checking injected env vars (SET/EMPTY and length):"
           for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN CLOUDFLARE_PAGES_PROJECT_NAME CLOUDFLARE_PAGES_DEPLOY_HOOK_URL SANITY_PROJECT_ID SANITY_DATASET SANITY_API_VERSION; do
             if [ -z "${!name}" ]; then
-              echo "::notice title=EnvVar::${name}=EMPTY"
+              echo "::notice title=EnvVar::${name}=EMPTY len=0"
             else
-              echo "::notice title=EnvVar::${name}=SET"
+              val="${!name}"
+              echo "::notice title=EnvVar::${name}=SET len=${#val}"
             fi
           done
+          echo "Sources (Secrets/Vars presence):"
+          env | grep -E '^HAS_(SECRET|VAR)_' | sed 's/.*/::notice title=Source::&/'
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
