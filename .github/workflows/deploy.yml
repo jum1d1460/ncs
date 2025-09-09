@@ -76,10 +76,14 @@ jobs:
               echo "::notice title=EnvVar::${name}=SET len=${#val}"
             fi
           done
+          echo "Explicit CF Pages values (may be empty):"
+          echo "::notice title=CF.ProjectName::${CLOUDFLARE_PAGES_PROJECT_NAME}"
+          echo "::notice title=CF.AccountId::${CLOUDFLARE_ACCOUNT_ID}"
           echo "Sources (Secrets/Vars presence):"
           env | grep -E '^HAS_(SECRET|VAR)_' | sed 's/.*/::notice title=Source::&/'
 
       - name: Publish to Cloudflare Pages
+        if: ${{ env.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
@@ -87,6 +91,14 @@ jobs:
           projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME || vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
           directory: web/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to Cloudflare Workers via Wrangler (if configured)
+        if: ${{ env.CLOUDFLARE_PAGES_PROJECT_NAME == '' && hashFiles('wrangler.toml') != '' }}
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
 
       - name: Trigger Cloudflare Pages Deploy Hook
         if: ${{ (env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' || env.CLOUDFLARE_PAGES_PROJECT_NAME == '') && env.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
