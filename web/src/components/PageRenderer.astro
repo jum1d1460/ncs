@@ -82,7 +82,7 @@ if (import.meta.env.DEV) {
     case "quoteBlock":
       return <BlockWrapper {...commonProps}><QuoteBlock {...block} /></BlockWrapper>;
     case "blockContentSection":
-      return <BlockWrapper {...commonProps}><BlockContentSection title={block.title} headingLevel={block.headingLevel} /></BlockWrapper>;
+      return <BlockWrapper {...commonProps}><BlockContentSection {...block} /></BlockWrapper>;
     case "blockBlogPosts":
       return <BlockWrapper {...commonProps}><BlogPosts title={block.title} posts={block.__posts || []} displayMode={block.displayMode} /></BlockWrapper>;
     case "blockContact":
