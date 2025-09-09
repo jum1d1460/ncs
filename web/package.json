@@ -17,6 +17,7 @@
     "@sanity/image-url": "^1.2.0",
     "@shoelace-style/shoelace": "^2.20.1",
     "astro": "^5.13.5",
+    "lucide-astro": "^0.543.0",
     "motion": "^12.23.12"
   },
   "devDependencies": {
