@@ -15,10 +15,10 @@ jobs:
       contents: read
       deployments: write
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
-      CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME || vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+      CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL || vars.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,9 +43,9 @@ jobs:
         env:
           NODE_ENV: production
           # Propaga variables necesarias para el cliente de Sanity en build
-          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
-          PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
-          PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
+          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID || vars.SANITY_PROJECT_ID }}
+          PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET || vars.SANITY_DATASET }}
+          PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION || vars.SANITY_API_VERSION }}
         run: npm run build
 
       - name: Debug env var presence (no values)
@@ -62,9 +62,9 @@ jobs:
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME || vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
           directory: web/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
