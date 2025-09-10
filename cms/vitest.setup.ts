@@ -1,8 +1,8 @@
 // Polyfill para WebCrypto en entornos Node.js que no lo tienen habilitado
-import { webcrypto } from 'crypto'
+const { webcrypto } = require('crypto')
 
 if (!globalThis.crypto) {
-  globalThis.crypto = webcrypto as any
+  globalThis.crypto = webcrypto
 }
 
 // Asegurar que getRandomValues esté disponible
