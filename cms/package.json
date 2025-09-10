@@ -13,7 +13,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "migrate:services": "node scripts/migrate-services.js",
-    "add:home-blog-block": "node scripts/add-home-blog-block.js"
+    "add:home-blog-block": "node scripts/add-home-blog-block.js",
+    "security:audit": "node scripts/security/security-audit.js",
+    "security:check": "npm run security:audit && npm audit --audit-level=moderate",
+    "security:dependencies": "node scripts/security/dependency-checker.js",
+    "security:config": "node scripts/security/config-validator.js",
+    "security:secrets": "node scripts/security/secret-detector.js",
+    "lint": "eslint . --ext .js,.ts,.tsx",
+    "prepare": "husky"
   },
   "keywords": [
     "sanity"
@@ -30,6 +37,8 @@
     "@types/node": "^24.3.1",
     "@types/react": "^19.1",
     "eslint": "^9.28",
+    "eslint-plugin-security": "^3.0.1",
+    "husky": "^9.1.7",
     "prettier": "^3.5",
     "typescript": "^5.8",
     "vitest": "^3.2.4"

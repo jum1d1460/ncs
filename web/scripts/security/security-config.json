@@ -1,0 +1,27 @@
+{
+  "audit": {
+    "level": "moderate",
+    "failOnCritical": true,
+    "failOnHigh": false,
+    "failOnMedium": false,
+    "excludeDevDependencies": false
+  },
+  "dependencies": {
+    "checkOutdated": true,
+    "checkVulnerabilities": true,
+    "checkLicenses": true
+  },
+  "config": {
+    "astro": {
+      "checkSecurityHeaders": true,
+      "checkCsp": true,
+      "checkEnvVars": true,
+      "checkBuildConfig": true
+    }
+  },
+  "reporting": {
+    "formats": ["json", "text"],
+    "outputDir": "./security-reports",
+    "includeRecommendations": true
+  }
+}

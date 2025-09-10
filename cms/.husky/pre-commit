@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Ejecutando validaciones de seguridad pre-commit..."
+
+# Ejecutar ESLint con reglas de seguridad
+echo "📝 Verificando código con ESLint..."
+npm run lint
+
+# Ejecutar auditoría de seguridad
+echo "🛡️ Ejecutando auditoría de seguridad..."
+npm run security:audit
+
+# Ejecutar verificación de dependencias
+echo "📦 Verificando dependencias..."
+npm run security:dependencies
+
+echo "✅ Validaciones de seguridad completadas"

@@ -1,0 +1,37 @@
+REPORTE MAESTRO DE SEGURIDAD
+============================
+
+Fecha: 2025-09-10T11:55:01.221Z
+Proyectos procesados: 2
+Exitosos: 2
+Fallidos: 0
+Advertencias: 2
+
+PROYECTO: CMS
+Estado: completed
+Verificaciones:
+  ✅ Security Audit (CRÍTICO)
+  ✅ Dependency Check (OPCIONAL)
+  ✅ Configuration Validation (OPCIONAL)
+  ✅ Secrets Detection (CRÍTICO)
+  ⚠️ ESLint Security Rules (OPCIONAL)
+    Error: Command failed: npm run lint
+
+PROYECTO: WEB
+Estado: completed
+Verificaciones:
+  ✅ Security Audit (CRÍTICO)
+  ✅ Dependency Check (OPCIONAL)
+  ✅ Configuration Validation (OPCIONAL)
+  ✅ Secrets Detection (CRÍTICO)
+  ⚠️ ESLint Security Rules (OPCIONAL)
+    Error: Command failed: npm run lint
+sh: 1: eslint: not found
+
+
+RECOMENDACIONES:
+- Revisar todos los reportes individuales
+- Corregir vulnerabilidades críticas inmediatamente
+- Actualizar dependencias obsoletas
+- Configurar variables de entorno para secrets
+- Revisar configuraciones de seguridad
