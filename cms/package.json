@@ -10,8 +10,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "test": "vitest run --environment=node --globals",
-    "test:watch": "vitest --environment=node --globals",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "migrate:services": "node scripts/migrate-services.js",
     "add:home-blog-block": "node scripts/add-home-blog-block.js",
     "security:audit": "node scripts/security/security-audit.js",
@@ -41,8 +41,7 @@
     "husky": "^9.1.7",
     "prettier": "^3.5",
     "typescript": "^5.8",
-    "vitest": "^3.2.4",
-    "webcrypto-ossl": "^1.0.0"
+    "vitest": "^3.2.4"
   },
   "prettier": {
     "semi": false,

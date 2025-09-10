@@ -1,6 +1,3 @@
-// Polyfill de WebCrypto para entornos Node.js
-import 'webcrypto-ossl'
-
 import {describe, it, expect} from 'vitest'
 import schema from './globalSettings'
 
