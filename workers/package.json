@@ -1,0 +1,23 @@
+{
+  "name": "sanity-webhook-dispatcher",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker para recibir webhooks de Sanity y disparar GitHub repository_dispatch",
+  "main": "sanity-webhook-dispatcher.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "sanity",
+    "webhook",
+    "github"
+  ],
+  "author": "NCS",
+  "license": "UNLICENSED"
+}
