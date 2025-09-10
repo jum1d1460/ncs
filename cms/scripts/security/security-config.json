@@ -1,0 +1,27 @@
+{
+  "audit": {
+    "level": "moderate",
+    "failOnCritical": true,
+    "failOnHigh": false,
+    "failOnMedium": false,
+    "excludeDevDependencies": false
+  },
+  "dependencies": {
+    "checkOutdated": true,
+    "checkVulnerabilities": true,
+    "checkLicenses": true
+  },
+  "config": {
+    "sanity": {
+      "checkCors": true,
+      "checkAuth": true,
+      "checkWebhooks": true,
+      "checkCdn": true
+    }
+  },
+  "reporting": {
+    "formats": ["json", "text"],
+    "outputDir": "./security-reports",
+    "includeRecommendations": true
+  }
+}

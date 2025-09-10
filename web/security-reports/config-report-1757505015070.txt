@@ -1,0 +1,30 @@
+REPORTE DE CONFIGURACIÓN - WEB
+==============================
+
+Fecha: 2025-09-10T11:50:15.062Z
+Proyecto: web
+Score de Seguridad: 75%
+
+VERIFICACIONES:
+❌ Security Headers (high): Configuración de headers de seguridad no encontrada
+❌ CSP Configuration (high): Configuración de Content Security Policy no encontrada
+✅ HTTPS Redirect (medium): Configuración encontrada
+✅ Build Output (medium): Configuración encontrada
+❌ Site URL (medium): URL del sitio no configurada
+✅ Environment Variables (medium): Archivos de variables de entorno encontrados
+❌ Environment Variable: PUBLIC_SITE_URL (medium): Variable PUBLIC_SITE_URL no encontrada
+✅ Environment Variable: SANITY_PROJECT_ID (medium): Variable encontrada
+✅ Environment Variable: SANITY_DATASET (medium): Variable encontrada
+✅ TailwindCSS Configuration (low): Configuración encontrada
+✅ PostCSS Configuration (low): Configuración encontrada
+✅ TypeScript Configuration (medium): Configuración encontrada
+✅ Public Directory Security (high): Configuración encontrada
+✅ Build Script (high): Configuración encontrada
+✅ Prebuild Script (medium): Configuración encontrada
+✅ Security Scripts (medium): Configuración encontrada
+
+RECOMENDACIONES:
+- [HIGH] Configurar headers de seguridad (CSP, HSTS, etc.)
+- [HIGH] Implementar Content Security Policy para prevenir XSS
+- [MEDIUM] Configurar URL del sitio para SEO y seguridad
+- [MEDIUM] Agregar PUBLIC_SITE_URL a los archivos de entorno

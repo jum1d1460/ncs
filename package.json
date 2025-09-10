@@ -1,0 +1,22 @@
+{
+  "name": "ncs-security-validators",
+  "version": "1.0.0",
+  "description": "Security validators for NCS Psicóloga Zaragoza project",
+  "scripts": {
+    "security:all": "node scripts/security-master.js",
+    "security:cms": "cd cms && npm run security:audit && npm run security:dependencies && npm run security:config && npm run security:secrets",
+    "security:web": "cd web && npm run security:audit && npm run security:dependencies && npm run security:config && npm run security:secrets",
+    "install:all": "cd cms && npm install && cd ../web && npm install",
+    "test:security": "npm run security:all"
+  },
+  "keywords": [
+    "security",
+    "validation",
+    "audit",
+    "dependencies",
+    "sanity",
+    "astro"
+  ],
+  "author": "NCS Psicóloga Zaragoza",
+  "license": "UNLICENSED"
+}

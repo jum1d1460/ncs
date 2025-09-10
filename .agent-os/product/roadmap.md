@@ -45,6 +45,8 @@
 - [ ] Accesibilidad (aria, contraste, foco) `[S]`
 - [ ] Optimización rendimiento (imágenes, prefetch, lazy) `[S]`
 - [ ] CI/CD GitHub Actions a Cloudflare Pages `[S]`
+- [x] Validadores de seguridad para CMS y web `[M]`
 
 ### Dependencies
 - Cuenta Cloudflare y secretos en repositorio
+- Herramientas de validación de seguridad configuradas

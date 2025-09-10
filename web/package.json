@@ -10,7 +10,14 @@
     "astro": "astro",
     "verify:progress": "node ./scripts/sync-progress.cjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "security:audit": "node scripts/security/security-audit.js",
+    "security:check": "npm run security:audit && npm audit --audit-level=moderate",
+    "security:dependencies": "node scripts/security/dependency-checker.js",
+    "security:config": "node scripts/security/config-validator.js",
+    "security:secrets": "node scripts/security/secret-detector.js",
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "prepare": "husky"
   },
   "dependencies": {
     "@portabletext/react": "^4.0.3",
@@ -25,6 +32,8 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^24.3.1",
     "autoprefixer": "^10.4.21",
+    "eslint-plugin-security": "^3.0.1",
+    "husky": "^9.1.7",
     "tailwindcss": "^3.4.17",
     "vitest": "^3.2.4"
   }

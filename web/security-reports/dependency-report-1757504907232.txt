@@ -1,0 +1,15 @@
+REPORTE DE DEPENDENCIAS - WEB
+==============================
+
+Fecha: 2025-09-10T11:48:24.740Z
+Proyecto: web
+
+RESUMEN:
+- Dependencias obsoletas: 0
+- Vulnerabilidades: 0
+- Licencias verificadas: 14
+- Recomendaciones: 2
+
+RECOMENDACIONES:
+- [MEDIUM] Ejecutar "npm audit fix" para corregir vulnerabilidades automáticamente
+- [LOW] Revisar regularmente las dependencias con "npm outdated"
