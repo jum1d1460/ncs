@@ -2,110 +2,46 @@ name: Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   repository_dispatch:
-    types: [sanity-content-changed]
+    types: [ sanity-content-changed ]
 
 jobs:
   deploy:
-    name: Build and deploy to Cloudflare Pages
-    environment:
-      name: production
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_PAGES_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME || vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
-      CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL || vars.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}
+    defaults:
+      run:
+        working-directory: ./web
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-
-      - name: Install dependencies
-        working-directory: web
-        run: npm ci --no-audit --no-fund
-
-      - name: Run tests
-        working-directory: web
-        run: npm run test
-
-      - name: Build
-        working-directory: web
-        env:
-          NODE_ENV: production
-          # Propaga variables necesarias para el cliente de Sanity en build
-          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID || vars.SANITY_PROJECT_ID }}
-          PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET || vars.SANITY_DATASET }}
-          PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION || vars.SANITY_API_VERSION }}
-        run: npm run build
-
-      - name: Debug env var presence (no values)
-        env:
-          HAS_SECRET_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
-          HAS_SECRET_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-          HAS_SECRET_CLOUDFLARE_PAGES_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
-          HAS_SECRET_CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
-          HAS_SECRET_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID != '' }}
-          HAS_SECRET_SANITY_DATASET: ${{ secrets.SANITY_DATASET != '' }}
-          HAS_SECRET_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION != '' }}
-          HAS_VAR_CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID != '' }}
-          HAS_VAR_CLOUDFLARE_API_TOKEN: ${{ vars.CLOUDFLARE_API_TOKEN != '' }}
-          HAS_VAR_CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
-          HAS_VAR_CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ vars.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
-          HAS_VAR_SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID != '' }}
-          HAS_VAR_SANITY_DATASET: ${{ vars.SANITY_DATASET != '' }}
-          HAS_VAR_SANITY_API_VERSION: ${{ vars.SANITY_API_VERSION != '' }}
-        run: |
-          echo "Checking injected env vars (SET/EMPTY and length):"
-          for name in CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN CLOUDFLARE_PAGES_PROJECT_NAME CLOUDFLARE_PAGES_DEPLOY_HOOK_URL SANITY_PROJECT_ID SANITY_DATASET SANITY_API_VERSION; do
-            if [ -z "${!name}" ]; then
-              echo "::notice title=EnvVar::${name}=EMPTY len=0"
-            else
-              val="${!name}"
-              echo "::notice title=EnvVar::${name}=SET len=${#val}"
-            fi
-          done
-          echo "Explicit CF Pages values (may be empty):"
-          echo "::notice title=CF.ProjectName::${CLOUDFLARE_PAGES_PROJECT_NAME}"
-          echo "::notice title=CF.AccountId::${CLOUDFLARE_ACCOUNT_ID}"
-          echo "Sources (Secrets/Vars presence):"
-          env | grep -E '^HAS_(SECRET|VAR)_' | sed 's/.*/::notice title=Source::&/'
-
-      - name: Deploy to Cloudflare Workers via Wrangler (if configured)
-        if: ${{ hashFiles('wrangler.toml') != '' }}
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4'
-          command: deploy
-
-      - name: Publish to Cloudflare Pages
-        if: ${{ env.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || vars.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || vars.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME || vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
-          directory: web/dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Trigger Cloudflare Pages Deploy Hook
-        if: ${{ (env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' || env.CLOUDFLARE_PAGES_PROJECT_NAME == '') && env.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL != '' }}
-        run: |
-          curl -X POST --fail --silent --show-error "$CLOUDFLARE_PAGES_DEPLOY_HOOK_URL"
-        env:
-          CLOUDFLARE_PAGES_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}
-
-
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: npm run test
+      
+    - name: Build
+      run: npm run build
+      env:
+        PUBLIC_SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+        PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+        PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
+        
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
+        directory: ./web/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
