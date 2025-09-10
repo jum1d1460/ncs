@@ -1,0 +1,16 @@
+REPORTE DE SEGURIDAD - CMS
+================================
+
+Fecha: 2025-09-10T12:00:12.601Z
+Proyecto: cms
+
+RESUMEN:
+- Total vulnerabilidades: 0
+- Críticas: 0
+- Altas: 0
+- Medias: 0
+- Bajas: 0
+
+RECOMENDACIONES:
+- Configuración de CORS no encontrada (sanity.config.ts)
+- Configuración de autenticación no encontrada (sanity.config.ts)

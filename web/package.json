@@ -16,7 +16,7 @@
     "security:dependencies": "node scripts/security/dependency-checker.js",
     "security:config": "node scripts/security/config-validator.js",
     "security:secrets": "node scripts/security/secret-detector.js",
-    "lint": "eslint . --ext .js,.ts,.astro",
+    "lint": "eslint scripts/ --ext .js,.cjs",
     "prepare": "husky"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^24.3.1",
     "autoprefixer": "^10.4.21",
+    "eslint": "^9.35.0",
     "eslint-plugin-security": "^3.0.1",
     "husky": "^9.1.7",
     "tailwindcss": "^3.4.17",

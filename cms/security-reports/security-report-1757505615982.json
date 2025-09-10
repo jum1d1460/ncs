@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-10T12:00:12.601Z",
+  "project": "cms",
+  "vulnerabilities": [],
+  "outdated": [],
+  "recommendations": [
+    {
+      "type": "configuration",
+      "message": "Configuración de CORS no encontrada",
+      "file": "sanity.config.ts"
+    },
+    {
+      "type": "configuration",
+      "message": "Configuración de autenticación no encontrada",
+      "file": "sanity.config.ts"
+    }
+  ],
+  "summary": {
+    "totalVulnerabilities": 0,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  }
+}

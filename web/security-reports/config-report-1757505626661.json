@@ -1,0 +1,144 @@
+{
+  "timestamp": "2025-09-10T12:00:26.652Z",
+  "project": "web",
+  "config": {
+    "astro": {
+      "checks": [
+        {
+          "name": "Security Headers",
+          "status": "fail",
+          "message": "Configuración de headers de seguridad no encontrada",
+          "priority": "high",
+          "recommendation": "Configurar headers de seguridad (CSP, HSTS, etc.)"
+        },
+        {
+          "name": "CSP Configuration",
+          "status": "fail",
+          "message": "Configuración de Content Security Policy no encontrada",
+          "priority": "high",
+          "recommendation": "Implementar Content Security Policy para prevenir XSS"
+        },
+        {
+          "name": "HTTPS Redirect",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "Build Output",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "Site URL",
+          "status": "fail",
+          "message": "URL del sitio no configurada",
+          "priority": "medium",
+          "recommendation": "Configurar URL del sitio para SEO y seguridad"
+        },
+        {
+          "name": "Environment Variables",
+          "status": "pass",
+          "message": "Archivos de variables de entorno encontrados",
+          "priority": "medium"
+        },
+        {
+          "name": "Environment Variable: PUBLIC_SITE_URL",
+          "status": "fail",
+          "message": "Variable PUBLIC_SITE_URL no encontrada",
+          "priority": "medium",
+          "recommendation": "Agregar PUBLIC_SITE_URL a los archivos de entorno"
+        },
+        {
+          "name": "Environment Variable: SANITY_PROJECT_ID",
+          "status": "pass",
+          "message": "Variable encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "Environment Variable: SANITY_DATASET",
+          "status": "pass",
+          "message": "Variable encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "TailwindCSS Configuration",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "low",
+          "recommendation": null
+        },
+        {
+          "name": "PostCSS Configuration",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "low",
+          "recommendation": null
+        },
+        {
+          "name": "TypeScript Configuration",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "Public Directory Security",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Build Script",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Prebuild Script",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "medium",
+          "recommendation": null
+        },
+        {
+          "name": "Security Scripts",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "medium",
+          "recommendation": null
+        }
+      ],
+      "recommendations": [
+        {
+          "priority": "high",
+          "message": "Configurar headers de seguridad (CSP, HSTS, etc.)",
+          "check": "Security Headers"
+        },
+        {
+          "priority": "high",
+          "message": "Implementar Content Security Policy para prevenir XSS",
+          "check": "CSP Configuration"
+        },
+        {
+          "priority": "medium",
+          "message": "Configurar URL del sitio para SEO y seguridad",
+          "check": "Site URL"
+        },
+        {
+          "priority": "medium",
+          "message": "Agregar PUBLIC_SITE_URL a los archivos de entorno",
+          "check": "Environment Variable: PUBLIC_SITE_URL"
+        }
+      ],
+      "score": 75
+    }
+  }
+}
