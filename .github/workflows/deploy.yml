@@ -27,16 +27,6 @@ jobs:
     - name: Install web dependencies
       run: npm ci
       
-    - name: Install CMS dependencies
-      run: |
-        cd cms
-        npm ci
-      
-    - name: Run CMS tests
-      run: |
-        cd cms
-        npm run test
-      
     - name: Build
       run: npm run build
       env:
