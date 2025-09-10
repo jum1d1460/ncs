@@ -10,8 +10,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "test": "node -r ./setup-webcrypto.js node_modules/.bin/vitest run --environment=node --globals",
-    "test:watch": "node -r ./setup-webcrypto.js node_modules/.bin/vitest --environment=node --globals",
+    "test": "vitest run --environment=node --globals",
+    "test:watch": "vitest --environment=node --globals",
     "migrate:services": "node scripts/migrate-services.js",
     "add:home-blog-block": "node scripts/add-home-blog-block.js",
     "security:audit": "node scripts/security/security-audit.js",
@@ -41,7 +41,8 @@
     "husky": "^9.1.7",
     "prettier": "^3.5",
     "typescript": "^5.8",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "webcrypto-ossl": "^1.0.0"
   },
   "prettier": {
     "semi": false,
