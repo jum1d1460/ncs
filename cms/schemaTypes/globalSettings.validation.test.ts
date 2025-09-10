@@ -1,15 +1,6 @@
 import {describe, it, expect} from 'vitest'
 import schema from './globalSettings'
 
-// Polyfill para WebCrypto en entornos Node.js que no lo tienen habilitado
-if (!globalThis.crypto) {
-  const { webcrypto } = require('crypto')
-  globalThis.crypto = webcrypto
-  if (!globalThis.crypto.getRandomValues) {
-    globalThis.crypto.getRandomValues = webcrypto.getRandomValues.bind(webcrypto)
-  }
-}
-
 // Helper mínimo para evaluar validaciones de campo en Sanity
 async function runFieldValidation(fieldName: string, value: unknown) {
   const field = (schema.fields as any[]).find(f => f.name === fieldName)
