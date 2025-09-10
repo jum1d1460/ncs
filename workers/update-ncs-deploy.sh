@@ -47,8 +47,9 @@ echo "1) Versión con debugging HMAC (ncs-deploy-debug.js)"
 echo "2) Versión sin validación HMAC (ncs-deploy-no-hmac.js)"
 echo "3) Versión normal (ncs-deploy-pure.js)"
 echo "4) Versión para probar variables de entorno (ncs-deploy-env-test.js)"
+echo "5) Versión para probar GitHub API (ncs-deploy-github-test.js)"
 echo ""
-read -p "Opción (1-4): " -n 1 -r
+read -p "Opción (1-5): " -n 1 -r
 echo
 
 case $REPLY in
@@ -67,6 +68,10 @@ case $REPLY in
   4)
     echo "🧪 Desplegando versión para probar variables de entorno..."
     wrangler deploy --config ncs-deploy-wrangler.toml --name ncs-deploy ncs-deploy-env-test.js
+    ;;
+  5)
+    echo "🔍 Desplegando versión para probar GitHub API..."
+    wrangler deploy --config ncs-deploy-wrangler.toml --name ncs-deploy ncs-deploy-github-test.js
     ;;
   *)
     echo "❌ Opción inválida, desplegando versión normal..."
