@@ -1,5 +1,6 @@
 ---
-import Service from "./Service.astro";
+import WideCard from "../cards/WideCard.astro";
+import CarouselPagination from "../ui/CarouselPagination.astro";
 
 interface NumericRangeOrFixed {
   mode?: 'fixed' | 'range';
@@ -14,6 +15,13 @@ interface ServiceData {
   title?: string;
   duration?: NumericRangeOrFixed;
   price?: NumericRangeOrFixed;
+  availability?: {
+    online?: boolean;
+    presencial?: boolean;
+  };
+  bulletPoints?: Array<{
+    text?: string;
+  }>;
   url?: string;
   weight?: number;
   shortDescription?: string;
@@ -23,6 +31,9 @@ interface ServiceData {
 }
 
 interface Props {
+  subtitle?: string;
+  title?: string;
+  lead?: string;
   items?: ServiceData[];
   autoplay?: boolean;
   intervalMs?: number;
@@ -30,6 +41,9 @@ interface Props {
 }
 
 const {
+  subtitle,
+  title = "Nuestros Servicios",
+  lead,
   items = [],
   autoplay = false,
   intervalMs = 5000,
@@ -37,21 +51,385 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="w-full">
-  <div class="flex items-center justify-between mb-3">
-    <div class="text-sm text-gray-600">{items.length} servicios</div>
+<section class="py-12 px-4 max-w-6xl mx-auto" data-carousel="services">
+  <!-- Encabezado centrado con subtítulo, título y entradilla -->
+  <div class="text-center max-w-4xl mx-auto mb-12">
+    {subtitle && (
+      <p class="text-responsive-small text-gray-500 uppercase tracking-wide font-medium mb-3">
+        {subtitle}
+      </p>
+    )}
+    {title && (
+      <h2 class="text-responsive-h2 font-bold text-gray-900 mb-4">
+        {title}
+      </h2>
+    )}
+    {lead && (
+      <p class="text-responsive-body-large text-gray-600 leading-relaxed">
+        {lead}
+      </p>
+    )}
   </div>
-  <div id="services-scroller" class="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[60%] md:auto-cols-[40%] lg:auto-cols-[33%] gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
-    {items.map((service) => (
-      <div class="snap-start">
-        <Service service={service} variant="card" showPrice={showPrice} />
-      </div>
-    ))}
-  </div>
-  <noscript>
-    <div class="text-xs text-gray-500 mt-2">Desliza horizontalmente para ver más servicios.</div>
-  </noscript>
   
+  <!-- Contenedor del carrusel - solo las cards se extienden fuera -->
+  <div class="relative -mx-4 sm:-mx-6 lg:-mx-8">
+    <!-- Carrusel con overflow visible para que las cards se extiendan -->
+    <div 
+      id="services-carousel"
+      class="overflow-visible"
+      style="scrollbar-width: none; -ms-overflow-style: none;"
+    >
+      <div 
+        id="carousel-track"
+        class="flex items-stretch transition-transform duration-500 ease-out"
+        style="transform: translateX(0px);"
+      >
+        {items.map((service, index) => (
+          <div 
+            class="flex-shrink-0 w-full md:w-3/4 lg:w-3/4 pl-4 pr-4 first:pl-4 sm:first:pl-6 lg:first:pl-8 flex"
+            data-service-index={index}
+          >
+            <div class="w-full max-w-full flex">
+              <WideCard service={service} showPrice={showPrice} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Navegación debajo de las cards - dentro de la grilla -->
+  <div class="mt-8 flex items-center justify-between">
+    <!-- Paginación a la izquierda -->
+    <div class="flex">
+      <CarouselPagination 
+        totalItems={items.length}
+        currentIndex={0}
+        onPageChange={(index) => {
+          // Esta función se conectará con el JavaScript del carrusel
+          const carousel = window.serviceCarouselInstance;
+          if (carousel) {
+            carousel.goToSlide(index);
+          }
+        }}
+      />
+    </div>
+    
+    <!-- Controles de navegación a la derecha -->
+    <div class="flex gap-2">
+      <button
+        id="carousel-prev"
+        class="w-10 h-10 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center shadow-sm transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Servicio anterior"
+        disabled={items.length <= 1}
+      >
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button
+        id="carousel-next"
+        class="w-10 h-10 bg-white hover:bg-gray-50 border border-gray-200 rounded-full flex items-center justify-center shadow-sm transition-all duration-200 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Siguiente servicio"
+        disabled={items.length <= 1}
+      >
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mensaje para usuarios sin JavaScript -->
+  <noscript>
+    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+      <p class="text-responsive-small text-gray-600">
+        {items.length} servicios disponibles. Usa los controles de navegación para explorar.
+      </p>
+    </div>
+  </noscript>
 </section>
+
+<script>
+  // Funcionalidad del carrusel con Motion.dev
+  import { animate } from 'motion'
+
+  // Declaración global para la instancia del carrusel
+  declare global {
+    interface Window {
+      serviceCarouselInstance?: ServiceCarousel
+    }
+  }
+
+  class ServiceCarousel {
+    private track: HTMLElement | null = null
+    private prevButton: HTMLButtonElement | null = null
+    private nextButton: HTMLButtonElement | null = null
+    private paginationComponent: HTMLElement | null = null
+    private currentIndex = 0
+    private items: HTMLElement[] = []
+    private containerWidth = 0
+    private itemWidth = 0
+    private resizeTimeout: number | null = null
+    private navigationTimeout: number | null = null
+
+    constructor() {
+      this.initializeElements()
+      this.setupEventListeners()
+      this.updateLayout()
+      // Solo actualizar navegación si hay elementos
+      if (this.items.length > 0) {
+        this.updateNavigationState()
+        this.updatePagination()
+      }
+    }
+
+    private initializeElements() {
+      this.track = document.getElementById('carousel-track')
+      this.prevButton = document.getElementById('carousel-prev') as HTMLButtonElement
+      this.nextButton = document.getElementById('carousel-next') as HTMLButtonElement
+      this.paginationComponent = document.querySelector('[role="tablist"]')
+      
+      // Debug: verificar que los elementos se encuentran
+      console.log('ServiceCarousel elements:', {
+        track: !!this.track,
+        prevButton: !!this.prevButton,
+        nextButton: !!this.nextButton,
+        paginationComponent: !!this.paginationComponent,
+        itemsCount: this.track ? this.track.children.length : 0
+      })
+      
+      if (this.track) {
+        this.items = Array.from(this.track.children) as HTMLElement[]
+      }
+    }
+
+    private setupEventListeners() {
+      this.prevButton?.addEventListener('click', () => this.debouncedNavigation(() => this.previous()))
+      this.nextButton?.addEventListener('click', () => this.debouncedNavigation(() => this.next()))
+      
+      // Event delegation para paginación
+      this.paginationComponent?.addEventListener('click', (e) => {
+        const button = e.target as HTMLElement
+        if (button.hasAttribute('data-pagination-index')) {
+          const index = parseInt(button.getAttribute('data-pagination-index') || '0')
+          this.debouncedNavigation(() => this.goToSlide(index))
+        }
+      })
+
+      // Navegación por teclado
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') this.debouncedNavigation(() => this.previous())
+        if (e.key === 'ArrowRight') this.debouncedNavigation(() => this.next())
+      })
+
+      // Responsive con debounce
+      window.addEventListener('resize', () => {
+        if (this.resizeTimeout) {
+          clearTimeout(this.resizeTimeout)
+        }
+        this.resizeTimeout = window.setTimeout(() => {
+          this.updateLayout()
+          this.updatePosition()
+        }, 300)
+      })
+    }
+
+    private updateLayout() {
+      if (!this.track || this.items.length === 0) return
+
+      const container = this.track.parentElement
+      if (!container) return
+
+      // Obtener el ancho del viewport completo (sin padding de grilla)
+      this.containerWidth = window.innerWidth
+      
+      // Calcular ancho del item basado en breakpoint
+      if (window.innerWidth >= 1024) {
+        // Desktop: 75% del viewport, pero con padding de grilla
+        this.itemWidth = this.containerWidth * 0.75
+      } else if (window.innerWidth >= 768) {
+        // Tablet: 80% del viewport
+        this.itemWidth = this.containerWidth * 0.8
+      } else {
+        // Mobile: 90% del viewport
+        this.itemWidth = this.containerWidth * 0.9
+      }
+
+      // NO aplicar anchos directamente - dejar que CSS maneje el layout
+      // Solo calcular para animaciones
+      console.log('updateLayout - containerWidth:', this.containerWidth, 'itemWidth:', this.itemWidth)
+    }
+
+    private debouncedNavigation(action: () => void) {
+      if (this.navigationTimeout) {
+        clearTimeout(this.navigationTimeout)
+      }
+      this.navigationTimeout = window.setTimeout(action, 100) // 100ms debounce
+    }
+
+    private updatePosition() {
+      if (!this.track || this.items.length === 0) return
+
+      // Obtener el ancho real del primer elemento
+      const firstItem = this.items[0]
+      if (!firstItem) return
+      
+      const actualItemWidth = firstItem.offsetWidth
+      const translateX = -this.currentIndex * actualItemWidth
+      
+      console.log('updatePosition - currentIndex:', this.currentIndex, 'actualItemWidth:', actualItemWidth, 'translateX:', translateX)
+      
+      // Aplicar transformación con animación CSS
+      this.track.style.transform = `translateX(${translateX}px)`
+    }
+
+    public updateNavigationState() {
+      // Solo actualizar si tenemos elementos y botones
+      if (this.items.length === 0 || !this.prevButton || !this.nextButton) {
+        return
+      }
+
+      const isAtStart = this.currentIndex === 0
+      const isAtEnd = this.currentIndex >= this.items.length - 1
+
+      console.log('updateNavigationState:', {
+        currentIndex: this.currentIndex,
+        itemsLength: this.items.length,
+        isAtStart,
+        isAtEnd
+      })
+
+      // Usar disabled como atributo
+      this.prevButton.disabled = isAtStart
+      this.nextButton.disabled = isAtEnd
+    }
+
+    public updatePagination() {
+      const paginationButtons = this.paginationComponent?.querySelectorAll('[data-pagination-index]')
+      
+      paginationButtons?.forEach((button, index) => {
+        const isActive = index === this.currentIndex
+        const buttonElement = button as HTMLElement
+        
+        buttonElement.setAttribute('aria-selected', isActive.toString())
+        buttonElement.setAttribute('tabindex', isActive ? '0' : '-1')
+        
+        buttonElement.className = `w-2 h-2 rounded-full transition-all duration-200 ${
+          isActive 
+            ? 'bg-blue-600 scale-125' 
+            : 'bg-gray-300 hover:bg-gray-400'
+        }`
+      })
+    }
+
+    public next() {
+      console.log('ServiceCarousel.next() called, currentIndex:', this.currentIndex, 'items.length:', this.items.length)
+      if (this.currentIndex < this.items.length - 1) {
+        this.currentIndex++
+        this.updatePosition()
+        this.updateNavigationState()
+        this.updatePagination()
+      }
+    }
+
+    public previous() {
+      console.log('ServiceCarousel.previous() called, currentIndex:', this.currentIndex)
+      if (this.currentIndex > 0) {
+        this.currentIndex--
+        this.updatePosition()
+        this.updateNavigationState()
+        this.updatePagination()
+      }
+    }
+
+    public goToSlide(index: number) {
+      if (index >= 0 && index < this.items.length) {
+        this.currentIndex = index
+        this.updatePosition()
+        this.updateNavigationState()
+        this.updatePagination()
+      }
+    }
+
+    public reinitialize() {
+      this.initializeElements()
+      this.updateLayout()
+      this.updateNavigationState()
+      this.updatePagination()
+    }
+  }
+
+  // Inicializar carrusel cuando el DOM esté listo
+  function initializeCarousel() {
+    // Pequeño delay para asegurar que todos los elementos estén disponibles
+    setTimeout(() => {
+      const carousel = new ServiceCarousel()
+      
+      // Exponer instancia globalmente para uso en Astro
+      window.serviceCarouselInstance = carousel
+      
+      // Forzar actualización después de un pequeño delay adicional
+      setTimeout(() => {
+        carousel.updateNavigationState()
+        carousel.updatePagination()
+      }, 50)
+    }, 100)
+  }
+
+  // Intentar inicializar inmediatamente si el DOM ya está listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCarousel)
+  } else {
+    // DOM ya está listo
+    initializeCarousel()
+  }
+</script>
+
+<style>
+  /* Asegurar que el contenedor tenga el ancho correcto */
+  #services-carousel {
+    width: 100%;
+  }
+  
+  /* Smooth transitions para los controles */
+  #carousel-prev:hover,
+  #carousel-next:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Estados disabled */
+  #carousel-prev:disabled,
+  #carousel-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  #carousel-prev:disabled:hover,
+  #carousel-next:disabled:hover {
+    transform: none;
+  }
+  
+  /* Asegurar que las cards se vean correctamente */
+  #carousel-track {
+    align-items: stretch;
+  }
+  
+  /* Contenedor con overflow visible para cards que se extienden */
+  #services-carousel {
+    overflow: visible;
+  }
+  
+  /* Asegurar altura uniforme para todas las cards */
+  #carousel-track > div {
+    display: flex;
+    align-items: stretch;
+  }
+  
+  #carousel-track > div > div {
+    display: flex;
+    width: 100%;
+  }
+</style>
 
 

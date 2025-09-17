@@ -20,7 +20,7 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
 
 <section class="my-12">
   {title && (
-    <h2 class="text-2xl font-semibold mb-6">{title}</h2>
+    <h2 class="text-responsive-h3 font-semibold mb-6">{title}</h2>
   )}
 
   {displayMode === 'grid' ? (
@@ -33,11 +33,11 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
             </a>
           )}
           <div class="p-4">
-            <h3 class="text-base font-semibold mb-2">
+            <h3 class="text-responsive-body font-semibold mb-2">
               <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
             </h3>
             {post.publishedAt && (
-              <p class="text-sm text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
+              <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
             )}
           </div>
         </article>
@@ -54,11 +54,11 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
               </a>
             )}
             <div class="p-4">
-              <h3 class="text-base font-semibold mb-2">
+              <h3 class="text-responsive-body font-semibold mb-2">
                 <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
               </h3>
               {post.publishedAt && (
-                <p class="text-sm text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
               )}
             </div>
           </article>

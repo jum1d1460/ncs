@@ -21,6 +21,10 @@ try {
                     title,
                     duration,
                     price,
+                    availability,
+                    bulletPoints[]{
+                      text
+                    },
                     url,
                     weight,
                     shortDescription,
@@ -32,10 +36,17 @@ try {
                   showPrice
                 },
                 _type == "serviceCarousel" => {
+                  subtitle,
+                  title,
+                  lead,
                   "items": items[]->{
                     title,
                     duration,
                     price,
+                    availability,
+                    bulletPoints[]{
+                      text
+                    },
                     url,
                     weight,
                     shortDescription,

@@ -145,16 +145,18 @@ const getShadowClass = (intensity: string) => {
   
   <!-- Silueta de fondo (solo en desktop) -->
   {silhouetteImage && (
-    <div class="hero-silhouette hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-30 will-change-transform">
-      <div class={`absolute top-0 w-1/2 ${silhouettePosition === 'left' ? 'left-0' : 'right-0'} flex items-start justify-center`}>
-        <div class="relative w-full flex items-start justify-center transform scale-125 origin-top">
-          <ResponsiveImage
-            image={silhouetteImage}
-            alt="Silueta del Hero"
-            title="Silueta"
-            class="w-full h-auto object-contain"
-            aspectRatio="auto"
-          />
+    <div class="hero-silhouette hidden md:block absolute inset-0 h-full pointer-events-none will-change-transform">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class={`absolute bottom-0 w-1/2 max-w-lg ${silhouettePosition === 'left' ? 'left-0 -ml-[10%]' : 'right-0 mr-0'} flex items-end justify-center`}>
+          <div class="relative w-full flex items-end justify-center transform origin-bottom">
+            <ResponsiveImage
+              image={silhouetteImage}
+              alt="Silueta del Hero"
+              title="Silueta"
+              class="w-full h-auto object-contain"
+              aspectRatio="auto"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -174,10 +176,10 @@ const getShadowClass = (intensity: string) => {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16 items-center h-full">
         
         <!-- Columna de texto -->
-        <div class="text-white space-y-6 z-40 text-center lg:text-left lg:col-span-2">
+        <div class="text-white space-y-6 z-40 text-responsive-body-large text-center lg:text-left lg:col-span-2">
           <p class={`hero-main-title animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`}>{mainTitle}</p>
           <h1 class={`hero-subtitle animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.2s;">{subtitle}</h1>
-          <p class={`hero-description animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.4s;">{description}</p>
+          <p class={`hero-description text-responsive-body-large animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.4s;">{description}</p>
           
           <div class="hero-buttons animate-fade-in-up justify-center lg:justify-start" style="animation-delay: 0.6s;">
             {primaryButton && (
@@ -230,7 +232,14 @@ const getShadowClass = (intensity: string) => {
     }
   }
   
-
+  /* Estilos para la silueta */
+  .hero-silhouette {
+    overflow: visible;
+  }
+  
+  .hero-silhouette img {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  }
   
   /* Responsive simplificado */
   @media (max-width: 640px) {
@@ -244,11 +253,6 @@ const getShadowClass = (intensity: string) => {
       line-height: 1.1 !important;
     }
     
-    .hero-description {
-      font-size: 1rem !important;
-      line-height: 1.5 !important;
-    }
-    
     .hero-buttons {
       flex-direction: column !important;
       gap: 1rem !important;
@@ -256,6 +260,54 @@ const getShadowClass = (intensity: string) => {
     
     .hero-buttons sl-button {
       width: 100% !important;
+    }
+    
+  }
+  
+  /* Ajustes para tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-silhouette {
+      z-index: 2;
+    }
+    
+    .hero-silhouette img {
+      max-height: 70vh;
+      width: 50vw;
+      max-width: 400px;
+      min-width: 250px;
+      object-fit: contain;
+      object-position: left bottom;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    /* Ajustes para desktop - doble de tamaño */
+    .hero-silhouette {
+      z-index: 2;
+    }
+    
+    .hero-silhouette img {
+      max-height: 90vh;
+      width: 80vw; /* Doble del tamaño anterior */
+      max-width: 1200px; /* Límite superior aumentado */
+      min-width: 500px; /* Límite inferior aumentado */
+      object-fit: contain;
+      object-position: left bottom;
+    }
+    
+    /* Crecimiento gradual en pantallas muy anchas */
+    @media (min-width: 1400px) {
+      .hero-silhouette img {
+        width: 70vw;
+        max-width: 1000px;
+      }
+    }
+    
+    @media (min-width: 1800px) {
+      .hero-silhouette img {
+        width: 60vw;
+        max-width: 900px;
+      }
     }
   }
 </style>

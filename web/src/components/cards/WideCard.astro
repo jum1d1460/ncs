@@ -1,0 +1,175 @@
+---
+import ResponsiveImage from "../ResponsiveImage.astro";
+
+interface ServiceImage {
+  asset?: { _ref?: string; url?: string };
+  alt?: string;
+}
+
+interface NumericRangeOrFixed {
+  mode?: 'fixed' | 'range';
+  value?: number;
+  min?: number;
+  max?: number;
+  currency?: string;
+}
+
+interface ServiceData {
+  _id?: string;
+  title?: string;
+  duration?: NumericRangeOrFixed;
+  price?: NumericRangeOrFixed;
+  availability?: {
+    online?: boolean;
+    presencial?: boolean;
+  };
+  bulletPoints?: Array<{
+    text?: string;
+  }>;
+  url?: string;
+  weight?: number;
+  shortDescription?: string;
+  longDescription?: any[];
+  cardImage?: ServiceImage;
+  blockImage?: ServiceImage;
+}
+
+interface Props {
+  service?: ServiceData;
+  showPrice?: boolean;
+}
+
+const {
+  service = {},
+  showPrice = true
+} = Astro.props as Props;
+
+function formatDuration(d?: NumericRangeOrFixed): string | null {
+  if (!d || !d.mode) return null;
+  if (d.mode === 'fixed' && typeof d.value === 'number') return `${d.value} min`;
+  if (d.mode === 'range' && typeof d.min === 'number' && typeof d.max === 'number') return `${d.min}–${d.max} min`;
+  return null;
+}
+
+function formatPrice(p?: NumericRangeOrFixed): string | null {
+  if (!p || !p.mode) return null;
+  const currency = p.currency || '€';
+  if (p.mode === 'fixed' && typeof p.value === 'number') return `${p.value} ${currency}`;
+  if (p.mode === 'range' && typeof p.min === 'number' && typeof p.max === 'number') return `${p.min}–${p.max} ${currency}`;
+  return null;
+}
+
+function formatAvailability(a?: { online?: boolean; presencial?: boolean }): string[] {
+  if (!a) return [];
+  const options = [];
+  if (a.online) options.push('Online');
+  if (a.presencial) options.push('Presencial');
+  return options;
+}
+
+const durationLabel = formatDuration(service?.duration);
+const priceLabel = showPrice ? formatPrice(service?.price) : null;
+const availabilityOptions = formatAvailability(service?.availability);
+---
+
+<article class="w-full h-full max-w-none flex flex-col md:flex-row bg-white rounded-xl border-2 border-gray-100 shadow-lg hover:shadow-2xl hover:border-gray-200 transition-all duration-300 p-3">
+  <!-- Imagen del servicio -->
+  {service?.cardImage && (
+    <div class="md:w-1/3 flex-shrink-0 p-2">
+      <ResponsiveImage 
+        image={service.cardImage} 
+        alt={service.cardImage?.alt || service?.title || 'Imagen del servicio'} 
+        class="w-full h-48 md:h-full object-cover rounded-lg" 
+        aspectRatio="4/3"
+      />
+    </div>
+  )}
+  
+  <!-- Contenido del servicio -->
+  <div class="flex-1 p-4 md:p-6 flex flex-col justify-between h-full">
+    <div class="flex-1 flex flex-col">
+      <!-- Título del servicio -->
+      <h3 class="text-responsive-h4 font-semibold text-gray-900 mb-1">
+        {service?.url ? (
+          <a 
+            href={service.url} 
+            target="_blank" 
+            rel="noopener" 
+            class="hover:text-blue-600 transition-colors duration-200 hover:underline"
+          >
+            {service?.title}
+          </a>
+        ) : (
+          service?.title
+        )}
+      </h3>
+      
+      <!-- Información de duración, disponibilidad y precio en línea horizontal -->
+      <div class="mb-1 flex flex-wrap items-center gap-4 text-responsive-small text-gray-600 border-b border-gray-200 pb-1">
+        {durationLabel && (
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {durationLabel}
+          </span>
+        )}
+        {availabilityOptions.length > 0 && (
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {availabilityOptions.join(' / ')}
+          </span>
+        )}
+        {priceLabel && (
+          <span class="flex items-center gap-1 font-medium text-green-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            {priceLabel}
+          </span>
+        )}
+      </div>
+      
+      <!-- Descripción -->
+      {service?.shortDescription && (
+        <p class="text-gray-700 text-responsive-body-large mb-4 leading-relaxed mt-4">
+          {service.shortDescription}
+        </p>
+      )}
+      
+      <!-- Bullet points en 2 columnas -->
+      {service?.bulletPoints && service.bulletPoints.length > 0 && (
+        <div class="mb-4 grid grid-cols-2 gap-2 flex-1">
+          {service.bulletPoints.map((point) => (
+            <div class="flex items-start gap-2">
+              <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-responsive-body-large text-gray-700">{point.text}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+    
+    <!-- Call to action si hay URL -->
+    {service?.url && (
+      <div class="mt-4 pt-4 border-t border-gray-100">
+        <a 
+          href={service.url} 
+          target="_blank" 
+          rel="noopener"
+          class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-responsive-small transition-colors duration-200"
+        >
+          Ver más información
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+</article>

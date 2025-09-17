@@ -18,6 +18,13 @@ interface ServiceData {
   title?: string;
   duration?: NumericRangeOrFixed;
   price?: NumericRangeOrFixed;
+  availability?: {
+    online?: boolean;
+    presencial?: boolean;
+  };
+  bulletPoints?: Array<{
+    text?: string;
+  }>;
   url?: string;
   weight?: number;
   shortDescription?: string;
@@ -53,8 +60,17 @@ function formatPrice(p?: NumericRangeOrFixed): string | null {
   return null;
 }
 
+function formatAvailability(a?: { online?: boolean; presencial?: boolean }): string[] {
+  if (!a) return [];
+  const options = [];
+  if (a.online) options.push('Online');
+  if (a.presencial) options.push('Presencial');
+  return options;
+}
+
 const durationLabel = formatDuration(service?.duration);
 const priceLabel = showPrice ? (formatPrice(service?.price) ?? 'Sin precio') : null;
+const availabilityOptions = formatAvailability(service?.availability);
 ---
 
 {
@@ -63,17 +79,43 @@ const priceLabel = showPrice ? (formatPrice(service?.price) ?? 'Sin precio') : n
       {service?.cardImage && (
         <ResponsiveImage image={service.cardImage} alt={service.cardImage?.alt} class="w-full rounded-md mb-4" aspectRatio="4/3" />
       )}
-      <h3 class="text-lg font-semibold text-gray-900">
+      <h3 class="text-responsive-h4 font-semibold text-gray-900">
         {service?.url ? (
           <a href={service.url} target="_blank" rel="noopener" class="hover:underline">{service?.title}</a>
         ) : service?.title}
       </h3>
-      <div class="mt-1 text-sm text-gray-600 flex gap-3">
-        {durationLabel ? <span>{durationLabel}</span> : null}
-        {priceLabel ? <span aria-label="precio">{priceLabel}</span> : null}
+      
+      <!-- Información de duración, disponibilidad y precio -->
+      <div class="mt-3 text-responsive-small text-gray-600 flex flex-wrap gap-4">
+        {durationLabel && <span>{durationLabel}</span>}
+        {availabilityOptions.length > 0 && (
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {availabilityOptions.join(' / ')}
+          </span>
+        )}
+        {priceLabel && <span class="font-medium text-green-600">{priceLabel}</span>}
       </div>
+      
       {service?.shortDescription && (
-        <p class="mt-3 text-gray-700 text-sm">{service.shortDescription}</p>
+        <p class="mt-3 text-gray-700 text-responsive-small">{service.shortDescription}</p>
+      )}
+      
+      <!-- Bullet points en 2 columnas -->
+      {service?.bulletPoints && service.bulletPoints.length > 0 && (
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {service.bulletPoints.map((point) => (
+            <div class="flex items-start gap-2">
+              <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-responsive-small text-gray-700">{point.text}</span>
+            </div>
+          ))}
+        </div>
       )}
     </article>
   ) : (
@@ -82,19 +124,45 @@ const priceLabel = showPrice ? (formatPrice(service?.price) ?? 'Sin precio') : n
         <ResponsiveImage image={service.blockImage} alt={service.blockImage?.alt} class="w-full rounded-md" aspectRatio="16/9" />
       )}
       <div>
-        <h3 class="text-2xl font-semibold text-gray-900">
+        <h3 class="text-responsive-h3 font-semibold text-gray-900">
           {service?.url ? (
             <a href={service.url} target="_blank" rel="noopener" class="hover:underline">{service?.title}</a>
           ) : service?.title}
         </h3>
-        <div class="mt-2 text-sm text-gray-600 flex gap-3">
-          {durationLabel ? <span>{durationLabel}</span> : null}
-          {priceLabel ? <span aria-label="precio">{priceLabel}</span> : null}
+        
+        <!-- Información de duración, disponibilidad y precio -->
+        <div class="mt-3 text-responsive-small text-gray-600 flex flex-wrap gap-4">
+          {durationLabel && <span>{durationLabel}</span>}
+          {availabilityOptions.length > 0 && (
+            <span class="flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              {availabilityOptions.join(' / ')}
+            </span>
+          )}
+          {priceLabel && <span class="font-medium text-green-600">{priceLabel}</span>}
         </div>
+        
         {service?.longDescription && (
           <div class="prose prose-slate mt-4 max-w-none">
             {service.longDescription.map((block: any) => (
               <p>{block?.children?.map((c: any) => c?.text).join(' ')}</p>
+            ))}
+          </div>
+        )}
+        
+        <!-- Bullet points en 2 columnas -->
+        {service?.bulletPoints && service.bulletPoints.length > 0 && (
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {service.bulletPoints.map((point) => (
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-responsive-small text-gray-700">{point.text}</span>
+              </div>
             ))}
           </div>
         )}

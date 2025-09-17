@@ -7,6 +7,28 @@ export default defineType({
     type: "object",
     fields: [
         defineField({
+            name: "subtitle",
+            title: "Subtítulo",
+            type: "string",
+            validation: r => r.max(150),
+            description: "Subtítulo opcional que aparecerá sobre el título principal"
+        }),
+        defineField({
+            name: "title",
+            title: "Título del carrusel",
+            type: "string",
+            validation: r => r.required().max(100),
+            description: "Título que aparecerá sobre el carrusel de servicios"
+        }),
+        defineField({
+            name: "lead",
+            title: "Entradilla",
+            type: "text",
+            validation: r => r.max(300),
+            rows: 3,
+            description: "Texto de introducción que aparecerá bajo el título"
+        }),
+        defineField({
             name: "items",
             title: "Servicios",
             type: "array",
@@ -36,10 +58,11 @@ export default defineType({
         , ...blockPresentationFields
     ],
     preview: {
-        select: { items: "items" },
-        prepare({ items }) {
+        select: { title: "title", items: "items" },
+        prepare({ title, items }) {
             const count = Array.isArray(items) ? items.length : 0;
-            return { title: "Carrusel de servicios", subtitle: `${count} elementos` };
+            const displayTitle = title || "Carrusel de servicios";
+            return { title: displayTitle, subtitle: `${count} elementos` };
         }
     }
 });

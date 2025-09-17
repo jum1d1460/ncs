@@ -8,6 +8,23 @@ module.exports = {
       fontFamily: {
         'poppins': ['Poppins', 'sans-serif'],
       },
+      fontSize: {
+        // Sistema de tipografía responsiva
+        'heading-1': ['3rem', { lineHeight: '1.1', fontWeight: '800' }], // 48px
+        'heading-1-mobile': ['2rem', { lineHeight: '1.1', fontWeight: '800' }], // 32px
+        'heading-2': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }], // 40px
+        'heading-2-mobile': ['1.75rem', { lineHeight: '1.2', fontWeight: '700' }], // 28px
+        'heading-3': ['2rem', { lineHeight: '1.3', fontWeight: '600' }], // 32px
+        'heading-3-mobile': ['1.5rem', { lineHeight: '1.3', fontWeight: '600' }], // 24px
+        'heading-4': ['1.5rem', { lineHeight: '1.4', fontWeight: '600' }], // 24px
+        'heading-4-mobile': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }], // 20px
+        'body-large': ['1.125rem', { lineHeight: '1.6', fontWeight: '400' }], // 18px
+        'body-large-mobile': ['1rem', { lineHeight: '1.6', fontWeight: '400' }], // 16px
+        'body': ['1rem', { lineHeight: '1.5', fontWeight: '400' }], // 16px
+        'body-mobile': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }], // 14px
+        'small': ['0.875rem', { lineHeight: '1.4', fontWeight: '400' }], // 14px
+        'small-mobile': ['0.75rem', { lineHeight: '1.4', fontWeight: '400' }], // 12px
+      },
       colors: {
         'primary': {
           50: '#f0f9ff',

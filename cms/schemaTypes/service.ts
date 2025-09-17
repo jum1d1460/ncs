@@ -142,6 +142,60 @@ export default defineType({
             ]
         }),
         defineField({
+            name: "availability",
+            title: "Disponibilidad",
+            type: "object",
+            fields: [
+                defineField({
+                    name: "online",
+                    title: "Disponible online",
+                    type: "boolean",
+                    initialValue: false
+                }),
+                defineField({
+                    name: "presencial",
+                    title: "Disponible presencial",
+                    type: "boolean",
+                    initialValue: false
+                })
+            ],
+            validation: r => r.custom((value) => {
+                if (!value) return "Requerido";
+                if (!value.online && !value.presencial) {
+                    return "Debe estar disponible al menos online o presencial";
+                }
+                return true;
+            })
+        }),
+        defineField({
+            name: "bulletPoints",
+            title: "Puntos destacados",
+            type: "array",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        defineField({
+                            name: "text",
+                            title: "Texto",
+                            type: "string",
+                            validation: r => r.required().max(100)
+                        })
+                    ],
+                    preview: {
+                        select: { text: "text" },
+                        prepare({ text }) {
+                            return { title: text || "Punto destacado" };
+                        }
+                    }
+                }
+            ],
+            validation: r => r.max(6),
+            options: {
+                sortable: true
+            }
+        }),
+        defineField({
             name: "url",
             title: "Enlace del servicio",
             type: "url",

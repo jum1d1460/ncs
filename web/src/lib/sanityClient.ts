@@ -2,7 +2,7 @@ import {createClient} from "@sanity/client";
 
 // Crea el cliente de Sanity de forma tolerante: si faltan variables públicas en build,
 // exponemos un cliente "no-op" que devuelve resultados vacíos para evitar fallos.
-const projectId = (import.meta.env.PUBLIC_SANITY_PROJECT_ID as string | undefined) || "";
+const projectId = (import.meta.env.PUBLIC_SANITY_PROJECT_ID as string | undefined) || "i95g996l";
 const dataset = (import.meta.env.PUBLIC_SANITY_DATASET as string | undefined) || "production";
 const apiVersion = (import.meta.env.PUBLIC_SANITY_API_VERSION as string | undefined) || "2024-03-18";
 

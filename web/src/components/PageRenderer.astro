@@ -68,7 +68,7 @@ if (import.meta.env.DEV) {
     case "serviceBlock":
       return <BlockWrapper {...commonProps}><Service service={block.service} variant={block.variant} showPrice={block.showPrice} /></BlockWrapper>;
     case "serviceCarousel":
-      return <BlockWrapper {...commonProps}><ServiceCarousel items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} /></BlockWrapper>;
+      return <BlockWrapper {...commonProps}><ServiceCarousel subtitle={block.subtitle} title={block.title} lead={block.lead} items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} /></BlockWrapper>;
     case "blockTestimonials":
       return <BlockWrapper {...commonProps}><Testimonials items={block.items} /></BlockWrapper>;
     case "blockLogos":

@@ -19,20 +19,29 @@ const {
 
 // Función para generar URLs de Sanity usando las variables de entorno
 function getSanityImageUrl(
-    image: { asset?: { _ref: string } }, 
+    image: { asset?: { _ref?: string; url?: string } }, 
     width = 800
 ) {
     if (!image || !image.asset) return null;
     
-    const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
-    const dataset = import.meta.env.PUBLIC_SANITY_DATASET;
-    
+    // Si tenemos _ref, generar URL optimizada
     if (image.asset._ref) {
+        // Usar valores por defecto si las variables de entorno no están disponibles
+        const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID || 'i95g996l';
+        const dataset = import.meta.env.PUBLIC_SANITY_DATASET || 'production';
+        
         // Extraer el ID de la imagen
         const imageId = image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp');
         
         // Construir URL con parámetros de optimización de Sanity
         return `https://cdn.sanity.io/images/${projectId}/${dataset}/${imageId}?w=${width}&q=80&fit=max&auto=format`;
+    }
+    
+    // Si no hay _ref pero sí hay URL directa, usar la URL directa con parámetros de optimización
+    if (image.asset.url) {
+        // Agregar parámetros de optimización a la URL existente
+        const separator = image.asset.url.includes('?') ? '&' : '?';
+        return `${image.asset.url}${separator}w=${width}&q=80&fit=max&auto=format`;
     }
     
     return null;
@@ -103,7 +112,7 @@ const imageCaption = image?.caption;
 
 {/* Caption opcional si está disponible */}
 {imageCaption && (
-  <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+  <figcaption class="text-responsive-small text-gray-600 text-center mt-2 italic">
     {imageCaption}
   </figcaption>
 )}

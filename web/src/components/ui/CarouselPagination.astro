@@ -1,0 +1,80 @@
+---
+interface Props {
+  totalItems: number;
+  currentIndex: number;
+  onPageChange: (index: number) => void;
+  className?: string;
+}
+
+const {
+  totalItems,
+  currentIndex,
+  onPageChange,
+  className = ""
+} = Astro.props;
+
+// Solo mostrar paginación si hay más de un elemento
+const shouldShow = totalItems > 1;
+---
+
+{shouldShow && (
+  <div class={`flex gap-2 ${className}`} role="tablist" aria-label="Navegación del carrusel">
+    {Array.from({ length: totalItems }, (_, index) => (
+      <button
+        class={`w-2 h-2 rounded-full transition-all duration-200 ${
+          index === currentIndex 
+            ? 'bg-blue-600 scale-125' 
+            : 'bg-gray-300 hover:bg-gray-400'
+        }`}
+        data-pagination-index={index}
+        aria-label={`Ir al servicio ${index + 1} de ${totalItems}`}
+        aria-selected={index === currentIndex}
+        role="tab"
+        tabindex={index === currentIndex ? 0 : -1}
+        onclick={() => onPageChange(index)}
+      >
+        <span class="sr-only">Página {index + 1}</span>
+      </button>
+    ))}
+  </div>
+)}
+
+<style>
+  /* Asegurar que los puntos sean clickeables */
+  button[data-pagination-index] {
+    cursor: pointer;
+    border: none;
+    outline: none;
+  }
+  
+  /* Estados de focus para accesibilidad */
+  button[data-pagination-index]:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+  
+  /* Animación suave para cambios de estado */
+  button[data-pagination-index] {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Hover effect para elementos inactivos */
+  button[data-pagination-index]:not([aria-selected="true"]):hover {
+    transform: scale(1.1);
+    background-color: #9ca3af;
+  }
+  
+  /* Estado activo con animación */
+  button[data-pagination-index][aria-selected="true"] {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+</style>

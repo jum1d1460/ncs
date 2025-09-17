@@ -10,6 +10,8 @@ interface Props {
   imageAlt?: string
   imagePosition?: 'left' | 'right'
   imageWidth?: '25' | '33' | '50'
+  imageOrientation?: 'portrait' | 'landscape' | 'square' | 'auto'
+  imageAspectRatio?: string // Ej: '4/3', '16/9', '1/1', '3/4'
   columnsCount?: number
 }
 
@@ -21,49 +23,100 @@ const {
   imageAlt, 
   imagePosition = 'right', 
   imageWidth = '50',
+  imageOrientation = 'auto',
+  imageAspectRatio,
   columnsCount = 1 
 } = Astro.props as Props
 
 const Tag = (title && (headingLevel as any)) || 'h2'
-const imageWidthClass = imageWidth === '25' ? 'w-1/4' : imageWidth === '33' ? 'w-1/3' : 'w-1/2'
-const textWidthClass = imageWidth === '25' ? 'w-3/4' : imageWidth === '33' ? 'w-2/3' : 'w-1/2'
+// Clases responsive mobile-first para evitar problemas con w-1/
+const getImageWidthClass = (width: string) => {
+  switch (width) {
+    case '25':
+      return 'w-full lg:w-1/4' // En móvil ocupa todo el ancho, en desktop 25%
+    case '33':
+      return 'w-full lg:w-1/3' // En móvil ocupa todo el ancho, en desktop 33%
+    case '50':
+    default:
+      return 'w-full lg:w-1/2' // En móvil ocupa todo el ancho, en desktop 50%
+  }
+}
+
+const getTextWidthClass = (width: string) => {
+  switch (width) {
+    case '25':
+      return 'w-full lg:w-3/4' // En móvil ocupa todo el ancho, en desktop 75%
+    case '33':
+      return 'w-full lg:w-2/3' // En móvil ocupa todo el ancho, en desktop 67%
+    case '50':
+    default:
+      return 'w-full lg:w-1/2' // En móvil ocupa todo el ancho, en desktop 50%
+  }
+}
+
+// Función para obtener clases de altura según orientación de imagen
+const getImageHeightClass = (orientation: string, aspectRatio?: string) => {
+  // Si se especifica aspect-ratio, usarlo en móvil y desktop
+  if (aspectRatio) {
+    return `aspect-[${aspectRatio}] lg:h-full lg:aspect-none`
+  }
+  
+  // Si no, usar orientación con min-height
+  switch (orientation) {
+    case 'portrait':
+      return 'h-auto min-h-[350px] sm:min-h-[450px] lg:h-full lg:min-h-0' // Más altura para portrait
+    case 'landscape':
+      return 'h-auto min-h-[250px] sm:min-h-[300px] lg:h-full lg:min-h-0' // Menos altura para landscape
+    case 'square':
+      return 'h-auto min-h-[300px] sm:min-h-[350px] lg:h-full lg:min-h-0' // Altura intermedia para square
+    case 'auto':
+    default:
+      return 'h-auto min-h-[300px] sm:min-h-[400px] lg:h-full lg:min-h-0' // Altura por defecto
+  }
+}
+
+const imageWidthClass = getImageWidthClass(imageWidth)
+const textWidthClass = getTextWidthClass(imageWidth)
+const imageHeightClass = getImageHeightClass(imageOrientation, imageAspectRatio)
 const columnsClass = columnsCount === 2 ? 'md:columns-2' : columnsCount === 3 ? 'md:columns-3' : ''
 ---
 
 <section class="py-12 px-4 max-w-6xl mx-auto">
   <div class="flex flex-col gap-8">
-    {title && (
-      <div class="text-center">
-        <Tag class="text-3xl font-bold text-gray-900 mb-4">{title}</Tag>
-      </div>
-    )}
-    
     {image && content ? (
-      <div class={`flex flex-col ${imagePosition === 'right' ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-start`}>
-        <div class={`${textWidthClass} ${columnsClass}`}>
+      <div class={`flex flex-col ${imagePosition === 'right' ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-stretch`}>
+        <div class={`${textWidthClass} ${columnsClass} pt-6 pb-6`}>
+          {title && (
+            <Tag class="text-responsive-h1 font-bold text-gray-900 mb-6">{title}</Tag>
+          )}
           <BlockContent content={content} />
         </div>
         <div class={`${imageWidthClass} flex-shrink-0`}>
           <ResponsiveImage 
             image={image} 
             alt={imageAlt || ''} 
-            class="rounded-lg shadow-lg"
+            class={`rounded-lg shadow-lg object-cover w-full ${imageHeightClass}`}
           />
         </div>
       </div>
     ) : image ? (
       <div class="flex justify-center">
-        <div class={`${imageWidthClass} max-w-md`}>
+        <div class={`${imageWidthClass} max-w-md w-full`}>
           <ResponsiveImage 
             image={image} 
             alt={imageAlt || ''} 
-            class="rounded-lg shadow-lg"
+            class={`rounded-lg shadow-lg object-cover w-full ${imageHeightClass}`}
           />
         </div>
       </div>
     ) : content ? (
-      <div class={`${columnsClass}`}>
-        <BlockContent content={content} />
+      <div class="pt-6 pb-6">
+        {title && (
+          <Tag class="text-responsive-h1 font-bold text-gray-900 mb-6">{title}</Tag>
+        )}
+        <div class={`${columnsClass}`}>
+          <BlockContent content={content} />
+        </div>
       </div>
     ) : null}
   </div>
