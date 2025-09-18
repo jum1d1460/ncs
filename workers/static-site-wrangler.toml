@@ -10,3 +10,7 @@ bucket = "../web/dist"
 [vars]
 SITE_NAME = "NCS Psicóloga Zaragoza"
 SITE_URL = "https://ncs.jum1d1460.com"
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
