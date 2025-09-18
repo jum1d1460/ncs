@@ -8,9 +8,10 @@ interface Props {
   ogImageUrl?: string | null;
   // Header/Footer inputs
   brand?: { logo?: { asset?: { url?: string }, alt?: string } } | null;
-  navMain?: { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } } }[];
+  navMain?: { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } }; children?: any[] }[];
   contact?: { phone?: string; whatsapp?: string; email?: string };
   bookingUrl?: string;
+  footerTitle?: string;
   seoFooterText?: string;
   legalLinks?: { label?: string; url?: string }[];
   socialLinks?: { type?: string; url?: string }[];
@@ -27,6 +28,7 @@ const {
   navMain,
   contact,
   bookingUrl,
+  footerTitle,
   seoFooterText,
   legalLinks,
   socialLinks
@@ -79,6 +81,7 @@ const head = buildHeadMeta({title, description, siteTitle, siteDescription, favi
 		<Footer 
 			logoUrl={brand?.logo?.asset?.url}
 			logoAlt={brand?.logo?.alt}
+			footerTitle={footerTitle}
 			seoFooterText={seoFooterText}
 			navMain={navMain}
 			legalLinks={legalLinks}

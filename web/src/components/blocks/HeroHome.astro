@@ -1,0 +1,410 @@
+---
+import ResponsiveImage from '../ResponsiveImage.astro';
+import { portableTextToHtml } from '../../lib/portableText';
+
+interface ButtonProps {
+  text: string;
+  linkType?: 'external' | 'internal';
+  url?: string;
+  internalPage?: {
+    slug: { current: string };
+  };
+  variant: 'primary' | 'secondary' | 'outline';
+}
+
+interface OverlaySettings {
+  overlayType: 'radial' | 'linear' | 'solid' | 'none';
+  overlayColor: string;
+  overlayOpacity: number;
+  secondaryColor: string;
+  gradientDirection: string;
+  radialPosition: string;
+  shadowIntensity: 'soft' | 'medium' | 'strong' | 'none';
+  secondaryOpacity: number;
+}
+
+interface HeroProps {
+  mainTitle: string;
+  subtitle: string;
+  description: any;
+  primaryButton?: ButtonProps;
+  secondaryButton?: ButtonProps;
+  backgroundImage: any;
+  silhouetteImage: any;
+  silhouettePosition: 'right' | 'left' | 'center';
+  overlaySettings?: OverlaySettings;
+}
+
+const { 
+  mainTitle, 
+  subtitle, 
+  description, 
+  primaryButton, 
+  secondaryButton, 
+  backgroundImage, 
+  silhouetteImage, 
+  silhouettePosition = 'right',
+  overlaySettings = {
+    overlayType: 'radial',
+    overlayColor: '#1e3a8a',
+    overlayOpacity: 0.8,
+    secondaryColor: '#000000',
+    gradientDirection: 'to bottom',
+    radialPosition: 'center',
+    shadowIntensity: 'medium',
+    secondaryOpacity: 0.8
+  }
+} = Astro.props;
+
+// Función para obtener la URL del botón
+const getButtonUrl = (button: ButtonProps) => {
+  if (button.linkType === 'internal' && button.internalPage?.slug) {
+    return `/${button.internalPage.slug.current}`;
+  }
+  return button.url || '#';
+};
+
+// Función para obtener la clase de posición de la silueta
+const getSilhouettePositionClass = (position: string) => {
+  switch (position) {
+    case 'left':
+      return 'lg:order-first';
+    case 'center':
+      return 'lg:order-none';
+    case 'right':
+    default:
+      return 'lg:order-last';
+  }
+};
+
+// Función para generar el estilo del overlay
+const getOverlayStyle = (settings: OverlaySettings) => {
+  if (settings.overlayType === 'none') return '';
+  
+  const primaryOpacity = settings.overlayOpacity;
+  const secondaryOpacity = settings.secondaryOpacity;
+  const primaryColor = settings.overlayColor;
+  const secondaryColor = settings.secondaryColor;
+  
+  // Función auxiliar para convertir color hex a rgb
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  };
+  
+  // Función para crear color rgba
+  const createRgba = (color: string, opacity: number) => {
+    if (color.startsWith('rgb')) {
+      // Si ya es rgb, convertir a rgba
+      return color.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
+    } else if (color.startsWith('#')) {
+      // Si es hex, convertir a rgba
+      const rgb = hexToRgb(color);
+      if (rgb) {
+        return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+      }
+    }
+    // Si no se puede convertir, usar el color original
+    return color;
+  };
+  
+  switch (settings.overlayType) {
+    case 'radial':
+      return `background: radial-gradient(ellipse at ${settings.radialPosition}, ${createRgba(primaryColor, primaryOpacity)}, ${createRgba(secondaryColor, secondaryOpacity)});`;
+    case 'linear':
+      return `background: linear-gradient(${settings.gradientDirection}, ${createRgba(primaryColor, primaryOpacity)}, ${createRgba(secondaryColor, secondaryOpacity)});`;
+    case 'solid':
+      return `background: ${createRgba(primaryColor, primaryOpacity)};`;
+    default:
+      return '';
+  }
+};
+
+// Función para obtener la intensidad de la sombra del texto
+const getShadowClass = (intensity: string) => {
+  switch (intensity) {
+    case 'soft':
+      return 'text-shadow-soft';
+    case 'medium':
+      return 'text-shadow-medium';
+    case 'strong':
+      return 'text-shadow-strong';
+    case 'none':
+    default:
+      return '';
+  }
+};
+---
+
+<!-- Hero Section simplificado y optimizado -->
+<section class="hero-section z-0 relative overflow-hidden">
+  <!-- Fondo de imagen -->
+  {backgroundImage && (
+    <div class="hero-background will-change-transform">
+      <ResponsiveImage
+        image={backgroundImage}
+        alt="Fondo del Hero"
+        title="Fondo"
+        class="hero-background-image"
+        aspectRatio="auto"
+        sizes="100vw"
+      />
+    </div>
+  )}
+  
+  <!-- Overlay configurable -->
+  {overlaySettings.overlayType !== 'none' && (
+    <div 
+      class="hero-overlay"
+      style={getOverlayStyle(overlaySettings)}
+    ></div>
+  )}
+  
+  <!-- Silueta de fondo (solo en desktop) - sobre el overlay -->
+  {silhouetteImage && (
+    <div class="hero-silhouette hidden md:block absolute inset-0 h-full pointer-events-none will-change-transform z-10">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
+        <div class={`absolute bottom-0 w-1/2 max-w-lg ${silhouettePosition === 'left' ? 'left-0 -ml-[10%]' : 'right-0 mr-0'} flex items-end justify-center`}>
+          <div class="relative w-full flex items-end justify-center transform origin-bottom">
+            <ResponsiveImage
+              image={silhouetteImage}
+              alt="Silueta del Hero"
+              title="Silueta"
+              class="w-full h-auto object-contain"
+              aspectRatio="auto"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+  
+  <!-- Contenido principal -->
+  <div class="hero-content relative z-20">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16 items-center h-full">
+        
+        <!-- Columna de texto -->
+        <div class="text-white space-y-6 z-40 text-center lg:text-left lg:col-span-2">
+          <p class={`hero-main-title animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`}>{mainTitle}</p>
+          <h1 class={`hero-subtitle animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.2s;">{subtitle}</h1>
+          <div 
+            class={`hero-description text-responsive-body-large animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} 
+            style="animation-delay: 0.4s;"
+            set:html={portableTextToHtml(description)}
+          ></div>
+          
+          {(primaryButton || secondaryButton) && (
+            <div class="hero-buttons animate-fade-in-up justify-center lg:justify-start" style="animation-delay: 0.6s;">
+              {primaryButton && (
+                <sl-button 
+                  href={getButtonUrl(primaryButton)}
+                  variant={primaryButton.variant === 'primary' ? 'primary' : primaryButton.variant === 'outline' ? 'outline' : 'neutral'}
+                  size="large"
+                  class="min-w-[180px]"
+                >
+                  {primaryButton.text}
+                </sl-button>
+              )}
+              
+              {secondaryButton && (
+                <sl-button 
+                  href={getButtonUrl(secondaryButton)}
+                  variant={secondaryButton.variant === 'primary' ? 'primary' : secondaryButton.variant === 'outline' ? 'outline' : 'neutral'}
+                  size="large"
+                  class="min-w-[180px]"
+                >
+                  {secondaryButton.text}
+                </sl-button>
+              )}
+            </div>
+          )}
+        </div>
+        
+        <!-- Columna vacía para balance visual -->
+        <div class="hidden lg:block"></div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <!-- Icono de scroll -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 animate-bounce">
+    <svg class="w-6 h-6 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  </div>
+</section>
+
+<!-- Sentinel para comportamiento del header sticky -->
+<div class="hero-sentinel" aria-hidden="true"></div>
+
+<style>
+  /* Animaciones simplificadas */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Estilos para la silueta */
+  .hero-silhouette {
+    overflow: visible;
+    z-index: 10;
+  }
+  
+  .hero-silhouette img {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  }
+  
+  /* Asegurar que el overlay esté debajo de la silueta */
+  .hero-overlay {
+    z-index: 5;
+  }
+  
+  /* Asegurar que el contenido esté por encima de todo */
+  .hero-content {
+    z-index: 20;
+    position: relative;
+  }
+  
+  /* Responsive simplificado */
+  @media (max-width: 640px) {
+    .hero-main-title {
+      font-size: 1.25rem !important;
+      line-height: 1.3 !important;
+    }
+    
+    .hero-subtitle {
+      font-size: 2rem !important;
+      line-height: 1.1 !important;
+    }
+    
+    .hero-buttons {
+      flex-direction: column !important;
+      gap: 1rem !important;
+    }
+    
+    .hero-buttons sl-button {
+      width: 100% !important;
+    }
+    
+  }
+  
+  /* Ajustes para tablet */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .hero-silhouette {
+      z-index: 10;
+    }
+    
+    .hero-silhouette img {
+      max-height: 70vh;
+      width: 50vw;
+      max-width: 400px;
+      min-width: 250px;
+      object-fit: contain;
+      object-position: left bottom;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    /* Ajustes para desktop - doble de tamaño */
+    .hero-silhouette {
+      z-index: 10;
+    }
+    
+    .hero-silhouette img {
+      max-height: 90vh;
+      width: 80vw; /* Doble del tamaño anterior */
+      max-width: 1200px; /* Límite superior aumentado */
+      min-width: 500px; /* Límite inferior aumentado */
+      object-fit: contain;
+      object-position: left bottom;
+    }
+    
+    /* Crecimiento gradual en pantallas muy anchas */
+    @media (min-width: 1400px) {
+      .hero-silhouette img {
+        width: 70vw;
+        max-width: 1000px;
+      }
+    }
+    
+    @media (min-width: 1800px) {
+      .hero-silhouette img {
+        width: 60vw;
+        max-width: 900px;
+      }
+    }
+  }
+  
+  /* Estilos para contenido enriquecido */
+  .hero-description p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .hero-description h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+  
+  .hero-description h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+  
+  .hero-description code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875em;
+  }
+</style>
+
+<script>
+  if (typeof window !== 'undefined') {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const section = (document.currentScript && typeof (document.currentScript as any).closest === 'function'
+      ? (document.currentScript as any).closest('section')
+      : document.querySelector('.hero-section'));
+    const bg = section ? section.querySelector('.hero-background') : null;
+    const sil = section ? section.querySelector('.hero-silhouette') : null;
+    if (section && !reduceMotion) {
+      let frame = 0;
+      const onScroll = () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          const top = (section as HTMLElement).offsetTop;
+          const height = (section as HTMLElement).offsetHeight || 1;
+          const y = window.scrollY || window.pageYOffset;
+          const raw = (y - top + window.innerHeight) / (height + window.innerHeight);
+          const progress = Math.max(0, Math.min(1, raw));
+          const bgY = (-6 + 10 * progress).toFixed(2);
+          const silY = (-2 + 4 * progress).toFixed(2);
+          if (bg) (bg as HTMLElement).style.transform = `translateY(${bgY}vh)`;
+          if (sil) (sil as HTMLElement).style.transform = `translateY(${silY}vh)`;
+        });
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    }
+  }
+  </script>

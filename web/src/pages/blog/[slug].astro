@@ -1,0 +1,137 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { sanityClient, fetchGlobalSettings } from "../../lib/sanityClient";
+import {buildLayoutProps} from "../../lib/head";
+import PageRenderer from "../../components/PageRenderer.astro";
+import BlogHero from "../../components/blocks/BlogHero.astro";
+import BlogMeta from "../../components/blocks/BlogMeta.astro";
+import BlogAuthor from "../../components/blocks/BlogAuthor.astro";
+
+export async function getStaticPaths() {
+    try {
+        const posts = await sanityClient.fetch(`
+            *[_type == "post"] {
+                slug,
+                title,
+                mainImage{..., asset->{_ref, url}},
+                publishedAt,
+                categories[]->{
+                    title,
+                    description
+                },
+                author->{
+                    name,
+                    image{..., asset->{_ref, url}},
+                    bio
+                },
+                blocks[]{
+                    'backgroundColor': coalesce(backgroundColor, 'none'),
+                    'backgroundLayout': coalesce(backgroundLayout, 'grid'),
+                    'contentLayout': coalesce(contentLayout, 'grid'),
+                    _type,
+                    ...,
+                    _type == "serviceBlock" => {
+                      "service": service->{
+                        title,
+                        duration,
+                        price,
+                        url,
+                        weight,
+                        shortDescription,
+                        longDescription,
+                        cardImage{..., asset->{_ref, url}},
+                        blockImage{..., asset->{_ref, url}}
+                      },
+                      variant,
+                      showPrice
+                    },
+                    _type == "serviceCarousel" => {
+                      "items": items[]->{
+                        title,
+                        duration,
+                        price,
+                        url,
+                        weight,
+                        shortDescription,
+                        longDescription,
+                        cardImage{..., asset->{_ref, url}},
+                        blockImage{..., asset->{_ref, url}}
+                      } | order(coalesce(weight, 100) asc, title asc),
+                      autoplay,
+                      intervalMs,
+                      showPrice
+                    },
+                    _type == "blockTestimonials" => {
+                      "items": items[]{
+                        image{..., asset->{_ref, url}, alt},
+                        quote,
+                        fullName
+                      }
+                    },
+                    _type == "blockLogos" => {
+                      title,
+                      logos[]{..., asset->{_ref, url}, alt}
+                    }
+                }
+            }
+        `);
+
+        return posts.map((post: { slug: { current: string }, title: string, mainImage: any, publishedAt: string, categories: any[], author: any, blocks: any[] }) => ({
+            params: { slug: post.slug.current },
+            props: { post }
+        }));
+    } catch (_err) {
+        return [];
+    }
+}
+
+interface BlogPost {
+    title: string;
+    mainImage: any;
+    publishedAt: string;
+    categories: Array<{
+        title: string;
+        description: string;
+    }>;
+    author: {
+        name: string;
+        image: any;
+        bio: any[];
+    };
+    blocks: any[];
+}
+
+const { post } = Astro.props as { post: BlogPost };
+const settings = await fetchGlobalSettings();
+const layoutProps = buildLayoutProps(post, settings);
+---
+
+<Layout {...layoutProps}>
+    <main class="min-h-screen">
+        <!-- Hero del post -->
+        <BlogHero
+            title={post.title}
+            mainImage={post.mainImage}
+            publishedAt={post.publishedAt}
+            author={post.author}
+            categories={post.categories}
+        />
+        
+        <!-- Meta información (tags y fecha) -->
+        <BlogMeta
+            categories={post.categories}
+            publishedAt={post.publishedAt}
+            author={post.author}
+        />
+        
+        <!-- Contenido del post -->
+        <section class="py-8">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <PageRenderer blocks={post.blocks} />
+            </div>
+        </section>
+        
+        <!-- Información del autor -->
+        <BlogAuthor author={post.author} />
+    </main>
+</Layout>

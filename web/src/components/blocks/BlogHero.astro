@@ -1,0 +1,58 @@
+---
+import Hero from './Hero.astro';
+
+interface BlogHeroProps {
+    title: string;
+    mainImage: any;
+    publishedAt?: string;
+    author?: {
+        name: string;
+    };
+    categories?: Array<{
+        title: string;
+    }>;
+}
+
+const { title, mainImage, publishedAt, author, categories } = Astro.props;
+
+// Función para formatear fecha
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+
+// Crear subtítulo con información del post
+const createSubtitle = () => {
+    const parts = [];
+    
+    if (author?.name) {
+        parts.push(`Por ${author.name}`);
+    }
+    
+    if (publishedAt) {
+        parts.push(formatDate(publishedAt));
+    }
+    
+    return parts.join(' • ');
+};
+
+// Crear descripción con categorías
+const createDescription = () => {
+    if (categories && categories.length > 0) {
+        const categoryNames = categories.map((cat: { title: string }) => cat.title).join(', ');
+        return `Categorías: ${categoryNames}`;
+    }
+    return '';
+};
+---
+
+<Hero
+    title={title}
+    subtitle={createSubtitle()}
+    description={createDescription()}
+    backgroundImage={mainImage}
+/>

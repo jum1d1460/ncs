@@ -1,0 +1,173 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { sanityClient, fetchGlobalSettings } from "../../lib/sanityClient";
+import {buildLayoutProps} from "../../lib/head";
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
+
+export async function getStaticPaths() {
+    try {
+        const posts = await sanityClient.fetch(`
+            *[_type == "post"] | order(publishedAt desc) {
+                _id,
+                title,
+                slug,
+                mainImage{..., asset->{_ref, url}},
+                publishedAt,
+                categories[]->{
+                    title,
+                    description
+                },
+                author->{
+                    name,
+                    image{..., asset->{_ref, url}}
+                },
+                "excerpt": array::join(string::split((pt::text(blocks[0..2])), "")[0..200], "") + "..."
+            }
+        `);
+
+        return [{
+            params: { slug: 'blog' },
+            props: { posts }
+        }];
+    } catch (_err) {
+        return [];
+    }
+}
+
+interface BlogPost {
+    _id: string;
+    title: string;
+    slug: { current: string };
+    mainImage: any;
+    publishedAt: string;
+    categories: Array<{
+        title: string;
+        description: string;
+    }>;
+    author: {
+        name: string;
+        image: any;
+    };
+    excerpt: string;
+}
+
+const { posts } = Astro.props as { posts: BlogPost[] };
+const settings = await fetchGlobalSettings();
+const layoutProps = buildLayoutProps({ title: 'Blog' }, settings);
+
+// Función para formatear fecha
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+---
+
+<Layout {...layoutProps}>
+    <main class="min-h-screen bg-gray-50">
+        <!-- Hero del blog -->
+        <section class="bg-gradient-to-br from-blue-900 to-blue-700 text-white py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
+                <p class="text-xl text-blue-200 max-w-2xl mx-auto">
+                    Descubre artículos, noticias y contenido relevante sobre nuestros servicios y la industria
+                </p>
+            </div>
+        </section>
+
+        <!-- Lista de posts -->
+        <section class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {posts.length > 0 ? (
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {posts.map((post) => (
+                            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                                <!-- Imagen del post -->
+                                {post.mainImage && (
+                                    <div class="aspect-w-16 aspect-h-9">
+                                        <ResponsiveImage
+                                            image={post.mainImage}
+                                            alt={post.title}
+                                            class="w-full h-48 object-cover"
+                                            aspectRatio="16:9"
+                                        />
+                                    </div>
+                                )}
+                                
+                                <!-- Contenido del post -->
+                                <div class="p-6">
+                                    <!-- Categorías -->
+                                    {post.categories && post.categories.length > 0 && (
+                                        <div class="flex flex-wrap gap-2 mb-3">
+                                            {post.categories.map((category) => (
+                                                <span class="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                                    {category.title}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                    
+                                    <!-- Título -->
+                                    <h2 class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                        <a href={`/blog/${post.slug.current}`} class="hover:text-blue-600 transition-colors">
+                                            {post.title}
+                                        </a>
+                                    </h2>
+                                    
+                                    <!-- Excerpt -->
+                                    <p class="text-gray-600 mb-4 line-clamp-3">
+                                        {post.excerpt}
+                                    </p>
+                                    
+                                    <!-- Meta información -->
+                                    <div class="flex items-center justify-between text-sm text-gray-500">
+                                        <div class="flex items-center space-x-2">
+                                            {post.author?.image && (
+                                                <div class="w-8 h-8 rounded-full overflow-hidden">
+                                                    <ResponsiveImage
+                                                        image={post.author.image}
+                                                        alt={post.author.name}
+                                                        class="w-full h-full object-cover"
+                                                        aspectRatio="1:1"
+                                                    />
+                                                </div>
+                                            )}
+                                            <span>{post.author?.name}</span>
+                                        </div>
+                                        <time datetime={post.publishedAt}>
+                                            {formatDate(post.publishedAt)}
+                                        </time>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                ) : (
+                    <div class="text-center py-12">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">No hay posts disponibles</h2>
+                        <p class="text-gray-600">Vuelve pronto para ver nuevos artículos.</p>
+                    </div>
+                )}
+            </div>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

@@ -72,7 +72,7 @@ const priceLabel = showPrice ? formatPrice(service?.price) : null;
 const availabilityOptions = formatAvailability(service?.availability);
 ---
 
-<article class="w-full h-full max-w-none flex flex-col md:flex-row bg-white rounded-xl border-2 border-gray-100 shadow-lg hover:shadow-2xl hover:border-gray-200 transition-all duration-300 p-3">
+<article class="w-full h-full flex flex-col md:flex-row bg-white rounded-xl border-2 border-gray-100 shadow-lg hover:shadow-2xl hover:border-gray-200 transition-all duration-300 p-3">
   <!-- Imagen del servicio -->
   {service?.cardImage && (
     <div class="md:w-1/3 flex-shrink-0 p-2">
@@ -86,8 +86,8 @@ const availabilityOptions = formatAvailability(service?.availability);
   )}
   
   <!-- Contenido del servicio -->
-  <div class="flex-1 p-4 md:p-6 flex flex-col justify-between h-full">
-    <div class="flex-1 flex flex-col">
+  <div class="flex-1 p-4 md:p-6 flex flex-col h-full">
+    <div class="flex flex-col h-full">
       <!-- Título del servicio -->
       <h3 class="text-responsive-h4 font-semibold text-gray-900 mb-1">
         {service?.url ? (
@@ -135,20 +135,20 @@ const availabilityOptions = formatAvailability(service?.availability);
       
       <!-- Descripción -->
       {service?.shortDescription && (
-        <p class="text-gray-700 text-responsive-body-large mb-4 leading-relaxed mt-4">
+        <p class="text-gray-700 text-responsive-body-large mb-4 leading-relaxed mt-4 flex-1">
           {service.shortDescription}
         </p>
       )}
       
       <!-- Bullet points en 2 columnas -->
       {service?.bulletPoints && service.bulletPoints.length > 0 && (
-        <div class="mb-4 grid grid-cols-2 gap-2 flex-1">
+        <div class="mb-4 grid grid-cols-2 gap-x-4 gap-y-0.5 h-[4.5rem] self-start">
           {service.bulletPoints.map((point) => (
-            <div class="flex items-start gap-2">
-              <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <div class="flex items-start gap-1 min-h-[1.25rem]">
+              <svg class="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
-              <span class="text-responsive-body-large text-gray-700">{point.text}</span>
+              <span class="text-responsive-body-small text-gray-700 leading-none block">{point.text}</span>
             </div>
           ))}
         </div>

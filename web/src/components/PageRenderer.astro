@@ -1,5 +1,7 @@
 ---
+import HeroHome from "./blocks/HeroHome.astro";
 import Hero from "./blocks/Hero.astro";
+import BlogHero from "./blocks/BlogHero.astro";
 import TextBlock from "./blocks/TextBlock.astro";
 import Service from "./blocks/Service.astro";
 import ServiceCarousel from "./blocks/ServiceCarousel.astro";
@@ -16,6 +18,10 @@ import BlockWrapper from "./blocks/BlockWrapper.astro";
 import { fetchBlogPostsForBlock } from "../lib/blog";
 
 const { blocks } = Astro.props;
+
+// Debug: verificar qué bloques se están renderizando (comentado para producción)
+// console.log('PageRenderer blocks:', blocks?.map((block: any) => ({ type: block._type, title: block.title || block.mainTitle })));
+// console.log('SimpleHero blocks in PageRenderer:', blocks?.filter((block: any) => block._type === 'blockSimpleHero'));
 
 // Resolver posts para bloques de blog en SSG
 const resolvedBlocks = await Promise.all((blocks ?? []).map(async (b: any) => {
@@ -54,19 +60,23 @@ if (import.meta.env.DEV) {
   
   switch (block._type) {
     case "blockHero":
-      return (
-        <BlockWrapper
-          backgroundColor={block.backgroundColor ?? 'none'}
-          backgroundLayout="full"
-          contentLayout="grid"
-        >
-          <Hero {...block} />
-        </BlockWrapper>
-      );
+      console.log('Rendering HeroHome:', block.mainTitle);
+      return <HeroHome {...block} />;
+    case "blockSimpleHero":
+      return <Hero {...block} />;
+    case "blockBlogHero":
+      console.log('Rendering BlogHero:', block.title);
+      return <BlogHero {...block} />;
     case "blockText":
       return <BlockWrapper {...commonProps}><TextBlock {...block} /></BlockWrapper>;
     case "serviceBlock":
-      return <BlockWrapper {...commonProps}><Service service={block.service} variant={block.variant} showPrice={block.showPrice} /></BlockWrapper>;
+      // Alternar posición de imagen basada en el índice del bloque
+      const serviceIndex = resolvedBlocks.findIndex((b: any) => b === block);
+      const imagePosition = serviceIndex % 2 === 0 ? 'right' : 'left';
+      // Mapear backgroundColor para el Service
+      const serviceBackgroundColor = block.backgroundColor === 'color1' ? 'primary' : 
+                                   block.backgroundColor === 'color2' ? 'secondary' : 'none';
+      return <BlockWrapper {...commonProps}><Service service={block.service} variant={block.variant} showPrice={block.showPrice} imagePosition={imagePosition} backgroundColor={serviceBackgroundColor} isWrapped={true} /></BlockWrapper>;
     case "serviceCarousel":
       return <BlockWrapper {...commonProps}><ServiceCarousel subtitle={block.subtitle} title={block.title} lead={block.lead} items={block.items} autoplay={block.autoplay} intervalMs={block.intervalMs} showPrice={block.showPrice} /></BlockWrapper>;
     case "blockTestimonials":

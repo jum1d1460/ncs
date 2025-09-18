@@ -18,36 +18,18 @@ interface Props {
 const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
 ---
 
-<section class="my-12">
+<section class="py-12 px-4 max-w-7xl mx-auto">
+  <!-- Encabezado centrado con título -->
   {title && (
-    <h2 class="text-responsive-h3 font-semibold mb-6">{title}</h2>
+    <div class="text-center max-w-4xl mx-auto mb-12">
+      <h2 class="text-responsive-h2 font-bold text-gray-900 mb-4">{title}</h2>
+    </div>
   )}
 
   {displayMode === 'grid' ? (
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list" aria-label="Lista de artículos del blog">
-      {posts.map((post) => (
-        <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition" role="listitem">
-          {post.mainImage && (
-            <a href={`/${post.slug?.current ?? ''}`} class="block">
-              <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="16/9" />
-            </a>
-          )}
-          <div class="p-4">
-            <h3 class="text-responsive-body font-semibold mb-2">
-              <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
-            </h3>
-            {post.publishedAt && (
-              <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
-            )}
-          </div>
-        </article>
-      ))}
-    </div>
-  ) : (
-    <div class="relative">
-      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory px-1" aria-roledescription="carousel" aria-label="Artículos del blog" tabindex="0">
         {posts.map((post) => (
-          <article class="min-w-[80%] sm:min-w-[45%] lg:min-w-[30%] bg-white rounded-lg shadow-sm hover:shadow-md transition snap-start">
+          <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition" role="listitem">
             {post.mainImage && (
               <a href={`/${post.slug?.current ?? ''}`} class="block">
                 <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="16/9" />
@@ -63,6 +45,27 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
             </div>
           </article>
         ))}
+    </div>
+  ) : (
+    <div class="relative">
+      <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory px-1" aria-roledescription="carousel" aria-label="Artículos del blog" tabindex="0">
+          {posts.map((post) => (
+            <article class="min-w-[80%] sm:min-w-[45%] lg:min-w-[30%] bg-white rounded-lg shadow-sm hover:shadow-md transition snap-start">
+              {post.mainImage && (
+                <a href={`/${post.slug?.current ?? ''}`} class="block">
+                  <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="16/9" />
+                </a>
+              )}
+              <div class="p-4">
+                <h3 class="text-responsive-body font-semibold mb-2">
+                  <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
+                </h3>
+                {post.publishedAt && (
+                  <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                )}
+              </div>
+            </article>
+          ))}
       </div>
     </div>
   )}

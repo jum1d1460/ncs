@@ -24,6 +24,8 @@ export default defineType({
             type: "array",
             of: [
                 { type: "blockHero"},
+                { type: "blockSimpleHero"},
+                { type: "blockBlogHero"},
                 { type: "blockContentSection"},
                 { type: "blockImage"},
                 { type: "serviceBlock"},

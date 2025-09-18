@@ -71,12 +71,12 @@ const {
     )}
   </div>
   
-  <!-- Contenedor del carrusel - solo las cards se extienden fuera -->
-  <div class="relative -mx-4 sm:-mx-6 lg:-mx-8">
-    <!-- Carrusel con overflow visible para que las cards se extiendan -->
+  <!-- Contenedor de ancho completo de ventana con overflow hidden -->
+  <div class="carousel-full-width-container">
+    <!-- Carrusel con overflow hidden para evitar scroll horizontal -->
     <div 
       id="services-carousel"
-      class="overflow-visible"
+      class="overflow-hidden"
       style="scrollbar-width: none; -ms-overflow-style: none;"
     >
       <div 
@@ -86,12 +86,10 @@ const {
       >
         {items.map((service, index) => (
           <div 
-            class="flex-shrink-0 w-full md:w-3/4 lg:w-3/4 pl-4 pr-4 first:pl-4 sm:first:pl-6 lg:first:pl-8 flex"
+            class="flex-shrink-0 carousel-card flex"
             data-service-index={index}
           >
-            <div class="w-full max-w-full flex">
-              <WideCard service={service} showPrice={showPrice} />
-            </div>
+            <WideCard service={service} showPrice={showPrice} />
           </div>
         ))}
       </div>
@@ -241,19 +239,16 @@ const {
       const container = this.track.parentElement
       if (!container) return
 
-      // Obtener el ancho del viewport completo (sin padding de grilla)
+      // Obtener el ancho del viewport
       this.containerWidth = window.innerWidth
       
       // Calcular ancho del item basado en breakpoint
-      if (window.innerWidth >= 1024) {
-        // Desktop: 75% del viewport, pero con padding de grilla
-        this.itemWidth = this.containerWidth * 0.75
-      } else if (window.innerWidth >= 768) {
-        // Tablet: 80% del viewport
-        this.itemWidth = this.containerWidth * 0.8
+      if (window.innerWidth >= 768) {
+        // Desktop: 60% del ancho de la grilla + margen
+        this.itemWidth = this.containerWidth * 0.6 + 16 // 16px de margen entre cards
       } else {
-        // Mobile: 90% del viewport
-        this.itemWidth = this.containerWidth * 0.9
+        // Mobile: 80% del ancho de la grilla + margen
+        this.itemWidth = this.containerWidth * 0.8 + 16 // 16px de margen entre cards
       }
 
       // NO aplicar anchos directamente - dejar que CSS maneje el layout
@@ -387,9 +382,60 @@ const {
 </script>
 
 <style>
-  /* Asegurar que el contenedor tenga el ancho correcto */
+  /* Asegurar que el contenedor tenga el ancho correcto y no cause overflow */
   #services-carousel {
     width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Contenedor de ancho completo de ventana con overflow hidden */
+  .carousel-full-width-container {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    overflow: hidden;
+  }
+  
+  /* El carrusel ocupa todo el ancho del contenedor */
+  #services-carousel {
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Ancho de las cards basado en la grilla central */
+  .carousel-card {
+    width: 80%; /* Mobile: 80% del ancho de la grilla */
+  }
+  
+  @media (min-width: 768px) {
+    .carousel-card {
+      width: 50%; /* Desktop: 60% del ancho de la grilla */
+    }
+  }
+  
+  /* Espaciado entre cards */
+  .carousel-card:not(:first-child) {
+    margin-left: 1rem; /* 16px de separación entre cards */
+  }
+  
+  /* Alineación de la primera card con la grilla central */
+  .carousel-card:first-child {
+    margin-left: calc(50vw - 50% + 1rem); /* Compensar la diferencia entre página y grilla + padding */
+  }
+  
+  @media (min-width: 640px) {
+    .carousel-card:first-child {
+      margin-left: calc(68vw - 50% + 1.5rem); /* Compensar la diferencia entre página y grilla + padding en sm */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .carousel-card:first-child {
+      margin-left: calc(68vw - 50% + 2rem); /* Compensar la diferencia entre página y grilla + padding en lg */
+    }
   }
   
   /* Smooth transitions para los controles */
@@ -415,11 +461,6 @@ const {
     align-items: stretch;
   }
   
-  /* Contenedor con overflow visible para cards que se extienden */
-  #services-carousel {
-    overflow: visible;
-  }
-  
   /* Asegurar altura uniforme para todas las cards */
   #carousel-track > div {
     display: flex;
@@ -430,6 +471,12 @@ const {
     display: flex;
     width: 100%;
   }
+  
+  /* Prevenir overflow horizontal en toda la página */
+  body {
+    overflow-x: hidden;
+  }
 </style>
+
 
 

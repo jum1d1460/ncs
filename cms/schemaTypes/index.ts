@@ -18,6 +18,8 @@ import blockImage from './blockImage'
 import quoteBlock from './quoteBlock'
 import blockBlogPosts from './blockBlogPosts'
 import blockContact from './blockContact'
+import blockSimpleHero from './blockSimpleHero'
+import blockBlogHero from './blockBlogHero'
 
 export const schemaTypes = [
     post, 
@@ -38,5 +40,7 @@ export const schemaTypes = [
     blockImage,
     quoteBlock,
     blockBlogPosts,
-    blockContact
+    blockContact,
+    blockSimpleHero,
+    blockBlogHero
 ]

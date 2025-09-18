@@ -42,9 +42,10 @@ export function buildLayoutProps(
     favicon?: { asset?: { url?: string } } | null
     ogImage?: { asset?: { url?: string } } | null
     brand?: { logo?: { asset?: { url?: string }, alt?: string } } | null
-    navMain?: { label?: string; url?: string }[]
+    navMain?: { label?: string; url?: string; children?: any[] }[]
     contact?: { phone?: string; whatsapp?: string; email?: string }
     bookingUrl?: string
+    footerTitle?: string
     seoFooterText?: string
     legalLinks?: { label?: string; url?: string }[]
     socialLinks?: { type?: string; url?: string }[]
@@ -61,6 +62,7 @@ export function buildLayoutProps(
     navMain: settings?.navMain ?? [],
     contact: settings?.contact ?? {},
     bookingUrl: settings?.bookingUrl,
+    footerTitle: settings?.footerTitle,
     seoFooterText: settings?.seoFooterText,
     legalLinks: settings?.legalLinks ?? [],
     socialLinks: settings?.socialLinks ?? [],

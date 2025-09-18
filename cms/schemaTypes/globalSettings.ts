@@ -29,7 +29,7 @@ export default defineType({
       name: 'navMain',
       title: 'Main Navigation',
       type: 'array',
-      description: 'Prioridad del enlace: URL > Página (slug). Si ambas están definidas, se utilizará la URL. Para enlaces externos, se recomienda target = "_blank".',
+      description: 'Menú principal de navegación con soporte para dos niveles.',
       of: [{
         type: 'object',
         name: 'navItem',
@@ -44,7 +44,8 @@ export default defineType({
             validation: (Rule) => Rule.custom((value, context) => {
               const v = (value || '').trim()
               const hasPage = Boolean((context as any)?.parent?.page)
-              if (!v && !hasPage) return 'Debes indicar una URL o seleccionar una página'
+              const hasChildren = Boolean((context as any)?.parent?.children?.length)
+              if (!v && !hasPage && !hasChildren) return 'Debes indicar una URL, seleccionar una página o agregar subelementos'
               if (!v) return true
               const isAbsolute = /^https?:\/\//.test(v)
               const isRelative = v.startsWith('/')
@@ -57,6 +58,54 @@ export default defineType({
             type: 'reference',
             to: [{type: 'page'}],
             description: 'Opcional. Se usará su slug como enlace cuando no haya URL.',
+          }),
+          defineField({
+            name: 'children',
+            title: 'Subelementos',
+            type: 'array',
+            description: 'Elementos del menú de segundo nivel.',
+            of: [{
+              type: 'object',
+              name: 'navSubItem',
+              title: 'Sub Nav Item',
+              fields: [
+                defineField({name: 'label', title: 'Label', type: 'string', validation: (Rule) => Rule.required()}),
+                defineField({
+                  name: 'url',
+                  title: 'URL (absoluta o relativa)',
+                  type: 'string',
+                  validation: (Rule) => Rule.custom((value, context) => {
+                    const v = (value || '').trim()
+                    const hasPage = Boolean((context as any)?.parent?.page)
+                    if (!v && !hasPage) return 'Debes indicar una URL o seleccionar una página'
+                    if (!v) return true
+                    const isAbsolute = /^https?:\/\//.test(v)
+                    const isRelative = v.startsWith('/')
+                    return (isAbsolute || isRelative) || 'La URL debe ser absoluta (http/https) o comenzar por /'
+                  })
+                }),
+                defineField({
+                  name: 'page',
+                  title: 'Página',
+                  type: 'reference',
+                  to: [{type: 'page'}],
+                  description: 'Opcional. Se usará su slug como enlace cuando no haya URL.',
+                }),
+                defineField({
+                  name: 'target',
+                  title: 'Target',
+                  type: 'string',
+                  options: {
+                    list: [
+                      {title: 'Misma pestaña', value: '_self'},
+                      {title: 'Nueva pestaña', value: '_blank'}
+                    ],
+                    layout: 'radio'
+                  },
+                  initialValue: '_self',
+                }),
+              ]
+            }]
           }),
           defineField({
             name: 'target',
@@ -101,10 +150,18 @@ export default defineType({
       validation: (Rule) => Rule.uri({allowRelative: false, scheme: ['http', 'https']})
     }),
     defineField({
+      name: 'footerTitle',
+      title: 'Footer Title',
+      type: 'string',
+      description: 'Título principal que aparece en el footer (ej: "Psicóloga Nelly Castro Sánchez")',
+      validation: (Rule) => Rule.required().min(2).max(100),
+    }),
+    defineField({
       name: 'seoFooterText',
       title: 'SEO Footer Text',
       type: 'text',
-      rows: 4
+      rows: 4,
+      description: 'Texto descriptivo que aparece debajo del título en el footer'
     }),
     defineField({
       name: 'legalLinks',

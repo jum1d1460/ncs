@@ -16,6 +16,56 @@ export async function getStaticPaths() {
                     'contentLayout': coalesce(contentLayout, 'grid'),
                     _type,
                     ...,
+                    _type == "blockSimpleHero" => {
+                        title,
+                        subtitle,
+                        description,
+                        cta{
+                            text,
+                            linkType,
+                            url,
+                            "internalPage": internalPage->{slug},
+                            variant
+                        },
+                        backgroundImage{..., asset->{_ref, url}}
+                    },
+                    _type == "blockBlogHero" => {
+                        title,
+                        mainImage{..., asset->{_ref, url}},
+                        publishedAt,
+                        "author": author->{
+                            name,
+                            image{..., asset->{_ref, url}},
+                            bio
+                        },
+                        "categories": categories[]->{
+                            title,
+                            description
+                        }
+                    },
+                    _type == "blockHero" => {
+                        mainTitle,
+                        subtitle,
+                        description,
+                        primaryButton{
+                            text,
+                            linkType,
+                            url,
+                            "internalPage": internalPage->{slug},
+                            variant
+                        },
+                        secondaryButton{
+                            text,
+                            linkType,
+                            url,
+                            "internalPage": internalPage->{slug},
+                            variant
+                        },
+                        backgroundImage{..., asset->{_ref, url}},
+                        silhouetteImage{..., asset->{_ref, url}},
+                        silhouettePosition,
+                        overlaySettings
+                    },
                     _type == "serviceBlock" => {
                       "service": service->{
                         title,
@@ -62,7 +112,7 @@ export async function getStaticPaths() {
             }
         `);
 
-        return pages.map((page: { slug: { current: string }, title: string, blocks: any[] }) => ({
+        return (pages as any[]).map((page: { slug: { current: string }, title: string, blocks: any[] }) => ({
             params: { slug: page.slug.current },
             props: { page }
         }));
@@ -77,6 +127,13 @@ interface CmsPage {
 }
 
 const { page } = Astro.props as { page: CmsPage };
+
+// Debug: verificar qué bloques se están recibiendo (comentado para producción)
+// console.log('Page title:', page?.title);
+// console.log('Page blocks:', page?.blocks?.map(block => ({ type: block._type, title: block.title || block.mainTitle })));
+// console.log('Page blocks count:', page?.blocks?.length);
+// console.log('SimpleHero blocks:', page?.blocks?.filter(block => block._type === 'blockSimpleHero'));
+
 const settings = await fetchGlobalSettings();
 const layoutProps = buildLayoutProps(page, settings);
 ---

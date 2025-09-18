@@ -21,27 +21,113 @@ export default defineType({
         defineField({
             name: "description",
             title: "Descripción",
-            type: "text",
-            description: "Descripción detallada del servicio o propuesta de valor"
+            type: "array",
+            of: [
+                {
+                    title: "Block",
+                    type: "block",
+                    styles: [
+                        {title: "Normal", value: "normal"},
+                        {title: "H3", value: "h3"},
+                        {title: "H4", value: "h4"}
+                    ],
+                    lists: [
+                        {title: "Bullet", value: "bullet"},
+                        {title: "Number", value: "number"}
+                    ],
+                    marks: {
+                        decorators: [
+                            {title: "Strong", value: "strong"},
+                            {title: "Emphasis", value: "em"},
+                            {title: "Code", value: "code"}
+                        ],
+                        annotations: [
+                            {
+                                title: "URL",
+                                name: "link",
+                                type: "object",
+                                fields: [
+                                    {
+                                        title: "URL",
+                                        name: "href",
+                                        type: "url"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ],
+            description: "Descripción detallada del servicio o propuesta de valor con formato enriquecido"
         }),
         defineField({
             name: "primaryButton",
             title: "Botón Principal",
             type: "object",
+            description: "Botón principal del Hero (opcional)",
             fields: [
-                { name: "text", title: "Texto", type: "string" },
-                { name: "url", title: "URL", type: "url" },
-                { name: "variant", title: "Variante", type: "string", options: { list: ["primary", "secondary", "outline"] } }
+                { name: "text", title: "Texto", type: "string", validation: Rule => Rule.required() },
+                { 
+                    name: "linkType", 
+                    title: "Tipo de Enlace", 
+                    type: "string", 
+                    options: { 
+                        list: [
+                            { title: "URL Externa", value: "external" },
+                            { title: "Página del Sitio", value: "internal" }
+                        ] 
+                    },
+                    initialValue: "external"
+                },
+                { 
+                    name: "url", 
+                    title: "URL Externa", 
+                    type: "url",
+                    hidden: ({parent}) => parent?.linkType !== "external"
+                },
+                { 
+                    name: "internalPage", 
+                    title: "Página del Sitio", 
+                    type: "reference",
+                    to: {type: "page"},
+                    hidden: ({parent}) => parent?.linkType !== "internal"
+                },
+                { name: "variant", title: "Variante", type: "string", options: { list: ["primary", "secondary", "outline"] }, initialValue: "primary" }
             ]
         }),
         defineField({
             name: "secondaryButton",
             title: "Botón Secundario",
             type: "object",
+            description: "Botón secundario del Hero (opcional)",
             fields: [
-                { name: "text", title: "Texto", type: "string" },
-                { name: "url", title: "URL", type: "url" },
-                { name: "variant", title: "Variante", type: "string", options: { list: ["primary", "secondary", "outline"] } }
+                { name: "text", title: "Texto", type: "string", validation: Rule => Rule.required() },
+                { 
+                    name: "linkType", 
+                    title: "Tipo de Enlace", 
+                    type: "string", 
+                    options: { 
+                        list: [
+                            { title: "URL Externa", value: "external" },
+                            { title: "Página del Sitio", value: "internal" }
+                        ] 
+                    },
+                    initialValue: "external"
+                },
+                { 
+                    name: "url", 
+                    title: "URL Externa", 
+                    type: "url",
+                    hidden: ({parent}) => parent?.linkType !== "external"
+                },
+                { 
+                    name: "internalPage", 
+                    title: "Página del Sitio", 
+                    type: "reference",
+                    to: {type: "page"},
+                    hidden: ({parent}) => parent?.linkType !== "internal"
+                },
+                { name: "variant", title: "Variante", type: "string", options: { list: ["primary", "secondary", "outline"] }, initialValue: "secondary" }
             ]
         }),
         defineField({

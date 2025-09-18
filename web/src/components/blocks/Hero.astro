@@ -1,134 +1,54 @@
 ---
 import ResponsiveImage from '../ResponsiveImage.astro';
+import { portableTextToHtml } from '../../lib/portableText';
 
 interface ButtonProps {
   text: string;
-  url: string;
+  linkType?: 'external' | 'internal';
+  url?: string;
+  internalPage?: {
+    slug: { current: string };
+  };
   variant: 'primary' | 'secondary' | 'outline';
 }
 
-interface OverlaySettings {
-  overlayType: 'radial' | 'linear' | 'solid' | 'none';
-  overlayColor: string;
-  overlayOpacity: number;
-  secondaryColor: string;
-  gradientDirection: string;
-  radialPosition: string;
-  shadowIntensity: 'soft' | 'medium' | 'strong' | 'none';
-  secondaryOpacity: number;
-}
-
-interface HeroProps {
-  mainTitle: string;
-  subtitle: string;
-  description: string;
-  primaryButton: ButtonProps;
-  secondaryButton: ButtonProps;
+interface SimpleHeroProps {
+  title: string;
+  subtitle?: string;
+  description?: any;
+  cta?: ButtonProps;
   backgroundImage: any;
-  silhouetteImage: any;
-  silhouettePosition: 'right' | 'left' | 'center';
-  overlaySettings?: OverlaySettings;
 }
 
 const { 
-  mainTitle, 
-  subtitle, 
-  description, 
-  primaryButton, 
-  secondaryButton, 
-  backgroundImage, 
-  silhouetteImage, 
-  silhouettePosition = 'right',
-  overlaySettings = {
-    overlayType: 'radial',
-    overlayColor: '#1e3a8a',
-    overlayOpacity: 0.8,
-    secondaryColor: '#000000',
-    gradientDirection: 'to bottom',
-    radialPosition: 'center',
-    shadowIntensity: 'medium',
-    secondaryOpacity: 0.8
-  }
+  title,
+  subtitle,
+  description,
+  cta,
+  backgroundImage
 } = Astro.props;
 
-// Función para obtener la clase de posición de la silueta
-const getSilhouettePositionClass = (position: string) => {
-  switch (position) {
-    case 'left':
-      return 'lg:order-first';
-    case 'center':
-      return 'lg:order-none';
-    case 'right':
-    default:
-      return 'lg:order-last';
-  }
-};
+// Debug: verificar que el Hero se está renderizando (comentado para producción)
+// console.log('Hero component rendered with:', { 
+//   title, 
+//   subtitle, 
+//   backgroundImage: !!backgroundImage, 
+//   cta: !!cta,
+//   description: !!description 
+// });
+// console.log('Hero props:', Astro.props);
 
-// Función para generar el estilo del overlay
-const getOverlayStyle = (settings: OverlaySettings) => {
-  if (settings.overlayType === 'none') return '';
-  
-  const primaryOpacity = settings.overlayOpacity;
-  const secondaryOpacity = settings.secondaryOpacity;
-  const primaryColor = settings.overlayColor;
-  const secondaryColor = settings.secondaryColor;
-  
-  // Función auxiliar para convertir color hex a rgb
-  const hexToRgb = (hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
-  };
-  
-  // Función para crear color rgba
-  const createRgba = (color: string, opacity: number) => {
-    if (color.startsWith('rgb')) {
-      // Si ya es rgb, convertir a rgba
-      return color.replace('rgb', 'rgba').replace(')', `, ${opacity})`);
-    } else if (color.startsWith('#')) {
-      // Si es hex, convertir a rgba
-      const rgb = hexToRgb(color);
-      if (rgb) {
-        return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
-      }
-    }
-    // Si no se puede convertir, usar el color original
-    return color;
-  };
-  
-  switch (settings.overlayType) {
-    case 'radial':
-      return `background: radial-gradient(ellipse at ${settings.radialPosition}, ${createRgba(primaryColor, primaryOpacity)}, ${createRgba(secondaryColor, secondaryOpacity)});`;
-    case 'linear':
-      return `background: linear-gradient(${settings.gradientDirection}, ${createRgba(primaryColor, primaryOpacity)}, ${createRgba(secondaryColor, secondaryOpacity)});`;
-    case 'solid':
-      return `background: ${createRgba(primaryColor, primaryOpacity)};`;
-    default:
-      return '';
+// Función para obtener la URL del botón
+const getButtonUrl = (button: ButtonProps) => {
+  if (button.linkType === 'internal' && button.internalPage?.slug) {
+    return `/${button.internalPage.slug.current}`;
   }
-};
-
-// Función para obtener la intensidad de la sombra del texto
-const getShadowClass = (intensity: string) => {
-  switch (intensity) {
-    case 'soft':
-      return 'text-shadow-soft';
-    case 'medium':
-      return 'text-shadow-medium';
-    case 'strong':
-      return 'text-shadow-strong';
-    case 'none':
-    default:
-      return '';
-  }
+  return button.url || '#';
 };
 ---
 
-<!-- Hero Section simplificado y optimizado -->
-<section class="hero-section z-0 relative overflow-hidden">
+<!-- Hero Section simplificado -->
+<section class="hero-section-fullwidth relative overflow-hidden">
   <!-- Fondo de imagen -->
   {backgroundImage && (
     <div class="hero-background will-change-transform">
@@ -143,82 +63,56 @@ const getShadowClass = (intensity: string) => {
     </div>
   )}
   
-  <!-- Silueta de fondo (solo en desktop) -->
-  {silhouetteImage && (
-    <div class="hero-silhouette hidden md:block absolute inset-0 h-full pointer-events-none will-change-transform">
-      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
-        <div class={`absolute bottom-0 w-1/2 max-w-lg ${silhouettePosition === 'left' ? 'left-0 -ml-[10%]' : 'right-0 mr-0'} flex items-end justify-center`}>
-          <div class="relative w-full flex items-end justify-center transform origin-bottom">
-            <ResponsiveImage
-              image={silhouetteImage}
-              alt="Silueta del Hero"
-              title="Silueta"
-              class="w-full h-auto object-contain"
-              aspectRatio="auto"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-  
-  <!-- Overlay configurable -->
-  {overlaySettings.overlayType !== 'none' && (
-    <div 
-      class="hero-overlay"
-      style={getOverlayStyle(overlaySettings)}
-    ></div>
-  )}
+  <!-- Overlay sutil -->
+  <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(30, 58, 138, 0.7), rgba(0, 0, 0, 0.5));"></div>
   
   <!-- Contenido principal -->
-  <div class="hero-content">
+  <div class="hero-content absolute inset-0 z-20 flex items-center justify-center">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16 items-center h-full">
-        
-        <!-- Columna de texto -->
-        <div class="text-white space-y-6 z-40 text-responsive-body-large text-center lg:text-left lg:col-span-2">
-          <p class={`hero-main-title animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`}>{mainTitle}</p>
-          <h1 class={`hero-subtitle animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.2s;">{subtitle}</h1>
-          <p class={`hero-description text-responsive-body-large animate-fade-in-up ${getShadowClass(overlaySettings.shadowIntensity)}`} style="animation-delay: 0.4s;">{description}</p>
+      <div class="flex items-center justify-center py-16">
+        <div class="text-white text-center space-y-6 max-w-4xl">
+          <!-- Subtítulo (opcional) -->
+          {subtitle && (
+            <p class="hero-main-title animate-fade-in-up text-blue-200">
+              {subtitle}
+            </p>
+          )}
           
-          <div class="hero-buttons animate-fade-in-up justify-center lg:justify-start" style="animation-delay: 0.6s;">
-            {primaryButton && (
+          <!-- Título principal -->
+          <h1 class="hero-subtitle animate-fade-in-up text-shadow-medium" style="animation-delay: 0.2s;">
+            {title}
+          </h1>
+          
+          <!-- Descripción (opcional) -->
+          {description && (
+            <div 
+              class="hero-description text-responsive-body-large animate-fade-in-up text-gray-200" 
+              style="animation-delay: 0.4s;"
+              set:html={portableTextToHtml(description)}
+            ></div>
+          )}
+          
+          <!-- CTA (opcional) -->
+          {cta && (
+            <div class="hero-buttons animate-fade-in-up" style="animation-delay: 0.6s;">
               <sl-button 
-                href={primaryButton.url}
-                variant={primaryButton.variant === 'primary' ? 'primary' : primaryButton.variant === 'outline' ? 'outline' : 'neutral'}
+                href={getButtonUrl(cta)}
+                variant={cta.variant === 'primary' ? 'primary' : cta.variant === 'outline' ? 'outline' : 'neutral'}
                 size="large"
                 class="min-w-[180px]"
               >
-                {primaryButton.text}
+                {cta.text}
               </sl-button>
-            )}
-            
-            {secondaryButton && (
-              <sl-button 
-                href={secondaryButton.url}
-                variant={secondaryButton.variant === 'primary' ? 'primary' : secondaryButton.variant === 'outline' ? 'outline' : 'neutral'}
-                size="large"
-                class="min-w-[180px]"
-              >
-                {secondaryButton.text}
-              </sl-button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-        
-        <!-- Columna vacía para balance visual -->
-        <div class="hidden lg:block"></div>
-        
       </div>
     </div>
   </div>
 </section>
 
-<!-- Sentinel para comportamiento del header sticky -->
-<div class="hero-sentinel" aria-hidden="true"></div>
-
 <style>
-  /* Animaciones simplificadas */
+  /* Animaciones */
   .animate-fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
     opacity: 0;
@@ -232,83 +126,122 @@ const getShadowClass = (intensity: string) => {
     }
   }
   
-  /* Estilos para la silueta */
-  .hero-silhouette {
-    overflow: visible;
+  /* Estilos del fondo */
+  .simple-hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
   }
   
-  .hero-silhouette img {
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  .simple-hero-background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
   
-  /* Responsive simplificado */
+  /* Overlay sutil */
+  .simple-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.7), rgba(0, 0, 0, 0.5));
+    z-index: 5;
+  }
+  
+  /* Contenido */
+  .simple-hero-content {
+    z-index: 20;
+    position: relative;
+  }
+  
+  /* Tipografía */
+  .simple-hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+  }
+  
+  .simple-hero-subtitle {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0;
+  }
+  
+  .simple-hero-description {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  /* Responsive */
   @media (max-width: 640px) {
-    .hero-main-title {
-      font-size: 1.25rem !important;
-      line-height: 1.3 !important;
+    .simple-hero-section {
+      min-height: 50vh;
     }
     
-    .hero-subtitle {
+    .simple-hero-title {
       font-size: 2rem !important;
-      line-height: 1.1 !important;
+      line-height: 1.2 !important;
     }
     
-    .hero-buttons {
-      flex-direction: column !important;
-      gap: 1rem !important;
+    .simple-hero-subtitle {
+      font-size: 1rem !important;
     }
     
-    .hero-buttons sl-button {
+    .simple-hero-description {
+      font-size: 0.9rem !important;
+    }
+    
+    .simple-hero-cta sl-button {
       width: 100% !important;
     }
-    
   }
   
-  /* Ajustes para tablet */
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .hero-silhouette {
-      z-index: 2;
-    }
-    
-    .hero-silhouette img {
-      max-height: 70vh;
-      width: 50vw;
-      max-width: 400px;
-      min-width: 250px;
-      object-fit: contain;
-      object-position: left bottom;
+  @media (min-width: 641px) and (max-width: 1023px) {
+    .simple-hero-section {
+      min-height: 55vh;
     }
   }
   
   @media (min-width: 1024px) {
-    /* Ajustes para desktop - doble de tamaño */
-    .hero-silhouette {
-      z-index: 2;
+    .simple-hero-section {
+      min-height: 60vh;
     }
-    
-    .hero-silhouette img {
-      max-height: 90vh;
-      width: 80vw; /* Doble del tamaño anterior */
-      max-width: 1200px; /* Límite superior aumentado */
-      min-width: 500px; /* Límite inferior aumentado */
-      object-fit: contain;
-      object-position: left bottom;
-    }
-    
-    /* Crecimiento gradual en pantallas muy anchas */
-    @media (min-width: 1400px) {
-      .hero-silhouette img {
-        width: 70vw;
-        max-width: 1000px;
-      }
-    }
-    
-    @media (min-width: 1800px) {
-      .hero-silhouette img {
-        width: 60vw;
-        max-width: 900px;
-      }
-    }
+  }
+  
+  /* Estilos para contenido enriquecido */
+  .simple-hero-description p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .simple-hero-description h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+  
+  .simple-hero-description h4 {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+  }
+  
+  .simple-hero-description code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875em;
   }
 </style>
 
@@ -317,9 +250,9 @@ const getShadowClass = (intensity: string) => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const section = (document.currentScript && typeof (document.currentScript as any).closest === 'function'
       ? (document.currentScript as any).closest('section')
-      : document.querySelector('.hero-section'));
-    const bg = section ? section.querySelector('.hero-background') : null;
-    const sil = section ? section.querySelector('.hero-silhouette') : null;
+      : document.querySelector('.simple-hero-section'));
+    const bg = section ? section.querySelector('.simple-hero-background') : null;
+    
     if (section && !reduceMotion) {
       let frame = 0;
       const onScroll = () => {
@@ -331,10 +264,8 @@ const getShadowClass = (intensity: string) => {
           const y = window.scrollY || window.pageYOffset;
           const raw = (y - top + window.innerHeight) / (height + window.innerHeight);
           const progress = Math.max(0, Math.min(1, raw));
-          const bgY = (-6 + 10 * progress).toFixed(2);
-          const silY = (-2 + 4 * progress).toFixed(2);
+          const bgY = (-3 + 6 * progress).toFixed(2);
           if (bg) (bg as HTMLElement).style.transform = `translateY(${bgY}vh)`;
-          if (sil) (sil as HTMLElement).style.transform = `translateY(${silY}vh)`;
         });
       };
       onScroll();
@@ -342,4 +273,4 @@ const getShadowClass = (intensity: string) => {
       window.addEventListener('resize', onScroll);
     }
   }
-  </script>
+</script>
