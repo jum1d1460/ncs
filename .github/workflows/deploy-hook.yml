@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy (Deploy Hook)
 
 on:
   push:
@@ -34,28 +34,14 @@ jobs:
         PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
         PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
         
-    - name: Verify secrets
+    - name: Verify Deploy Hook
       run: |
-        echo "Verificando secretos de Cloudflare..."
-        if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
-          echo "❌ CLOUDFLARE_API_TOKEN no está definido"
+        if [ -z "${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}" ]; then
+          echo "❌ CLOUDFLARE_PAGES_DEPLOY_HOOK_URL no está definido"
+          echo "Configura el Deploy Hook en Cloudflare Pages y agrega la URL como secreto"
           exit 1
         else
-          echo "✅ CLOUDFLARE_API_TOKEN está definido"
-        fi
-        
-        if [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
-          echo "❌ CLOUDFLARE_ACCOUNT_ID no está definido"
-          exit 1
-        else
-          echo "✅ CLOUDFLARE_ACCOUNT_ID está definido"
-        fi
-        
-        if [ -z "${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}" ]; then
-          echo "❌ CLOUDFLARE_PAGES_PROJECT_NAME no está definido"
-          exit 1
-        else
-          echo "✅ CLOUDFLARE_PAGES_PROJECT_NAME está definido: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}"
+          echo "✅ CLOUDFLARE_PAGES_DEPLOY_HOOK_URL está definido"
         fi
         
     - name: List dist contents
@@ -63,7 +49,14 @@ jobs:
         echo "Contenido del directorio dist:"
         ls -la dist/
         
-    - name: Deploy to Cloudflare Pages
+    - name: Deploy to Cloudflare Pages (Deploy Hook)
+      run: |
+        echo "Desplegando usando Deploy Hook..."
+        curl -X POST "${{ secrets.CLOUDFLARE_PAGES_DEPLOY_HOOK_URL }}" \
+          -H "Content-Type: application/json" \
+          -d '{"project": "ncs-web", "branch": "main"}'
+        
+    - name: Upload dist to Cloudflare Pages
       uses: cloudflare/pages-action@v1
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
