@@ -51,7 +51,7 @@ interface BlogPost {
     excerpt: string;
 }
 
-const { posts } = Astro.props as { posts: BlogPost[] };
+const { posts = [] } = Astro.props as { posts: BlogPost[] };
 const settings = await fetchGlobalSettings();
 const layoutProps = buildLayoutProps({ title: 'Blog' }, settings);
 

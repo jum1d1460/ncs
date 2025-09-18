@@ -19,6 +19,15 @@ class DependencyChecker {
     };
   }
 
+  // Función helper para validar rutas de forma segura
+  validatePath(filePath) {
+    const normalizedPath = path.normalize(filePath);
+    const resolvedPath = path.resolve(normalizedPath);
+    const projectRoot = path.resolve(this.projectRoot);
+    
+    return resolvedPath.startsWith(projectRoot);
+  }
+
   async runCheck() {
     console.log('🔍 Verificando dependencias del CMS...\n');
 
@@ -188,20 +197,24 @@ class DependencyChecker {
   generateReport() {
     const outputDir = path.join(this.projectRoot, 'security-reports');
     
-    if (!fs.existsSync(outputDir)) {
+    if (!this.validatePath(outputDir) || !fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
     
     // Reporte JSON
     const jsonPath = path.join(outputDir, `dependency-report-${Date.now()}.json`);
-    fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
-    console.log(`📄 Reporte de dependencias generado: ${jsonPath}`);
+    if (this.validatePath(jsonPath)) {
+      fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
+      console.log(`📄 Reporte de dependencias generado: ${jsonPath}`);
+    }
     
     // Reporte de texto
     const textPath = path.join(outputDir, `dependency-report-${Date.now()}.txt`);
     const textReport = this.generateTextReport();
-    fs.writeFileSync(textPath, textReport);
-    console.log(`📄 Reporte de texto generado: ${textPath}`);
+    if (this.validatePath(textPath)) {
+      fs.writeFileSync(textPath, textReport);
+      console.log(`📄 Reporte de texto generado: ${textPath}`);
+    }
     
     this.printSummary();
   }

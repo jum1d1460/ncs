@@ -46,6 +46,15 @@ class SecretDetector {
     ];
   }
 
+  // Función helper para validar rutas de forma segura
+  validatePath(filePath) {
+    const normalizedPath = path.normalize(filePath);
+    const resolvedPath = path.resolve(normalizedPath);
+    const projectRoot = path.resolve(this.projectRoot);
+    
+    return resolvedPath.startsWith(projectRoot);
+  }
+
   async runDetection() {
     console.log('🔍 Detectando secrets hardcodeados en el código...\n');
 
@@ -59,10 +68,14 @@ class SecretDetector {
   }
 
   async scanDirectory(dir) {
+    if (!this.validatePath(dir)) return;
+    
     const items = fs.readdirSync(dir);
     
     for (const item of items) {
       const fullPath = path.join(dir, item);
+      if (!this.validatePath(fullPath)) continue;
+      
       const stat = fs.statSync(fullPath);
       
       if (stat.isDirectory()) {
@@ -100,6 +113,7 @@ class SecretDetector {
 
   async scanFile(filePath) {
     try {
+      if (!this.validatePath(filePath)) return;
       const content = fs.readFileSync(filePath, 'utf8');
       const relativePath = path.relative(this.projectRoot, filePath);
       
@@ -145,7 +159,7 @@ class SecretDetector {
   generateReport() {
     const outputDir = path.join(this.projectRoot, 'security-reports');
     
-    if (!fs.existsSync(outputDir)) {
+    if (!this.validatePath(outputDir) || !fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
     
@@ -162,14 +176,18 @@ class SecretDetector {
       }
     };
     
-    fs.writeFileSync(jsonPath, JSON.stringify(report, null, 2));
-    console.log(`📄 Reporte de secrets generado: ${jsonPath}`);
+    if (this.validatePath(jsonPath)) {
+      fs.writeFileSync(jsonPath, JSON.stringify(report, null, 2));
+      console.log(`📄 Reporte de secrets generado: ${jsonPath}`);
+    }
     
     // Reporte de texto
     const textPath = path.join(outputDir, `secrets-report-${Date.now()}.txt`);
     const textReport = this.generateTextReport(report);
-    fs.writeFileSync(textPath, textReport);
-    console.log(`📄 Reporte de texto generado: ${textPath}`);
+    if (this.validatePath(textPath)) {
+      fs.writeFileSync(textPath, textReport);
+      console.log(`📄 Reporte de texto generado: ${textPath}`);
+    }
     
     this.printSummary(report);
   }

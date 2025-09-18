@@ -19,6 +19,16 @@ class ConfigValidator {
     };
   }
 
+  // Función helper para validar rutas de forma segura
+  validatePath(filePath) {
+    // Normalizar la ruta y verificar que esté dentro del directorio del proyecto
+    const normalizedPath = path.normalize(filePath);
+    const resolvedPath = path.resolve(normalizedPath);
+    const projectRoot = path.resolve(this.projectRoot);
+    
+    return resolvedPath.startsWith(projectRoot);
+  }
+
   async runValidation() {
     console.log('⚙️ Validando configuración de Sanity CMS...\n');
 
@@ -39,7 +49,7 @@ class ConfigValidator {
     
     const configPath = path.join(this.projectRoot, 'sanity.config.ts');
     
-    if (!fs.existsSync(configPath)) {
+    if (!this.validatePath(configPath) || !fs.existsSync(configPath)) {
       this.report.config.sanity.checks.push({
         name: 'Config File Exists',
         status: 'fail',
@@ -49,6 +59,9 @@ class ConfigValidator {
       return;
     }
 
+    if (!this.validatePath(configPath)) {
+      throw new Error('Ruta de archivo no válida');
+    }
     const configContent = fs.readFileSync(configPath, 'utf8');
     
     // Verificar configuraciones de seguridad
@@ -111,8 +124,8 @@ class ConfigValidator {
     const envLocalPath = path.join(this.projectRoot, '.env.local');
     
     const envFiles = [];
-    if (fs.existsSync(envPath)) envFiles.push(envPath);
-    if (fs.existsSync(envLocalPath)) envFiles.push(envLocalPath);
+    if (this.validatePath(envPath) && fs.existsSync(envPath)) envFiles.push(envPath);
+    if (this.validatePath(envLocalPath) && fs.existsSync(envLocalPath)) envFiles.push(envLocalPath);
     
     if (envFiles.length === 0) {
       this.report.config.sanity.checks.push({
@@ -134,6 +147,7 @@ class ConfigValidator {
 
     criticalVars.forEach(varName => {
       const found = envFiles.some(file => {
+        if (!this.validatePath(file)) return false;
         const content = fs.readFileSync(file, 'utf8');
         return content.includes(varName);
       });
@@ -158,7 +172,7 @@ class ConfigValidator {
         name: 'HTTPS Configuration',
         check: () => {
           const configPath = path.join(this.projectRoot, 'sanity.config.ts');
-          if (!fs.existsSync(configPath)) return false;
+          if (!this.validatePath(configPath) || !fs.existsSync(configPath)) return false;
           const content = fs.readFileSync(configPath, 'utf8');
           return content.includes('https') || content.includes('secure');
         },
@@ -170,7 +184,7 @@ class ConfigValidator {
         name: 'API Rate Limiting',
         check: () => {
           const configPath = path.join(this.projectRoot, 'sanity.config.ts');
-          if (!fs.existsSync(configPath)) return false;
+          if (!this.validatePath(configPath) || !fs.existsSync(configPath)) return false;
           const content = fs.readFileSync(configPath, 'utf8');
           return content.includes('rate') || content.includes('limit');
         },
@@ -182,7 +196,7 @@ class ConfigValidator {
         name: 'Input Validation',
         check: () => {
           const schemaPath = path.join(this.projectRoot, 'schemaTypes');
-          if (!fs.existsSync(schemaPath)) return false;
+          if (!this.validatePath(schemaPath) || !fs.existsSync(schemaPath)) return false;
           const files = fs.readdirSync(schemaPath);
           return files.some(file => file.includes('validation'));
         },
@@ -227,20 +241,24 @@ class ConfigValidator {
   generateReport() {
     const outputDir = path.join(this.projectRoot, 'security-reports');
     
-    if (!fs.existsSync(outputDir)) {
+    if (!this.validatePath(outputDir) || !fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
     
     // Reporte JSON
     const jsonPath = path.join(outputDir, `config-report-${Date.now()}.json`);
-    fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
-    console.log(`📄 Reporte de configuración generado: ${jsonPath}`);
+    if (this.validatePath(jsonPath)) {
+      fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
+      console.log(`📄 Reporte de configuración generado: ${jsonPath}`);
+    }
     
     // Reporte de texto
     const textPath = path.join(outputDir, `config-report-${Date.now()}.txt`);
     const textReport = this.generateTextReport();
-    fs.writeFileSync(textPath, textReport);
-    console.log(`📄 Reporte de texto generado: ${textPath}`);
+    if (this.validatePath(textPath)) {
+      fs.writeFileSync(textPath, textReport);
+      console.log(`📄 Reporte de texto generado: ${textPath}`);
+    }
     
     this.printSummary();
   }

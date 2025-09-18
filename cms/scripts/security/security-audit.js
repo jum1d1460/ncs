@@ -10,6 +10,7 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 class SecurityAuditor {
   constructor() {
+    this.projectRoot = path.join(__dirname, '..', '..');
     this.report = {
       timestamp: new Date().toISOString(),
       project: 'cms',
@@ -24,6 +25,15 @@ class SecurityAuditor {
         low: 0
       }
     };
+  }
+
+  // Función helper para validar rutas de forma segura
+  validatePath(filePath) {
+    const normalizedPath = path.normalize(filePath);
+    const resolvedPath = path.resolve(normalizedPath);
+    const projectRoot = path.resolve(this.projectRoot);
+    
+    return resolvedPath.startsWith(projectRoot);
   }
 
   async runAudit() {
@@ -110,7 +120,7 @@ class SecurityAuditor {
     
     const sanityConfigPath = path.join(__dirname, '..', '..', 'sanity.config.ts');
     
-    if (fs.existsSync(sanityConfigPath)) {
+    if (this.validatePath(sanityConfigPath) && fs.existsSync(sanityConfigPath)) {
       const configContent = fs.readFileSync(sanityConfigPath, 'utf8');
       
       // Verificar configuraciones de seguridad básicas
@@ -142,23 +152,27 @@ class SecurityAuditor {
   generateReport() {
     const outputDir = path.join(__dirname, '..', '..', config.reporting.outputDir);
     
-    if (!fs.existsSync(outputDir)) {
+    if (!this.validatePath(outputDir) || !fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
     
     // Reporte JSON
     if (config.reporting.formats.includes('json')) {
       const jsonPath = path.join(outputDir, `security-report-${Date.now()}.json`);
-      fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
-      console.log(`📄 Reporte JSON generado: ${jsonPath}`);
+      if (this.validatePath(jsonPath)) {
+        fs.writeFileSync(jsonPath, JSON.stringify(this.report, null, 2));
+        console.log(`📄 Reporte JSON generado: ${jsonPath}`);
+      }
     }
     
     // Reporte de texto
     if (config.reporting.formats.includes('text')) {
       const textPath = path.join(outputDir, `security-report-${Date.now()}.txt`);
       const textReport = this.generateTextReport();
-      fs.writeFileSync(textPath, textReport);
-      console.log(`📄 Reporte de texto generado: ${textPath}`);
+      if (this.validatePath(textPath)) {
+        fs.writeFileSync(textPath, textReport);
+        console.log(`📄 Reporte de texto generado: ${textPath}`);
+      }
     }
     
     // Mostrar resumen en consola
