@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     defaults:
       run:
         working-directory: ./web
@@ -37,9 +38,15 @@ jobs:
     - name: Check GitHub secrets
       run: |
         echo "=== CHECKING GITHUB SECRETS ==="
+        echo "Environment: ${{ github.environment }}"
+        echo "Branch: ${{ github.ref_name }}"
         echo "Verificando si los secretos están definidos en GitHub..."
         
-        # Verificar si los secretos existen (sin mostrar valores)
+        # Mostrar valores de los secretos para debugging
+        echo "CLOUDFLARE_API_TOKEN value: '${{ secrets.CLOUDFLARE_API_TOKEN }}'"
+        echo "CLOUDFLARE_ACCOUNT_ID value: '${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'"
+        
+        # Verificar si los secretos existen
         if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
           echo "✅ CLOUDFLARE_API_TOKEN está definido en GitHub"
         else
