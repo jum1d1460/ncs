@@ -1,4 +1,4 @@
-name = "ncs-static-site"
+name = "ncs"
 main = "static-site-worker.js"
 compatibility_date = "2024-09-18"
 
@@ -9,4 +9,4 @@ bucket = "../web/dist"
 # Variables de entorno
 [vars]
 SITE_NAME = "NCS Psicóloga Zaragoza"
-SITE_URL = "https://ncs-psicologa.workers.dev"
+SITE_URL = "https://ncs.jum1d1460.com"
