@@ -37,8 +37,43 @@ export default [
     }
   },
   {
+    files: ['scripts/security/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly'
+      }
+    },
+    plugins: {
+      security
+    },
+    rules: {
+      // Reglas de seguridad más permisivas para scripts ES modules
+      'security/detect-buffer-noassert': 'warn',
+      'security/detect-child-process': 'error',
+      'security/detect-disable-mustache-escape': 'error',
+      'security/detect-eval-with-expression': 'error',
+      'security/detect-no-csrf-before-method-override': 'error',
+      'security/detect-non-literal-fs-filename': 'warn',
+      'security/detect-non-literal-regexp': 'error',
+      'security/detect-non-literal-require': 'off', // No aplica para ES modules
+      'security/detect-object-injection': 'warn',
+      'security/detect-possible-timing-attacks': 'error',
+      'security/detect-pseudoRandomBytes': 'error',
+      'security/detect-unsafe-regex': 'error',
+      'security/detect-new-buffer': 'warn',
+      'no-console': 'off'
+    }
+  },
+  {
     files: ['scripts/**/*.js'],
-    ignores: ['scripts/migrate-service-carousel-titles.js'],
+    ignores: ['scripts/migrate-service-carousel-titles.js', 'scripts/security/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'commonjs',
