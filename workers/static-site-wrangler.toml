@@ -3,8 +3,8 @@ main = "static-site-worker.js"
 compatibility_date = "2024-09-18"
 
 # Configuración para sitio web estático
-[site]
-bucket = "../web/dist"
+[assets]
+directory = "../web/dist"
 
 # Variables de entorno
 [vars]

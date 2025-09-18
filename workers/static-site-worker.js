@@ -67,8 +67,15 @@ export default {
       });
     }
     
-    // Para Workers Sites, simplemente retornamos el request
-    // Cloudflare maneja automáticamente el serving de archivos estáticos
-    return env.ASSETS.fetch(request);
+    // Para Workers con assets, el binding se llama ASSETS
+    // Si no está disponible, intentamos con el nombre por defecto
+    const assets = env.ASSETS || env.assets || env.__STATIC_CONTENT;
+    
+    if (!assets) {
+      console.error('No se encontró binding de assets:', Object.keys(env));
+      return new Response('Assets binding no encontrado', { status: 500 });
+    }
+    
+    return assets.fetch(request);
   },
 };
