@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers
+name: Deploy
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         
     - name: Verify secrets
       run: |
-        echo "Verificando secretos de Cloudflare Workers..."
+        echo "Verificando secretos de Cloudflare..."
         if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
           echo "❌ CLOUDFLARE_API_TOKEN no está definido"
           exit 1
@@ -51,21 +51,23 @@ jobs:
           echo "✅ CLOUDFLARE_ACCOUNT_ID está definido"
         fi
         
+        if [ -z "${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}" ]; then
+          echo "❌ CLOUDFLARE_PAGES_PROJECT_NAME no está definido"
+          exit 1
+        else
+          echo "✅ CLOUDFLARE_PAGES_PROJECT_NAME está definido: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}"
+        fi
+        
     - name: List dist contents
       run: |
         echo "Contenido del directorio dist:"
         ls -la dist/
         
-    - name: Setup Wrangler
-      run: |
-        cd ../workers
-        npm install -g wrangler
-        
-    - name: Deploy to Cloudflare Workers
-      run: |
-        cd ../workers
-        # Usar la configuración específica para el sitio estático
-        wrangler deploy --config static-site-wrangler.toml
-      env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}
+        directory: dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}

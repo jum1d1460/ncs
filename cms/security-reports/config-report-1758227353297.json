@@ -1,0 +1,125 @@
+{
+  "timestamp": "2025-09-18T20:29:13.294Z",
+  "project": "cms",
+  "config": {
+    "sanity": {
+      "checks": [
+        {
+          "name": "CORS Configuration",
+          "status": "fail",
+          "message": "Configuración de CORS no encontrada",
+          "priority": "medium",
+          "recommendation": "Configurar CORS para restringir acceso desde dominios específicos"
+        },
+        {
+          "name": "Authentication",
+          "status": "fail",
+          "message": "Configuración de autenticación no encontrada",
+          "priority": "high",
+          "recommendation": "Implementar autenticación adecuada para el CMS"
+        },
+        {
+          "name": "API Version",
+          "status": "fail",
+          "message": "Versión de API no especificada",
+          "priority": "medium",
+          "recommendation": "Especificar versión de API para compatibilidad"
+        },
+        {
+          "name": "Dataset Configuration",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Project ID",
+          "status": "pass",
+          "message": "Configuración encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Environment Variable: SANITY_PROJECT_ID",
+          "status": "pass",
+          "message": "Variable encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Environment Variable: SANITY_DATASET",
+          "status": "pass",
+          "message": "Variable encontrada",
+          "priority": "high",
+          "recommendation": null
+        },
+        {
+          "name": "Environment Variable: SANITY_API_VERSION",
+          "status": "fail",
+          "message": "Variable SANITY_API_VERSION no encontrada",
+          "priority": "high",
+          "recommendation": "Agregar SANITY_API_VERSION a los archivos de entorno"
+        },
+        {
+          "name": "HTTPS Configuration",
+          "status": "fail",
+          "message": "Configuración HTTPS no encontrada",
+          "priority": "high",
+          "recommendation": "Configurar HTTPS para todas las comunicaciones"
+        },
+        {
+          "name": "API Rate Limiting",
+          "status": "fail",
+          "message": "Configuración de rate limiting no encontrada",
+          "priority": "medium",
+          "recommendation": "Implementar rate limiting para prevenir abuso de API"
+        },
+        {
+          "name": "Input Validation",
+          "status": "fail",
+          "message": "Validación de entrada no configurada",
+          "priority": "medium",
+          "recommendation": "Implementar validaciones en los esquemas de Sanity"
+        }
+      ],
+      "recommendations": [
+        {
+          "priority": "medium",
+          "message": "Configurar CORS para restringir acceso desde dominios específicos",
+          "check": "CORS Configuration"
+        },
+        {
+          "priority": "high",
+          "message": "Implementar autenticación adecuada para el CMS",
+          "check": "Authentication"
+        },
+        {
+          "priority": "medium",
+          "message": "Especificar versión de API para compatibilidad",
+          "check": "API Version"
+        },
+        {
+          "priority": "high",
+          "message": "Agregar SANITY_API_VERSION a los archivos de entorno",
+          "check": "Environment Variable: SANITY_API_VERSION"
+        },
+        {
+          "priority": "high",
+          "message": "Configurar HTTPS para todas las comunicaciones",
+          "check": "HTTPS Configuration"
+        },
+        {
+          "priority": "medium",
+          "message": "Implementar rate limiting para prevenir abuso de API",
+          "check": "API Rate Limiting"
+        },
+        {
+          "priority": "medium",
+          "message": "Implementar validaciones en los esquemas de Sanity",
+          "check": "Input Validation"
+        }
+      ],
+      "score": 36
+    }
+  }
+}

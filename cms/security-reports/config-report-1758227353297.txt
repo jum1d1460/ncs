@@ -1,0 +1,28 @@
+REPORTE DE CONFIGURACIÓN - CMS
+================================
+
+Fecha: 2025-09-18T20:29:13.294Z
+Proyecto: cms
+Score de Seguridad: 36%
+
+VERIFICACIONES:
+❌ CORS Configuration (medium): Configuración de CORS no encontrada
+❌ Authentication (high): Configuración de autenticación no encontrada
+❌ API Version (medium): Versión de API no especificada
+✅ Dataset Configuration (high): Configuración encontrada
+✅ Project ID (high): Configuración encontrada
+✅ Environment Variable: SANITY_PROJECT_ID (high): Variable encontrada
+✅ Environment Variable: SANITY_DATASET (high): Variable encontrada
+❌ Environment Variable: SANITY_API_VERSION (high): Variable SANITY_API_VERSION no encontrada
+❌ HTTPS Configuration (high): Configuración HTTPS no encontrada
+❌ API Rate Limiting (medium): Configuración de rate limiting no encontrada
+❌ Input Validation (medium): Validación de entrada no configurada
+
+RECOMENDACIONES:
+- [HIGH] Implementar autenticación adecuada para el CMS
+- [HIGH] Agregar SANITY_API_VERSION a los archivos de entorno
+- [HIGH] Configurar HTTPS para todas las comunicaciones
+- [MEDIUM] Configurar CORS para restringir acceso desde dominios específicos
+- [MEDIUM] Especificar versión de API para compatibilidad
+- [MEDIUM] Implementar rate limiting para prevenir abuso de API
+- [MEDIUM] Implementar validaciones en los esquemas de Sanity

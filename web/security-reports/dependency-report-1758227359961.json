@@ -1,0 +1,120 @@
+{
+  "timestamp": "2025-09-18T20:29:18.194Z",
+  "project": "web",
+  "dependencies": {
+    "outdated": [],
+    "vulnerable": [],
+    "licenses": [
+      {
+        "name": "@portabletext/react",
+        "version": "4.0.3",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@sanity/client",
+        "version": "7.11.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@sanity/image-url",
+        "version": "1.2.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@shoelace-style/shoelace",
+        "version": "2.20.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@tailwindcss/typography",
+        "version": "0.5.16",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@testing-library/jest-dom",
+        "version": "6.8.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@types/node",
+        "version": "24.3.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "astro",
+        "version": "5.13.5",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "autoprefixer",
+        "version": "10.4.21",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "eslint-plugin-security",
+        "version": "3.0.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "eslint",
+        "version": "9.35.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "husky",
+        "version": "9.1.7",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "lucide-astro",
+        "version": "0.543.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "motion",
+        "version": "12.23.12",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "tailwindcss",
+        "version": "3.4.17",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "vitest",
+        "version": "3.2.4",
+        "license": "No especificada",
+        "repository": "No especificada"
+      }
+    ],
+    "recommendations": [
+      {
+        "type": "general",
+        "package": "all",
+        "message": "Ejecutar \"npm audit fix\" para corregir vulnerabilidades automáticamente",
+        "priority": "medium"
+      },
+      {
+        "type": "general",
+        "package": "all",
+        "message": "Revisar regularmente las dependencias con \"npm outdated\"",
+        "priority": "low"
+      }
+    ]
+  }
+}

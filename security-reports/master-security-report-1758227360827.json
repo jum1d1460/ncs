@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-09-18T20:29:08.448Z",
+  "projects": {
+    "cms": {
+      "checks": [
+        {
+          "name": "Security Audit",
+          "status": "passed",
+          "critical": true
+        },
+        {
+          "name": "Dependency Check",
+          "status": "passed",
+          "critical": false
+        },
+        {
+          "name": "Configuration Validation",
+          "status": "passed",
+          "critical": false
+        },
+        {
+          "name": "Secrets Detection",
+          "status": "passed",
+          "critical": true
+        },
+        {
+          "name": "ESLint Security Rules",
+          "status": "warning",
+          "critical": false,
+          "error": "Command failed: npm run lint"
+        }
+      ],
+      "status": "completed"
+    },
+    "web": {
+      "checks": [
+        {
+          "name": "Security Audit",
+          "status": "passed",
+          "critical": true
+        },
+        {
+          "name": "Dependency Check",
+          "status": "passed",
+          "critical": false
+        },
+        {
+          "name": "Configuration Validation",
+          "status": "passed",
+          "critical": false
+        },
+        {
+          "name": "Secrets Detection",
+          "status": "passed",
+          "critical": true
+        },
+        {
+          "name": "ESLint Security Rules",
+          "status": "passed",
+          "critical": false
+        }
+      ],
+      "status": "completed"
+    }
+  },
+  "summary": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "warnings": 1
+  }
+}

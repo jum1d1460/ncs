@@ -1,0 +1,17 @@
+REPORTE DE SEGURIDAD - WEB
+==============================
+
+Fecha: 2025-09-18T20:29:14.851Z
+Proyecto: web
+
+RESUMEN:
+- Total vulnerabilidades: 0
+- Críticas: 0
+- Altas: 0
+- Medias: 0
+- Bajas: 0
+
+RECOMENDACIONES:
+- Configuración de headers de seguridad no encontrada (astro.config.mjs)
+- Configuración de Content Security Policy no encontrada (astro.config.mjs)
+- Configuración de variables de entorno no encontrada (astro.config.mjs)

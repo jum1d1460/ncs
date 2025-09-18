@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-09-18T20:28:54.810Z",
+  "project": "cms",
+  "dependencies": {
+    "outdated": [],
+    "vulnerable": [],
+    "licenses": [
+      {
+        "name": "@sanity/eslint-config-studio",
+        "version": "5.0.2",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@sanity/vision",
+        "version": "4.9.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@types/node",
+        "version": "24.3.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "@types/react",
+        "version": "19.1.12",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "eslint-plugin-security",
+        "version": "3.0.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "eslint",
+        "version": "9.34.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "husky",
+        "version": "9.1.7",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "prettier",
+        "version": "3.6.2",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.1.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "react",
+        "version": "19.1.1",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "sanity",
+        "version": "4.9.0",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "styled-components",
+        "version": "6.1.19",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "typescript",
+        "version": "5.9.2",
+        "license": "No especificada",
+        "repository": "No especificada"
+      },
+      {
+        "name": "vitest",
+        "version": "3.2.4",
+        "license": "No especificada",
+        "repository": "No especificada"
+      }
+    ],
+    "recommendations": [
+      {
+        "type": "general",
+        "package": "all",
+        "message": "Ejecutar \"npm audit fix\" para corregir vulnerabilidades automáticamente",
+        "priority": "medium"
+      },
+      {
+        "type": "general",
+        "package": "all",
+        "message": "Revisar regularmente las dependencias con \"npm outdated\"",
+        "priority": "low"
+      }
+    ]
+  }
+}
