@@ -34,12 +34,40 @@ jobs:
         PUBLIC_SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
         PUBLIC_SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
         
+    - name: Check GitHub secrets
+      run: |
+        echo "=== CHECKING GITHUB SECRETS ==="
+        echo "Verificando si los secretos están definidos en GitHub..."
+        
+        # Verificar si los secretos existen (sin mostrar valores)
+        if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+          echo "✅ CLOUDFLARE_API_TOKEN está definido en GitHub"
+        else
+          echo "❌ CLOUDFLARE_API_TOKEN NO está definido en GitHub"
+        fi
+        
+        if [ -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+          echo "✅ CLOUDFLARE_ACCOUNT_ID está definido en GitHub"
+        else
+          echo "❌ CLOUDFLARE_ACCOUNT_ID NO está definido en GitHub"
+        fi
+        
+        echo "================================="
+        
     - name: Debug secrets
       run: |
         echo "=== DEBUG SECRETS ==="
+        echo "Verificando secretos disponibles en GitHub Actions..."
         echo "CLOUDFLARE_API_TOKEN length: ${#CLOUDFLARE_API_TOKEN}"
         echo "CLOUDFLARE_ACCOUNT_ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
         echo "CLOUDFLARE_ACCOUNT_ID value: $CLOUDFLARE_ACCOUNT_ID"
+        echo ""
+        echo "Verificando secretos con sintaxis directa:"
+        echo "CLOUDFLARE_API_TOKEN direct: ${{ secrets.CLOUDFLARE_API_TOKEN }}"
+        echo "CLOUDFLARE_ACCOUNT_ID direct: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+        echo ""
+        echo "Listando todas las variables de entorno:"
+        env | grep -i cloudflare || echo "No hay variables de entorno con 'cloudflare'"
         echo "===================="
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
