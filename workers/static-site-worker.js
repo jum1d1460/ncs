@@ -67,76 +67,8 @@ export default {
       });
     }
     
-    // Buscar archivo en el mapeo
-    let filePath = STATIC_FILES[pathname];
-    
-    // Si no se encuentra en el mapeo, intentar servir directamente
-    if (!filePath) {
-      // Remover barra inicial si existe
-      filePath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-      
-      // Si es un directorio, agregar index.html
-      if (filePath.endsWith('/') || !filePath.includes('.')) {
-        filePath = filePath + (filePath.endsWith('/') ? 'index.html' : '/index.html');
-      }
-    }
-    
-    // Determinar tipo MIME
-    const extension = filePath.substring(filePath.lastIndexOf('.'));
-    const mimeType = MIME_TYPES[extension] || 'application/octet-stream';
-    
-    try {
-      // En un Worker real, aquí cargarías el archivo desde KV Storage o R2
-      // Por ahora, retornamos una respuesta de ejemplo
-      const response = new Response(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>NCS Psicóloga Zaragoza</title>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body>
-          <h1>NCS Psicóloga Zaragoza</h1>
-          <p>Worker funcionando correctamente</p>
-          <p>Ruta solicitada: ${pathname}</p>
-          <p>Archivo mapeado: ${filePath}</p>
-          <p>Tipo MIME: ${mimeType}</p>
-        </body>
-        </html>
-      `, {
-        status: 200,
-        headers: {
-          'Content-Type': mimeType,
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'public, max-age=3600',
-        },
-      });
-      
-      return response;
-      
-    } catch (error) {
-      console.error('Error sirviendo archivo:', error);
-      
-      return new Response(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Error 404 - NCS Psicóloga Zaragoza</title>
-          <meta charset="utf-8">
-        </head>
-        <body>
-          <h1>404 - Página no encontrada</h1>
-          <p>La página ${pathname} no existe.</p>
-          <p><a href="/">Volver al inicio</a></p>
-        </body>
-        </html>
-      `, {
-        status: 404,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-        },
-      });
-    }
+    // Para Workers Sites, simplemente retornamos el request
+    // Cloudflare maneja automáticamente el serving de archivos estáticos
+    return env.ASSETS.fetch(request);
   },
 };
