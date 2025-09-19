@@ -1,0 +1,189 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AnimatedBlock from '../../components/AnimatedBlock.astro';
+
+// Configuración de la página
+const pageTitle = "Demo de Animaciones";
+const pageDescription = "Demostración de todas las animaciones y efectos disponibles en el sitio";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Hero de la demo -->
+    <section class="bg-gradient-to-br from-primary-600 to-secondary-600 text-white py-20">
+      <div class="container mx-auto px-4 text-center">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h1 class="text-4xl md:text-6xl font-bold mb-6">{pageTitle}</h1>
+          <p class="text-xl md:text-2xl opacity-90">{pageDescription}</p>
+        </AnimatedBlock>
+      </div>
+    </section>
+
+    <!-- Sección de animaciones de entrada -->
+    <section class="py-16 px-4">
+      <div class="container mx-auto max-w-6xl">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Animaciones de Entrada</h2>
+        </AnimatedBlock>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatedBlock animation="fadeInUp" delay={0.1}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Fade In Up</h3>
+              <p class="text-gray-600">Aparece desde abajo con efecto de desvanecimiento</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="fadeInLeft" delay={0.2}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Fade In Left</h3>
+              <p class="text-gray-600">Aparece desde la izquierda con efecto de desvanecimiento</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="fadeInRight" delay={0.3}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Fade In Right</h3>
+              <p class="text-gray-600">Aparece desde la derecha con efecto de desvanecimiento</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="scaleIn" delay={0.4}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Scale In</h3>
+              <p class="text-gray-600">Aparece con efecto de escala desde pequeño a grande</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="fadeInUp" delay={0.5}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Staggered Animation</h3>
+              <p class="text-gray-600">Animación en secuencia con diferentes delays</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="scaleIn" delay={0.6}>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Hover Effects</h3>
+              <p class="text-gray-600">Efectos de hover en botones y tarjetas</p>
+            </div>
+          </AnimatedBlock>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de scroll suave -->
+    <section class="py-16 px-4 bg-white">
+      <div class="container mx-auto max-w-4xl text-center">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h2 class="text-3xl font-bold mb-8 text-gray-900">Scroll Suave</h2>
+          <p class="text-lg text-gray-600 mb-8">
+            El scroll de la página es suave y fluido, similar a Lenis. 
+            Prueba a hacer scroll para sentir la diferencia.
+          </p>
+          <div class="space-y-4">
+            <button 
+              onclick="smoothScrollToElement('#parallax-demo', 100)"
+              class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Scroll a Sección Parallax
+            </button>
+            <button 
+              onclick="smoothScrollToElement('#attractors-demo', 100)"
+              class="bg-secondary-600 text-white px-6 py-3 rounded-lg hover:bg-secondary-700 transition-colors ml-4"
+            >
+              Scroll a Sección Atractores
+            </button>
+          </div>
+        </AnimatedBlock>
+      </div>
+    </section>
+
+    <!-- Sección de parallax -->
+    <section id="parallax-demo" class="py-16 px-4 bg-gray-100">
+      <div class="container mx-auto max-w-4xl">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Efectos Parallax</h2>
+        </AnimatedBlock>
+        
+        <div class="relative h-96 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg overflow-hidden">
+          <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+          <div class="relative z-10 flex items-center justify-center h-full text-white text-center">
+            <div>
+              <h3 class="text-2xl font-bold mb-4">Fondo Parallax</h3>
+              <p class="text-lg">Este fondo se mueve a diferente velocidad que el contenido</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de atractores -->
+    <section id="attractors-demo" class="py-16 px-4 bg-white">
+      <div class="container mx-auto max-w-4xl">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">Atractores de Scroll</h2>
+          <p class="text-lg text-gray-600 text-center mb-8">
+            Los bloques de contenido ejercen una "atracción" suave cuando te acercas a ellos, 
+            creando una experiencia de scroll más natural.
+          </p>
+        </AnimatedBlock>
+        
+        <div class="space-y-8">
+          <AnimatedBlock animation="fadeInUp" delay={0.1} class="block-content">
+            <div class="bg-primary-50 p-8 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4 text-primary-900">Bloque Atractor 1</h3>
+              <p class="text-primary-700">Este bloque tiene un efecto de atracción suave cuando te acercas a él.</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="fadeInUp" delay={0.2} class="block-content">
+            <div class="bg-secondary-50 p-8 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4 text-secondary-900">Bloque Atractor 2</h3>
+              <p class="text-secondary-700">Prueba a hacer scroll cerca de este bloque para sentir la atracción.</p>
+            </div>
+          </AnimatedBlock>
+          
+          <AnimatedBlock animation="fadeInUp" delay={0.3} class="block-content">
+            <div class="bg-gray-100 p-8 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4 text-gray-900">Bloque Atractor 3</h3>
+              <p class="text-gray-700">Cada bloque tiene una fuerza de atracción diferente para crear variedad.</p>
+            </div>
+          </AnimatedBlock>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección de transiciones de página -->
+    <section class="py-16 px-4 bg-gray-50">
+      <div class="container mx-auto max-w-4xl text-center">
+        <AnimatedBlock animation="fadeInUp" delay={0}>
+          <h2 class="text-3xl font-bold mb-8 text-gray-900">Transiciones de Página</h2>
+          <p class="text-lg text-gray-600 mb-8">
+            Las transiciones entre páginas son suaves y elegantes. 
+            Prueba a navegar a otras páginas para ver el efecto.
+          </p>
+          <div class="space-x-4">
+            <a href="/" class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors inline-block">
+              Ir a Inicio
+            </a>
+            <a href="/servicios" class="bg-secondary-600 text-white px-6 py-3 rounded-lg hover:bg-secondary-700 transition-colors inline-block">
+              Ir a Servicios
+            </a>
+            <a href="/contacto" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors inline-block">
+              Ir a Contacto
+            </a>
+          </div>
+        </AnimatedBlock>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { smoothScrollToElement, getLenisInstance } from '../../lib/nativeScroll';
+  
+  // Hacer las funciones disponibles globalmente
+  (window as any).smoothScrollToElement = smoothScrollToElement;
+  (window as any).getLenisInstance = getLenisInstance;
+</script>

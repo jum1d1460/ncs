@@ -1,0 +1,70 @@
+---
+// Componente para transiciones de página
+---
+
+<div id="page-transition" class="fixed inset-0 z-50 pointer-events-none opacity-0">
+  <div class="absolute inset-0 bg-gradient-to-br from-primary-600 to-secondary-600"></div>
+  <div class="absolute inset-0 flex items-center justify-center">
+    <div class="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+  </div>
+</div>
+
+<style>
+  #page-transition {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  #page-transition.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+</style>
+
+<script>
+  // Manejar transiciones de página
+  if (typeof window !== 'undefined') {
+    let isTransitioning = false;
+    
+    // Interceptar clicks en enlaces internos
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href]') as HTMLAnchorElement;
+      
+      if (!link || isTransitioning) return;
+      
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http')) return;
+      
+      e.preventDefault();
+      startTransition(() => {
+        window.location.href = href;
+      });
+    });
+    
+    function startTransition(callback: () => void) {
+      if (isTransitioning) return;
+      
+      isTransitioning = true;
+      const transition = document.getElementById('page-transition');
+      
+      if (transition) {
+        transition.classList.add('active');
+        
+        setTimeout(() => {
+          callback();
+        }, 300);
+      } else {
+        callback();
+      }
+    }
+    
+    // Ocultar transición al cargar la página
+    window.addEventListener('load', () => {
+      const transition = document.getElementById('page-transition');
+      if (transition) {
+        transition.classList.remove('active');
+      }
+      isTransitioning = false;
+    });
+  }
+</script>

@@ -8,6 +8,49 @@ html, body {
   max-width: 100vw;
 }
 
+/* Scroll nativo optimizado */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Asegurar que el scroll funcione correctamente */
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Estilos para animaciones de entrada - solo para elementos específicos */
+.animated-block[data-animate] {
+  /* No aplicar estilos iniciales aquí - se manejan en JavaScript */
+}
+
+/* Estilos para parallax */
+.hero-background,
+.hero-silhouette,
+.hero-content {
+  will-change: transform;
+}
+
+/* Estilos para bloques animados */
+.block-content,
+.service-block,
+.testimonial-block {
+  will-change: transform, opacity;
+}
+
+/* Optimización para animaciones */
+* {
+  will-change: auto;
+}
+
+.animated-block,
+.hero-background,
+.hero-silhouette,
+.hero-content {
+  will-change: transform;
+}
+
 /* Shoelace theme customization */
 @layer base {
   :root {

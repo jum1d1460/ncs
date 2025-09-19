@@ -1,0 +1,48 @@
+---
+interface Props {
+  animation?: 'fadeInUp' | 'fadeInLeft' | 'fadeInRight' | 'scaleIn';
+  delay?: number;
+  duration?: number;
+  class?: string;
+}
+
+const { 
+  animation = 'fadeInUp',
+  delay = 0,
+  duration = 0.6,
+  class: className = ''
+} = Astro.props;
+---
+
+<div 
+  class={`animated-block ${className}`}
+  data-animate={animation}
+  data-delay={delay}
+  data-duration={duration}
+>
+  <slot />
+</div>
+
+<style>
+  .animated-block {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  
+  /* Animaciones CSS como fallback */
+  .animated-block[data-animate="fadeInUp"] {
+    transform: translateY(30px);
+  }
+  
+  .animated-block[data-animate="fadeInLeft"] {
+    transform: translateX(-30px);
+  }
+  
+  .animated-block[data-animate="fadeInRight"] {
+    transform: translateX(30px);
+  }
+  
+  .animated-block[data-animate="scaleIn"] {
+    transform: scale(0.8);
+  }
+</style>

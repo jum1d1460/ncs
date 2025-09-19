@@ -1,19 +1,25 @@
 ---
+import AnimatedBlock from "../AnimatedBlock.astro";
+
 const { items } = Astro.props as { items: Array<{ image: any; quote: string; fullName: string }>} ;
 ---
 
-<section class="py-12 px-4 max-w-7xl mx-auto">
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {items?.map((t) => (
-      <figure class="rounded-lg bg-white/70 shadow-sm p-6 flex flex-col gap-4">
-        {t.image && (
-          <img src={t.image?.asset?.url} alt={t.image?.alt || ''} class="h-16 w-16 rounded-full object-cover" loading="lazy" decoding="async" />
-        )}
-        <blockquote class="text-responsive-body text-gray-700 italic">"{t.quote}"</blockquote>
-        <figcaption class="text-responsive-small font-medium text-gray-900">{t.fullName}</figcaption>
-      </figure>
-    ))}
-  </div>
-</section>
+<AnimatedBlock animation="fadeInUp" delay={0} class="testimonial-block">
+  <section class="py-12 px-4 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {items?.map((t, index) => (
+        <AnimatedBlock animation="scaleIn" delay={index * 0.1}>
+          <figure class="rounded-lg bg-white/70 shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-shadow duration-300">
+            {t.image && (
+              <img src={t.image?.asset?.url} alt={t.image?.alt || ''} class="h-16 w-16 rounded-full object-cover" loading="lazy" decoding="async" />
+            )}
+            <blockquote class="text-responsive-body text-gray-700 italic">"{t.quote}"</blockquote>
+            <figcaption class="text-responsive-small font-medium text-gray-900">{t.fullName}</figcaption>
+          </figure>
+        </AnimatedBlock>
+      ))}
+    </div>
+  </section>
+</AnimatedBlock>
 
 

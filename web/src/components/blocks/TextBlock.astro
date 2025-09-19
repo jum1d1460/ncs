@@ -1,6 +1,10 @@
 ---
+import AnimatedBlock from "../AnimatedBlock.astro";
+
 const { content } = Astro.props;
 ---
-<section class="prose mx-auto p-8">
-  <p class="text-responsive-body">{content}</p>
-</section>
+<AnimatedBlock animation="fadeInUp" delay={0} class="block-content">
+  <section class="prose mx-auto p-8">
+    <p class="text-responsive-body">{content}</p>
+  </section>
+</AnimatedBlock>

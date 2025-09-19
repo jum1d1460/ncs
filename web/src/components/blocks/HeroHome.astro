@@ -144,7 +144,7 @@ const getShadowClass = (intensity: string) => {
 <section class="hero-section z-0 relative overflow-hidden">
   <!-- Fondo de imagen -->
   {backgroundImage && (
-    <div class="hero-background will-change-transform">
+    <div class="hero-background">
       <ResponsiveImage
         image={backgroundImage}
         alt="Fondo del Hero"
@@ -166,7 +166,7 @@ const getShadowClass = (intensity: string) => {
   
   <!-- Silueta de fondo (solo en desktop) - sobre el overlay -->
   {silhouetteImage && (
-    <div class="hero-silhouette hidden md:block absolute inset-0 h-full pointer-events-none will-change-transform z-10">
+    <div class="hero-silhouette hidden md:block absolute inset-0 h-full pointer-events-none z-10">
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full relative">
         <div class={`absolute bottom-0 w-1/2 max-w-lg ${silhouettePosition === 'left' ? 'left-0 -ml-[10%]' : 'right-0 mr-0'} flex items-end justify-center`}>
           <div class="relative w-full flex items-end justify-center transform origin-bottom">
@@ -378,33 +378,6 @@ const getShadowClass = (intensity: string) => {
 </style>
 
 <script>
-  if (typeof window !== 'undefined') {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const section = (document.currentScript && typeof (document.currentScript as any).closest === 'function'
-      ? (document.currentScript as any).closest('section')
-      : document.querySelector('.hero-section'));
-    const bg = section ? section.querySelector('.hero-background') : null;
-    const sil = section ? section.querySelector('.hero-silhouette') : null;
-    if (section && !reduceMotion) {
-      let frame = 0;
-      const onScroll = () => {
-        if (frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          const top = (section as HTMLElement).offsetTop;
-          const height = (section as HTMLElement).offsetHeight || 1;
-          const y = window.scrollY || window.pageYOffset;
-          const raw = (y - top + window.innerHeight) / (height + window.innerHeight);
-          const progress = Math.max(0, Math.min(1, raw));
-          const bgY = (-6 + 10 * progress).toFixed(2);
-          const silY = (-2 + 4 * progress).toFixed(2);
-          if (bg) (bg as HTMLElement).style.transform = `translateY(${bgY}vh)`;
-          if (sil) (sil as HTMLElement).style.transform = `translateY(${silY}vh)`;
-        });
-      };
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-    }
-  }
-  </script>
+  // El parallax ahora se maneja automáticamente por el sistema Motion
+  // No necesitamos código adicional aquí
+</script>
