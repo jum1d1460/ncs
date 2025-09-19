@@ -4,10 +4,10 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
     output: 'static',
-    // Forzar rutas relativas para soportar abrir con file://
-    base: './',
+    // Usar rutas absolutas para que funcionen correctamente en subdirectorios
+    base: '/',
     build: {
-        assetsPrefix: './'
+        assetsPrefix: '/'
     },
    vite: {
         server: {
