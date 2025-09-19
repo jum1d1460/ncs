@@ -89,7 +89,7 @@ const availabilityOptions = formatAvailability(service?.availability);
   <div class="flex-1 p-4 md:p-6 flex flex-col h-full">
     <div class="flex flex-col h-full">
       <!-- Título del servicio -->
-      <h3 class="text-responsive-h4 font-semibold text-gray-900 mb-1">
+      <h3 class="text-responsive-h4 font-semibold text-brand-forest-500 mb-1">
         {service?.url ? (
           <a 
             href={service.url} 
@@ -124,8 +124,8 @@ const availabilityOptions = formatAvailability(service?.availability);
           </span>
         )}
         {priceLabel && (
-          <span class="flex items-center gap-1 font-medium text-green-600">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="flex items-center gap-1 font-medium text-green-600 text-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
             </svg>
             {priceLabel}

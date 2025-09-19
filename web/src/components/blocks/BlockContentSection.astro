@@ -87,7 +87,7 @@ const columnsClass = columnsCount === 2 ? 'md:columns-2' : columnsCount === 3 ? 
       <div class={`flex flex-col ${imagePosition === 'right' ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-stretch`}>
         <div class={`${textWidthClass} ${columnsClass} pt-6 pb-6`}>
           {title && (
-            <Tag class="text-responsive-h1 font-bold text-gray-900 mb-6">{title}</Tag>
+            <Tag class="text-responsive-h1 font-bold text-brand-forest-500 mb-6">{title}</Tag>
           )}
           <BlockContent content={content} />
         </div>
@@ -112,7 +112,7 @@ const columnsClass = columnsCount === 2 ? 'md:columns-2' : columnsCount === 3 ? 
     ) : content ? (
       <div class="pt-6 pb-6">
         {title && (
-          <Tag class="text-responsive-h1 font-bold text-gray-900 mb-6">{title}</Tag>
+          <Tag class="text-responsive-h1 font-bold text-brand-forest-500 mb-6">{title}</Tag>
         )}
         <div class={`${columnsClass}`}>
           <BlockContent content={content} />

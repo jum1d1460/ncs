@@ -81,7 +81,86 @@ body {
     --sl-border-radius-large: 1rem;
     --sl-border-radius-x-large: 1.5rem;
     
-    --sl-font-family: theme('fontFamily.poppins');
+    --sl-font-family: theme('fontFamily.serif-elegant');
+  }
+
+  /* Estilos globales para headings con tipografía Noticia Serif y colores de marca */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noticia Serif', Georgia, 'Times New Roman', serif;
+    color: #1B4D3E; /* brand-forest-500 */
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: #1B4D3E;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: #1B4D3E;
+  }
+
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: #164033; /* brand-forest-600 - más suave */
+  }
+
+  h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: #164033; /* brand-forest-600 - más suave */
+  }
+
+  h5, h6 {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    font-weight: 600;
+    color: #164033; /* brand-forest-600 - más suave */
+  }
+
+  /* Párrafos y texto general con Noticia Serif */
+  p, span, div, a {
+    font-family: 'Noticia Serif', Georgia, 'Times New Roman', serif;
+  }
+
+  /* Bold text con color de marca */
+  strong, b {
+    color: #1B4D3E; /* brand-forest-500 */
+    font-weight: 700;
+  }
+
+  /* Bold text sobre fondos oscuros (texto blanco) - usar color secundario */
+  .text-white strong, 
+  .text-white b,
+  .text-white h1, 
+  .text-white h2, 
+  .text-white h3, 
+  .text-white h4, 
+  .text-white h5, 
+  .text-white h6 {
+    color: #D4A574; /* brand-warm-500 - color secundario para fondos oscuros */
+  }
+
+  /* Headings sobre fondos oscuros */
+  .text-white h1, 
+  .text-white h2 {
+    color: #D4A574; /* brand-warm-500 */
+  }
+
+  .text-white h3, 
+  .text-white h4, 
+  .text-white h5, 
+  .text-white h6 {
+    color: #e2b87a; /* brand-warm-400 - más claro para headings secundarios */
+  }
+
+  /* Excepciones para elementos que deben ser sans-serif */
+  button, input, select, textarea, .sans-serif {
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 

@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { sanityClient, fetchGlobalSettings } from "../lib/sanityClient";
-import {buildLayoutProps} from "../lib/head";
 import PageRenderer from "../components/PageRenderer.astro";
 
 // Obtener la página de inicio desde Sanity (tolerante a errores)
@@ -82,9 +81,11 @@ const page = inicioPage || {
 };
 
 const settings = await fetchGlobalSettings();
-const layoutProps = buildLayoutProps(page, settings);
 ---
 
-<Layout {...layoutProps}>
+<Layout 
+  title={page.title}
+  globalSettings={settings}
+>
   <PageRenderer blocks={page.blocks} />
 </Layout>

@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { sanityClient, fetchGlobalSettings } from "../lib/sanityClient";
-import {buildLayoutProps} from "../lib/head";
 import PageRenderer from "../components/PageRenderer.astro";
 
 export async function getStaticPaths() {
@@ -135,9 +134,11 @@ const { page } = Astro.props as { page: CmsPage };
 // console.log('SimpleHero blocks:', page?.blocks?.filter(block => block._type === 'blockSimpleHero'));
 
 const settings = await fetchGlobalSettings();
-const layoutProps = buildLayoutProps(page, settings);
 ---
 
-<Layout {...layoutProps}>
+<Layout 
+  title={page?.title}
+  globalSettings={settings}
+>
   <PageRenderer blocks={page?.blocks} />
 </Layout>

@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { sanityClient, fetchGlobalSettings } from "../../lib/sanityClient";
-import {buildLayoutProps} from "../../lib/head";
 import ResponsiveImage from '../../components/ResponsiveImage.astro';
 
 export async function getStaticPaths() {
@@ -53,7 +52,6 @@ interface BlogPost {
 
 const { posts = [] } = Astro.props as { posts: BlogPost[] };
 const settings = await fetchGlobalSettings();
-const layoutProps = buildLayoutProps({ title: 'Blog' }, settings);
 
 // Función para formatear fecha
 const formatDate = (dateString: string) => {
@@ -66,7 +64,10 @@ const formatDate = (dateString: string) => {
 };
 ---
 
-<Layout {...layoutProps}>
+<Layout 
+  title="Blog"
+  globalSettings={settings}
+>
     <main class="min-h-screen bg-gray-50">
         <!-- Hero del blog -->
         <section class="bg-gradient-to-br from-blue-900 to-blue-700 text-white py-20">

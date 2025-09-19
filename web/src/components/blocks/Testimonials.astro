@@ -14,7 +14,7 @@ const { items } = Astro.props as { items: Array<{ image: any; quote: string; ful
               <img src={t.image?.asset?.url} alt={t.image?.alt || ''} class="h-16 w-16 rounded-full object-cover" loading="lazy" decoding="async" />
             )}
             <blockquote class="text-responsive-body text-gray-700 italic">"{t.quote}"</blockquote>
-            <figcaption class="text-responsive-small font-medium text-gray-900">{t.fullName}</figcaption>
+            <figcaption class="text-responsive-small font-medium text-brand-forest-500">{t.fullName}</figcaption>
           </figure>
         </AnimatedBlock>
       ))}

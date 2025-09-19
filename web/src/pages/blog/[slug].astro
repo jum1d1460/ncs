@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { sanityClient, fetchGlobalSettings } from "../../lib/sanityClient";
-import {buildLayoutProps} from "../../lib/head";
 import PageRenderer from "../../components/PageRenderer.astro";
 import BlogHero from "../../components/blocks/BlogHero.astro";
 import BlogMeta from "../../components/blocks/BlogMeta.astro";
@@ -76,7 +75,7 @@ export async function getStaticPaths() {
             }
         `);
 
-        return posts.map((post: { slug: { current: string }, title: string, mainImage: any, publishedAt: string, categories: any[], author: any, blocks: any[] }) => ({
+        return (posts as any[]).map((post: { slug: { current: string }, title: string, mainImage: any, publishedAt: string, categories: any[], author: any, blocks: any[] }) => ({
             params: { slug: post.slug.current },
             props: { post }
         }));
@@ -103,10 +102,14 @@ interface BlogPost {
 
 const { post } = Astro.props as { post: BlogPost };
 const settings = await fetchGlobalSettings();
-const layoutProps = buildLayoutProps(post, settings);
 ---
 
-<Layout {...layoutProps}>
+<Layout 
+  title={post.title}
+  description={post.blocks?.find(block => block._type === 'blockContent')?.content?.find((content: any) => content._type === 'block')?.children?.[0]?.text || `Artículo de blog: ${post.title}`}
+  ogImageUrl={post.mainImage?.asset?.url}
+  globalSettings={settings}
+>
     <main class="min-h-screen">
         <!-- Hero del post -->
         <BlogHero

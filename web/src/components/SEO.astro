@@ -1,0 +1,114 @@
+---
+interface Props {
+  // Metadatos específicos de la página
+  title?: string;
+  description?: string;
+  ogImageUrl?: string | null;
+  
+  // Metadatos del sitio (opcionales, se usarán los globales si no se proporcionan)
+  siteTitle?: string;
+  siteDescription?: string;
+  faviconUrl?: string | null;
+  
+  // Metadatos del footer (opcionales, se usarán los globales si no se proporcionan)
+  footerTitle?: string;
+  seoFooterText?: string;
+  
+  // Configuración global del sitio (obligatoria)
+  globalSettings: {
+    siteTitle?: string;
+    siteDescription?: string;
+    favicon?: { asset?: { url?: string } } | null;
+    ogImage?: { asset?: { url?: string } } | null;
+    footerTitle?: string;
+    seoFooterText?: string;
+    defaultMeta?: {
+      titleSuffix?: string;
+      ogTitle?: string;
+      ogDescription?: string;
+    };
+  };
+}
+
+const {
+  title,
+  description,
+  ogImageUrl,
+  siteTitle,
+  siteDescription,
+  faviconUrl,
+  footerTitle,
+  seoFooterText,
+  globalSettings
+} = Astro.props;
+
+// Usar valores específicos de la página o fallback a configuración global
+const computedTitle = title ?? siteTitle ?? globalSettings.siteTitle ?? 'NCS Psicóloga Zaragoza';
+const computedDescription = description ?? siteDescription ?? globalSettings.siteDescription ?? 'Psicóloga en Zaragoza - Nelly Castro Sanchez';
+const computedFaviconUrl = faviconUrl ?? globalSettings.favicon?.asset?.url ?? '/favicon.svg';
+const computedOgImageUrl = ogImageUrl ?? globalSettings.ogImage?.asset?.url ?? null;
+const computedFooterTitle = footerTitle ?? globalSettings.footerTitle ?? globalSettings.siteTitle ?? 'NCS Psicóloga Zaragoza';
+const computedSeoFooterText = seoFooterText ?? globalSettings.seoFooterText ?? globalSettings.siteDescription ?? 'Psicóloga en Zaragoza - Nelly Castro Sanchez';
+
+// Construir título final con sufijo si está configurado
+const finalTitle = globalSettings.defaultMeta?.titleSuffix 
+  ? `${computedTitle}${globalSettings.defaultMeta.titleSuffix}`
+  : computedTitle;
+
+// Determinar tipo de favicon
+const faviconType = computedFaviconUrl.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
+---
+
+<!-- Metadatos básicos -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type={faviconType} href={computedFaviconUrl} />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Título y descripción -->
+<title>{finalTitle}</title>
+<meta name="description" content={computedDescription} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={globalSettings.defaultMeta?.ogTitle ?? computedTitle} />
+<meta property="og:description" content={globalSettings.defaultMeta?.ogDescription ?? computedDescription} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+{computedOgImageUrl && <meta property="og:image" content={computedOgImageUrl} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={computedTitle} />
+<meta name="twitter:description" content={computedDescription} />
+{computedOgImageUrl && <meta name="twitter:image" content={computedOgImageUrl} />}
+
+<!-- Metadatos adicionales -->
+<meta name="keywords" content="Psicóloga Zaragoza, Psicología, Nelly Castro" />
+<meta name="author" content="Nelly Castro Sanchez" />
+<meta name="robots" content="index, follow" />
+
+<!-- Datos estructurados JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Nelly Castro Sanchez",
+  "jobTitle": "Psicóloga",
+  "description": "{computedDescription}",
+  "url": "{Astro.url}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Zaragoza",
+    "addressCountry": "ES"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": "Spanish"
+  }
+}
+</script>
+
+<!-- Metadatos del footer para uso interno -->
+<meta name="footer-title" content={computedFooterTitle} />
+<meta name="seo-footer-text" content={computedSeoFooterText} />

@@ -15,14 +15,14 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
 
 <!-- Header principal -->
 <header id="site-header" class="hidden md:block fixed top-0 left-0 right-0 z-[9999] transition-transform duration-300 will-change-transform">
-  <div class="mx-auto max-w-7xl px-4 py-3">
+  <div class="mx-auto max-w-7xl px-4 py-5">
     <div class="relative header-shell isolate z-[9999]">
       <div class="absolute inset-0 rounded-2xl bg-white shadow-[0_12px_40px_-18px_rgba(0,0,0,0.35),0_0_1px_rgba(0,0,0,0.06)] ring-1 ring-black/5" aria-hidden="true"></div>
-      <div class="relative flex items-center justify-between gap-4 px-5 py-3 rounded-2xl">
+      <div class="relative flex items-center justify-between gap-4 px-6 py-5 rounded-2xl">
         <!-- Logo -->
-        <a href="/" class="flex items-center gap-2">
-          {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-8 w-auto" />}
-          {!logoUrl && <span class="font-semibold">NCS</span>}
+        <a href="/" class="flex items-center gap-3">
+          {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-12 w-auto" />}
+          {!logoUrl && <span class="font-serif-elegant text-2xl font-semibold text-brand-forest-500">NCS</span>}
         </a>
 
         <!-- Navegación desktop -->
@@ -33,9 +33,9 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
               : (item.page?.slug?.current ? `/${item.page.slug.current}` : '#')
             const target = item.target ?? (href.startsWith('http') ? '_blank' : '_self')
             return (
-              <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined} class="nav-link text-responsive-small font-medium text-gray-700 hover:text-indigo-600 transition-all duration-300 ease-in-out relative group">
+              <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined} class="nav-link text-base font-sans-modern font-semibold text-gray-700 hover:text-brand-forest-500 transition-all duration-300 ease-in-out relative group px-3 py-2 rounded-lg hover:bg-brand-forest-50">
                 <span class="relative z-10">{item.label}</span>
-                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300 ease-in-out group-hover:w-full"></span>
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-forest-500 transition-all duration-300 ease-in-out group-hover:w-full"></span>
               </a>
             )
           })}
@@ -44,16 +44,16 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
         <!-- Botones desktop -->
         <div class="hidden md:flex items-center gap-3">
           {phone && (
-            <a href={`tel:${phone}`} aria-label="Llamar" class="contact-btn p-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 ease-in-out transform hover:scale-110">
+            <a href={`tel:${phone}`} aria-label="Llamar" class="contact-btn p-2 rounded-lg text-gray-700 hover:text-brand-forest-500 hover:bg-brand-forest-50 transition-all duration-300 ease-in-out transform hover:scale-110">
               <Phone class="h-5 w-5" />
             </a>
           )}
           {whatsapp && (
-            <a href={`https://wa.me/${whatsapp}`} aria-label="WhatsApp" class="contact-btn p-2 rounded-lg text-green-600 hover:text-green-700 hover:bg-green-50 transition-all duration-300 ease-in-out transform hover:scale-110">
+            <a href={`https://wa.me/${whatsapp}`} aria-label="WhatsApp" class="contact-btn p-2 rounded-lg text-brand-forest-500 hover:text-brand-forest-600 hover:bg-brand-forest-50 transition-all duration-300 ease-in-out transform hover:scale-110">
               <MessageCircle class="h-5 w-5" />
             </a>
           )}
-          <a href={bookingUrl ?? '#'} class="booking-btn px-4 py-2 text-responsive-small font-medium rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg hover:shadow-indigo-500/25 transition-all duration-300 ease-in-out transform hover:scale-105">Pedir cita</a>
+          <a href={bookingUrl ?? '#'} class="booking-btn px-5 py-3 text-base font-sans-modern font-semibold rounded-lg bg-brand-forest-500 text-white hover:bg-brand-forest-600 hover:shadow-lg hover:shadow-brand-forest-500/25 transition-all duration-300 ease-in-out transform hover:scale-105">Pedir cita</a>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
 </header>
 
 <!-- Botón hamburguesa móvil sticky -->
-<button id="mobile-menu-button" class="fixed top-4 right-4 z-[10000] md:hidden p-3 rounded-full bg-white shadow-lg text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300 ease-in-out transform hover:scale-110" aria-label="Abrir menú">
+<button id="mobile-menu-button" class="fixed top-5 right-5 z-[10000] md:hidden p-4 rounded-full bg-white shadow-lg text-gray-700 hover:text-brand-forest-500 hover:bg-brand-forest-50 transition-all duration-300 ease-in-out transform hover:scale-110" aria-label="Abrir menú">
   <Menu class="h-6 w-6" />
 </button>
 
@@ -72,12 +72,12 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
 <div id="mobile-menu-drawer" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-xl z-[10001] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
   <div class="flex flex-col h-full">
     <!-- Header del drawer -->
-    <div class="flex items-center justify-between p-4 border-b">
+    <div class="flex items-center justify-between p-5 border-b">
       <a href="/" class="flex items-center gap-2">
-        {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-8 w-auto" />}
-        {!logoUrl && <span class="font-semibold">NCS</span>}
+        {logoUrl && <img src={logoUrl} alt={logoAlt ?? ''} class="h-12 w-auto" />}
+        {!logoUrl && <span class="font-serif-elegant text-2xl font-semibold text-brand-forest-500">NCS</span>}
       </a>
-      <button id="mobile-menu-close" class="p-2 rounded-md text-gray-700 hover:text-gray-900" aria-label="Cerrar menú">
+      <button id="mobile-menu-close" class="p-2 rounded-md text-gray-700 hover:text-brand-forest-500" aria-label="Cerrar menú">
         <X class="h-6 w-6" />
       </button>
     </div>
@@ -92,9 +92,9 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
           const target = item.target ?? (href.startsWith('http') ? '_blank' : '_self')
           return (
             <li>
-              <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined} class="mobile-nav-link block py-4 px-4 text-responsive-body font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 border-b border-gray-100 last:border-b-0">
+              <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined} class="mobile-nav-link block py-5 px-5 text-lg font-sans-modern font-semibold text-gray-700 hover:text-brand-forest-500 hover:bg-brand-forest-50 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 border-b border-gray-100 last:border-b-0">
                 <span class="relative z-10">{item.label}</span>
-                <span class="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-indigo-600 to-purple-600 transform scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100"></span>
+                <span class="absolute left-0 top-0 w-1 h-full bg-brand-forest-500 transform scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100"></span>
               </a>
             </li>
           )
@@ -106,19 +106,19 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
     <div class="p-4 border-t bg-gray-50">
       <div class="flex gap-3 mb-4">
         {phone && (
-          <a href={`tel:${phone}`} class="mobile-contact-btn flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 ease-in-out transform hover:scale-105 font-medium">
+          <a href={`tel:${phone}`} class="mobile-contact-btn flex items-center gap-2 px-5 py-4 bg-brand-forest-500 text-white rounded-lg hover:bg-brand-forest-600 hover:shadow-lg hover:shadow-brand-forest-500/25 transition-all duration-300 ease-in-out transform hover:scale-105 font-sans-modern font-semibold">
             <Phone class="h-5 w-5" />
             <span>Llamar</span>
           </a>
         )}
         {whatsapp && (
-          <a href={`https://wa.me/${whatsapp}`} class="mobile-contact-btn flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 ease-in-out transform hover:scale-105 font-medium">
+          <a href={`https://wa.me/${whatsapp}`} class="mobile-contact-btn flex items-center gap-2 px-5 py-4 bg-brand-warm-500 text-white rounded-lg hover:bg-brand-warm-600 hover:shadow-lg hover:shadow-brand-warm-500/25 transition-all duration-300 ease-in-out transform hover:scale-105 font-sans-modern font-semibold">
             <MessageCircle class="h-5 w-5" />
             <span>WhatsApp</span>
           </a>
         )}
       </div>
-      <a href={bookingUrl ?? '#'} class="mobile-booking-btn block w-full text-center px-4 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg hover:shadow-indigo-500/25 font-medium transition-all duration-300 ease-in-out transform hover:scale-105">Pedir cita</a>
+      <a href={bookingUrl ?? '#'} class="mobile-booking-btn block w-full text-center px-5 py-5 bg-brand-forest-500 text-white rounded-lg hover:bg-brand-forest-600 hover:shadow-lg hover:shadow-brand-forest-500/25 font-sans-modern font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">Pedir cita</a>
     </div>
   </div>
 </div>

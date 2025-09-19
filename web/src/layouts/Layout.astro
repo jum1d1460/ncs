@@ -1,64 +1,72 @@
 ---
-interface Props {
-  title?: string;
-  description?: string;
-  siteTitle?: string;
-  siteDescription?: string;
-  faviconUrl?: string | null;
-  ogImageUrl?: string | null;
-  // Header/Footer inputs
-  brand?: { logo?: { asset?: { url?: string }, alt?: string } } | null;
-  navMain?: { label?: string; url?: string; target?: string; page?: { slug?: { current?: string } }; children?: any[] }[];
-  contact?: { phone?: string; whatsapp?: string; email?: string };
-  bookingUrl?: string;
-  footerTitle?: string;
-  seoFooterText?: string;
-  legalLinks?: { label?: string; url?: string }[];
-  socialLinks?: { type?: string; url?: string }[];
-}
-
-const {
-  title = "NCS Psicóloga Zaragoza",
-  description = "Psicóloga en Zaragoza - Nelly Castro Sanchez",
-  siteTitle,
-  siteDescription,
-  faviconUrl,
-  ogImageUrl,
-  brand,
-  navMain,
-  contact,
-  bookingUrl,
-  footerTitle,
-  seoFooterText,
-  legalLinks,
-  socialLinks
-} = Astro.props;
-import {buildHeadMeta} from "../lib/head";
+import type { GlobalSettings } from "../lib/sanityClient";
+import { buildLayoutPropsWithSEO } from "../lib/seo";
+import SEO from "../components/SEO.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import PageTransition from "../components/PageTransition.astro";
 import "../styles/global.css";
 import motionClientUrl from "../lib/nativeScroll.ts?url";
-const head = buildHeadMeta({title, description, siteTitle, siteDescription, faviconUrl, ogImageUrl});
+
+interface Props {
+  // Configuración SEO específica de la página (opcional)
+  title?: string;
+  description?: string;
+  ogImageUrl?: string | null;
+  siteTitle?: string;
+  siteDescription?: string;
+  faviconUrl?: string | null;
+  footerTitle?: string;
+  seoFooterText?: string;
+  
+  // Configuración global del sitio (obligatoria)
+  globalSettings: GlobalSettings;
+}
+
+const {
+  title,
+  description,
+  ogImageUrl,
+  siteTitle,
+  siteDescription,
+  faviconUrl,
+  footerTitle,
+  seoFooterText,
+  globalSettings
+} = Astro.props;
+
+// Construir props del layout con configuración SEO
+const layoutProps = buildLayoutPropsWithSEO({
+  title,
+  description,
+  ogImageUrl,
+  siteTitle,
+  siteDescription,
+  faviconUrl,
+  footerTitle,
+  seoFooterText,
+}, globalSettings);
 ---
 <!doctype html>
 <html lang="es">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type={head.faviconType} href={head.faviconHref} />
-		<meta name="generator" content={Astro.generator} />
-		<title>{head.computedTitle}</title>
-		<meta name="description" content={head.computedDescription} />
-		{head.ogImageUrl && <meta property="og:image" content={head.ogImageUrl} />}
-		<meta name="keywords" content="Psicóloga Zaragoza, Psicología, Nelly Castro" />
-		<meta name="author" content="Nelly Castro Sanchez" />
-		<meta name="robots" content="index, follow" />
+		<!-- Componente SEO -->
+		<SEO 
+			title={title}
+			description={description}
+			ogImageUrl={ogImageUrl}
+			siteTitle={siteTitle}
+			siteDescription={siteDescription}
+			faviconUrl={faviconUrl}
+			footerTitle={footerTitle}
+			seoFooterText={seoFooterText}
+			globalSettings={globalSettings}
+		/>
 		
-		<!-- Google Fonts - Poppins -->
+		<!-- Google Fonts - Poppins, Noticia Serif, Inter -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noticia+Serif:wght@400;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 		
 		<!-- Shoelace CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
@@ -66,29 +74,29 @@ const head = buildHeadMeta({title, description, siteTitle, siteDescription, favi
 		<!-- TailwindCSS inyectado via import en el frontmatter -->
 		
 	</head>
-	<body class="font-poppins">
+	<body class="font-serif-elegant">
 		<script type="module" src={motionClientUrl}></script>
 		<PageTransition />
 		<Header 
-			logoUrl={brand?.logo?.asset?.url}
-			logoAlt={brand?.logo?.alt}
-			navMain={navMain}
-			phone={contact?.phone}
-			whatsapp={contact?.whatsapp}
-			bookingUrl={bookingUrl}
+			logoUrl={layoutProps.brand?.logo?.asset?.url}
+			logoAlt={layoutProps.brand?.logo?.alt}
+			navMain={layoutProps.navMain}
+			phone={layoutProps.contact?.phone}
+			whatsapp={layoutProps.contact?.whatsapp}
+			bookingUrl={layoutProps.bookingUrl}
 		/>
 		<main>
 			<slot />
 		</main>
 		<Footer 
-			logoUrl={brand?.logo?.asset?.url}
-			logoAlt={brand?.logo?.alt}
-			footerTitle={footerTitle}
-			seoFooterText={seoFooterText}
-			navMain={navMain}
-			legalLinks={legalLinks}
-			socialLinks={socialLinks}
-			contact={contact}
+			logoUrl={layoutProps.brand?.logo?.asset?.url}
+			logoAlt={layoutProps.brand?.logo?.alt}
+			footerTitle={layoutProps.footerTitle}
+			seoFooterText={layoutProps.seoFooterText}
+			navMain={layoutProps.navMain}
+			legalLinks={layoutProps.legalLinks}
+			socialLinks={layoutProps.socialLinks}
+			contact={layoutProps.contact}
 		/>
 		
 		<!-- Shoelace JS -->
