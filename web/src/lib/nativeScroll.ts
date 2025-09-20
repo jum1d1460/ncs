@@ -123,8 +123,8 @@ class NativeEntranceAnimations {
     // Evitar animaciones duplicadas
     if (this.animatedElements.has(element)) return;
     
-    // Configurar estado inicial
-    element.style.opacity = '1'; // Siempre visible
+    // Configurar estado inicial - NO establecer opacity en 1 inmediatamente
+    // Dejar que el CSS maneje el estado inicial para evitar problemas en móviles
     element.style.transform = this.getInitialTransform(animationType);
 
     // Usar inView para detectar cuando el elemento es visible
@@ -158,31 +158,31 @@ class NativeEntranceAnimations {
     const duration = CONFIG.duration;
     const ease = CONFIG.ease;
 
-    // Asegurar que el elemento esté completamente visible
-    element.style.opacity = '1';
+    // Configurar estado inicial para la animación
+    element.style.opacity = '0';
 
     switch (animationType) {
       case 'fadeInUp':
         await animate(element, 
-          { y: [30, 0] },
+          { opacity: [0, 1], y: [30, 0] },
           { duration, ease }
         );
         break;
       case 'fadeInLeft':
         await animate(element, 
-          { x: [-30, 0] },
+          { opacity: [0, 1], x: [-30, 0] },
           { duration, ease }
         );
         break;
       case 'fadeInRight':
         await animate(element, 
-          { x: [30, 0] },
+          { opacity: [0, 1], x: [30, 0] },
           { duration, ease }
         );
         break;
       case 'scaleIn':
         await animate(element, 
-          { scale: [0.8, 1] },
+          { opacity: [0, 1], scale: [0.8, 1] },
           { duration, ease }
         );
         break;

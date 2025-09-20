@@ -25,6 +25,26 @@ body {
   /* No aplicar estilos iniciales aquí - se manejan en JavaScript */
 }
 
+/* Estilos iniciales para elementos animados - estado invisible por defecto */
+.service-block,
+.testimonial-block,
+.block-content {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Asegurar que los elementos se vean correctamente en móviles */
+@media (max-width: 768px) {
+  .service-block,
+  .testimonial-block,
+  .block-content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+}
+
 /* Estilos para parallax */
 .hero-background,
 .hero-silhouette,
