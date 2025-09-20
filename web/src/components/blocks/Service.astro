@@ -107,7 +107,7 @@ const frameRotationDirection = imagePosition === 'right' ? '-rotate-2' : 'rotate
     <AnimatedBlock animation="scaleIn" delay={0} class="service-block">
       <article class="w-full rounded-lg border border-gray-200 p-4 bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
         {service?.cardImage && (
-          <ResponsiveImage image={service.cardImage} alt={service.cardImage?.alt} class="w-full rounded-md mb-4" aspectRatio="4/3" />
+          <ResponsiveImage image={service.cardImage} alt={service.cardImage?.alt} class="w-full rounded-md mb-4" aspectRatio="auto" />
         )}
         <h3 class="text-responsive-h4 font-semibold text-brand-forest-500">
           {service?.url ? (
@@ -174,17 +174,17 @@ const frameRotationDirection = imagePosition === 'right' ? '-rotate-2' : 'rotate
           <!-- Imagen -->
           {service?.blockImage && (
             <div class="w-full lg:w-2/5 flex-shrink-0 flex items-center justify-center">
-              <div class="relative w-full max-w-sm">
+              <div class="relative w-full h-full min-h-[350px] lg:min-h-[500px]">
                 <!-- Marco de fondo con rotación contraria -->
                 <div class={`absolute inset-0 ${frameColor === 'primary' ? 'bg-primary-200' : 'bg-secondary-200'} ${frameRotationDirection} rounded-lg`}></div>
                 
                 <!-- Imagen con rotación -->
-                <div class={`relative ${rotationDirection} transform transition-transform duration-300 hover:scale-105`}>
+                <div class={`relative ${rotationDirection} transform transition-transform duration-300 hover:scale-105 h-full`}>
                   <ResponsiveImage 
                     image={service.blockImage} 
                     alt={service.blockImage?.alt || service?.title || ''} 
-                    class="rounded-lg shadow-lg object-cover w-full aspect-square"
-                    aspectRatio="1/1"
+                    class="rounded-lg shadow-lg object-cover w-full h-full"
+                    aspectRatio="auto"
                   />
                 </div>
               </div>

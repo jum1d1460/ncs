@@ -15,6 +15,26 @@ try {
                 'contentLayout': coalesce(contentLayout, 'grid'),
                 _type,
                 ...,
+                _type == "blockHero" => {
+                    mainTitle,
+                    subtitle,
+                    description,
+                    primaryButton{text, linkType, url, internalPage->{slug}, variant},
+                    secondaryButton{text, linkType, url, internalPage->{slug}, variant},
+                    backgroundImage{..., asset->{_ref, url}},
+                    silhouetteImage{..., asset->{_ref, url}},
+                    silhouettePosition,
+                    overlaySettings{
+                        overlayType,
+                        overlayColor,
+                        overlayOpacity,
+                        secondaryColor,
+                        secondaryOpacity,
+                        gradientDirection,
+                        radialPosition,
+                        shadowIntensity
+                    }
+                },
                 _type == "serviceBlock" => {
                   "service": service->{
                     title,
@@ -79,6 +99,7 @@ const page = inicioPage || {
     title: "Inicio",
     blocks: []
 };
+
 
 const settings = await fetchGlobalSettings();
 ---

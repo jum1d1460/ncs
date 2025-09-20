@@ -251,7 +251,19 @@ const getShadowClass = (intensity: string) => {
     transform: translateY(30px);
   }
   
+  /* Fallback: si la animación no se ejecuta, mostrar el contenido después de 1 segundo */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards, fadeInFallback 1s ease-out 1s forwards;
+  }
+  
   @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInFallback {
     to {
       opacity: 1;
       transform: translateY(0);
@@ -277,6 +289,12 @@ const getShadowClass = (intensity: string) => {
   .hero-content {
     z-index: 20;
     position: relative;
+  }
+  
+  /* Asegurar que el hero-section tenga altura */
+  .hero-section {
+    min-height: 100vh;
+    height: 100vh;
   }
   
   /* Responsive simplificado */

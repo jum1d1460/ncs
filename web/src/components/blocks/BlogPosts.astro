@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from "../ResponsiveImage.astro";
+import { formatDateSpanish } from '../../lib/dateUtils';
 
 interface Post {
   _id: string;
@@ -32,7 +33,7 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
           <article class="bg-white rounded-lg shadow-sm hover:shadow-md transition" role="listitem">
             {post.mainImage && (
               <a href={`/${post.slug?.current ?? ''}`} class="block">
-                <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="16/9" />
+                <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="auto" />
               </a>
             )}
             <div class="p-4">
@@ -40,7 +41,7 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
                 <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
               </h3>
               {post.publishedAt && (
-                <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                <p class="text-responsive-small text-gray-500">{formatDateSpanish(post.publishedAt)}</p>
               )}
             </div>
           </article>
@@ -53,7 +54,7 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
             <article class="min-w-[80%] sm:min-w-[45%] lg:min-w-[30%] bg-white rounded-lg shadow-sm hover:shadow-md transition snap-start">
               {post.mainImage && (
                 <a href={`/${post.slug?.current ?? ''}`} class="block">
-                  <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="16/9" />
+                  <ResponsiveImage image={post.mainImage} alt={post.title ?? ''} class="w-full object-cover rounded-t-lg" aspectRatio="auto" />
                 </a>
               )}
               <div class="p-4">
@@ -61,7 +62,7 @@ const { title, posts = [], displayMode = 'grid' } = Astro.props as Props;
                   <a href={`/${post.slug?.current ?? ''}`} class="hover:underline">{post.title}</a>
                 </h3>
                 {post.publishedAt && (
-                  <p class="text-responsive-small text-gray-500">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                  <p class="text-responsive-small text-gray-500">{formatDateSpanish(post.publishedAt)}</p>
                 )}
               </div>
             </article>

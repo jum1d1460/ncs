@@ -38,6 +38,7 @@ interface Props {
   autoplay?: boolean;
   intervalMs?: number;
   showPrice?: boolean;
+  backgroundColor?: 'primary' | 'secondary' | 'none';
 }
 
 const {
@@ -47,7 +48,8 @@ const {
   items = [],
   autoplay = false,
   intervalMs = 5000,
-  showPrice = true
+  showPrice = true,
+  backgroundColor = 'none'
 } = Astro.props as Props;
 ---
 
@@ -89,7 +91,12 @@ const {
             class="flex-shrink-0 carousel-card flex"
             data-service-index={index}
           >
-            <WideCard service={service} showPrice={showPrice} />
+            <WideCard 
+              service={service} 
+              showPrice={showPrice} 
+              backgroundColor={backgroundColor}
+              imagePosition={index % 2 === 0 ? 'left' : 'right'}
+            />
           </div>
         ))}
       </div>

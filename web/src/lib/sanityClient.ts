@@ -51,6 +51,19 @@ export type GlobalSettings = {
         ogTitle?: string;
         ogDescription?: string;
     };
+    blogPage?: {
+        heroTitle?: string;
+        heroSubtitle?: string;
+        heroBackgroundImage?: { asset?: { url?: string } } | null;
+        heroOverlaySettings?: {
+            overlayType?: 'radial' | 'linear' | 'solid' | 'none';
+            overlayColor?: string;
+            overlayOpacity?: number;
+            secondaryColor?: string;
+            secondaryOpacity?: number;
+            gradientDirection?: string;
+        };
+    };
 }
 
 export type BlockContact = {
@@ -88,7 +101,20 @@ const GLOBAL_SETTINGS_QUERY = `*[_type == "globalSettings"][0]{
   bookingUrl,
   seoFooterText,
   legalLinks[]{label, url},
-  defaultMeta{titleSuffix, ogTitle, ogDescription}
+  defaultMeta{titleSuffix, ogTitle, ogDescription},
+  blogPage{
+    heroTitle,
+    heroSubtitle,
+    heroBackgroundImage{asset->{url}},
+    heroOverlaySettings{
+      overlayType,
+      overlayColor,
+      overlayOpacity,
+      secondaryColor,
+      secondaryOpacity,
+      gradientDirection
+    }
+  }
 }`;
 
 const DEFAULT_GLOBAL_SETTINGS: GlobalSettings = {

@@ -25,13 +25,13 @@ body {
   /* No aplicar estilos iniciales aquí - se manejan en JavaScript */
 }
 
-/* Estilos iniciales para elementos animados - estado invisible por defecto */
+/* Estilos iniciales para elementos animados - solo transform, sin opacidad */
 .service-block,
 .testimonial-block,
 .block-content {
-  opacity: 0;
+  /* Sin opacidad inicial - los elementos son visibles por defecto */
   transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: transform 0.6s ease-out;
 }
 
 /* Asegurar que los elementos se vean correctamente en móviles */
@@ -39,9 +39,9 @@ body {
   .service-block,
   .testimonial-block,
   .block-content {
-    opacity: 0;
+    /* Sin opacidad inicial - los elementos son visibles por defecto */
     transform: translateY(20px);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    transition: transform 0.4s ease-out;
   }
 }
 
@@ -104,9 +104,9 @@ body {
     --sl-font-family: theme('fontFamily.serif-elegant');
   }
 
-  /* Estilos globales para headings con tipografía Noticia Serif y colores de marca */
+  /* Estilos globales para headings con tipografía Libre Baskerville y colores de marca */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noticia Serif', Georgia, 'Times New Roman', serif;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
     color: #1B4D3E; /* brand-forest-500 */
     font-weight: 700;
     line-height: 1.2;
@@ -142,9 +142,9 @@ body {
     color: #164033; /* brand-forest-600 - más suave */
   }
 
-  /* Párrafos y texto general con Noticia Serif */
+  /* Párrafos y texto general con Libre Baskerville */
   p, span, div, a {
-    font-family: 'Noticia Serif', Georgia, 'Times New Roman', serif;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
   }
 
   /* Bold text con color de marca */

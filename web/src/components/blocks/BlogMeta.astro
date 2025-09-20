@@ -15,15 +15,11 @@ interface BlogMetaProps {
 
 const { categories, publishedAt, author } = Astro.props;
 
-// Función para formatear fecha
-const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-};
+// Importar función de formato de fechas
+import { formatDateSpanish } from '../../lib/dateUtils';
+
+// Usar la función utilitaria para formatear fechas
+const formatDate = formatDateSpanish;
 ---
 
 <div class="blog-meta bg-white border-b border-gray-200 py-6">

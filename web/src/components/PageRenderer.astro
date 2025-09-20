@@ -60,12 +60,10 @@ if (import.meta.env.DEV) {
   
   switch (block._type) {
     case "blockHero":
-      console.log('Rendering HeroHome:', block.mainTitle);
       return <HeroHome {...block} />;
     case "blockSimpleHero":
       return <Hero {...block} />;
     case "blockBlogHero":
-      console.log('Rendering BlogHero:', block.title);
       return <BlogHero {...block} />;
     case "blockText":
       return <BlockWrapper {...commonProps}><TextBlock {...block} /></BlockWrapper>;

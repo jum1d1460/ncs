@@ -1,49 +1,59 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { sanityClient, fetchGlobalSettings } from "../../lib/sanityClient";
-import ResponsiveImage from '../../components/ResponsiveImage.astro';
-import Pagination from '../../components/Pagination.astro';
+import Layout from '../../../layouts/Layout.astro';
+import { sanityClient, fetchGlobalSettings } from "../../../lib/sanityClient";
+import ResponsiveImage from '../../../components/ResponsiveImage.astro';
+import Pagination from '../../../components/Pagination.astro';
 
-// Configuración de paginación
-const POSTS_PER_PAGE = 9; // 3x3 grid
+export async function getStaticPaths() {
+    // Configuración de paginación
+    const POSTS_PER_PAGE = 9; // 3x3 grid
+    try {
+        // Obtener el total de posts para calcular las páginas
+        const totalPosts = await sanityClient.fetch(`count(*[_type == "post"])`) as number;
+        const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+        
+        const paths = [];
+        
+        // Generar rutas para cada página (empezando desde la página 2)
+        for (let page = 2; page <= totalPages; page++) {
+            const start = (page - 1) * POSTS_PER_PAGE;
+            const end = start + POSTS_PER_PAGE;
+            
+            const posts = await sanityClient.fetch(`
+                *[_type == "post"] | order(publishedAt desc, _createdAt desc) [${start}...${end}] {
+                    _id,
+                    title,
+                    slug,
+                    mainImage{..., asset->{_ref, url}},
+                    publishedAt,
+                    categories[]->{
+                        title,
+                        description
+                    },
+                    author->{
+                        name,
+                        image{..., asset->{_ref, url}}
+                    },
+                    "excerpt": array::join(string::split((pt::text(blocks[0..2])), "")[0..200], "") + "..."
+                }
+            `);
 
-// Obtener datos para la primera página del blog
-let posts = [];
-let currentPage = 1;
-let totalPages = 1;
-let totalPosts = 0;
-
-try {
-    // Obtener el total de posts para calcular las páginas
-    totalPosts = await sanityClient.fetch(`count(*[_type == "post"])`) as number;
-    totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-    
-    // Obtener posts para la primera página
-    const start = 0;
-    const end = POSTS_PER_PAGE;
-    
-    posts = await sanityClient.fetch(`
-        *[_type == "post"] | order(publishedAt desc, _createdAt desc) [${start}...${end}] {
-            _id,
-            title,
-            slug,
-            mainImage{..., asset->{_ref, url}},
-            publishedAt,
-            categories[]->{
-                title,
-                description
-            },
-            author->{
-                name,
-                image{..., asset->{_ref, url}}
-            },
-            "excerpt": array::join(string::split((pt::text(blocks[0..2])), "")[0..200], "") + "..."
+            paths.push({
+                params: { page: page.toString() },
+                props: { 
+                    posts,
+                    currentPage: page,
+                    totalPages,
+                    totalPosts
+                }
+            });
         }
-    `);
-    
-} catch (err) {
-    console.error('[Blog] Error fetching posts:', err);
-    posts = [];
+
+        return paths;
+    } catch (err) {
+        console.error('[Blog Page] Error in getStaticPaths:', err);
+        return [];
+    }
 }
 
 interface BlogPost {
@@ -63,6 +73,12 @@ interface BlogPost {
     excerpt: string;
 }
 
+const { posts = [], currentPage = 1, totalPages = 1, totalPosts = 0 } = Astro.props as { 
+    posts: BlogPost[], 
+    currentPage: number, 
+    totalPages: number, 
+    totalPosts: number 
+};
 const settings = await fetchGlobalSettings();
 
 // Obtener configuración del blog desde globalSettings
@@ -104,14 +120,14 @@ const getOverlayStyles = () => {
 };
 
 // Importar función de formato de fechas
-import { formatDateSpanish } from '../../lib/dateUtils';
+import { formatDateSpanish } from '../../../lib/dateUtils';
 
 // Usar la función utilitaria para formatear fechas
 const formatDate = formatDateSpanish;
 ---
 
 <Layout 
-  title="Blog"
+  title={`Blog - Página ${currentPage}`}
   globalSettings={settings}
 >
     <main class="min-h-screen bg-gray-50">

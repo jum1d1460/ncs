@@ -13,6 +13,7 @@ interface Props {
   imageOrientation?: 'portrait' | 'landscape' | 'square' | 'auto'
   imageAspectRatio?: string // Ej: '4/3', '16/9', '1/1', '3/4'
   columnsCount?: number
+  backgroundColor?: 'primary' | 'secondary' | 'none'
 }
 
 const { 
@@ -25,7 +26,8 @@ const {
   imageWidth = '50',
   imageOrientation = 'auto',
   imageAspectRatio,
-  columnsCount = 1 
+  columnsCount = 1,
+  backgroundColor = 'none'
 } = Astro.props as Props
 
 const Tag = (title && (headingLevel as any)) || 'h2'
@@ -57,28 +59,38 @@ const getTextWidthClass = (width: string) => {
 // Función para obtener clases de altura según orientación de imagen
 const getImageHeightClass = (orientation: string, aspectRatio?: string) => {
   // Si se especifica aspect-ratio, usarlo en móvil y desktop
-  if (aspectRatio) {
+  if (aspectRatio && aspectRatio !== 'auto') {
     return `aspect-[${aspectRatio}] lg:h-full lg:aspect-none`
   }
   
-  // Si no, usar orientación con min-height
+  // Si no, usar orientación con min-height pero respetando proporción natural
   switch (orientation) {
     case 'portrait':
-      return 'h-auto min-h-[350px] sm:min-h-[450px] lg:h-full lg:min-h-0' // Más altura para portrait
+      return 'h-auto min-h-[350px] sm:min-h-[450px] lg:h-auto lg:min-h-0' // Más altura para portrait, respetando proporción
     case 'landscape':
-      return 'h-auto min-h-[250px] sm:min-h-[300px] lg:h-full lg:min-h-0' // Menos altura para landscape
+      return 'h-auto min-h-[250px] sm:min-h-[300px] lg:h-auto lg:min-h-0' // Menos altura para landscape, respetando proporción
     case 'square':
-      return 'h-auto min-h-[300px] sm:min-h-[350px] lg:h-full lg:min-h-0' // Altura intermedia para square
+      return 'h-auto min-h-[300px] sm:min-h-[350px] lg:h-auto lg:min-h-0' // Altura intermedia para square, respetando proporción
     case 'auto':
     default:
-      return 'h-auto min-h-[300px] sm:min-h-[400px] lg:h-full lg:min-h-0' // Altura por defecto
+      return 'h-auto min-h-[300px] sm:min-h-[400px] lg:h-auto lg:min-h-0' // Altura por defecto, respetando proporción
   }
+}
+
+// Función para obtener el color del marco basado en el color de fondo
+function getFrameColor(backgroundColor: string): string {
+  if (backgroundColor === 'primary') return 'secondary'
+  if (backgroundColor === 'secondary') return 'primary'
+  return 'primary' // default
 }
 
 const imageWidthClass = getImageWidthClass(imageWidth)
 const textWidthClass = getTextWidthClass(imageWidth)
 const imageHeightClass = getImageHeightClass(imageOrientation, imageAspectRatio)
 const columnsClass = columnsCount === 2 ? 'md:columns-2' : columnsCount === 3 ? 'md:columns-3' : ''
+const frameColor = getFrameColor(backgroundColor)
+const rotationDirection = imagePosition === 'right' ? 'rotate-3' : '-rotate-3'
+const frameRotationDirection = imagePosition === 'right' ? '-rotate-2' : 'rotate-2'
 ---
 
 <section class="py-12 px-4 max-w-6xl mx-auto">
@@ -91,22 +103,40 @@ const columnsClass = columnsCount === 2 ? 'md:columns-2' : columnsCount === 3 ? 
           )}
           <BlockContent content={content} />
         </div>
-        <div class={`${imageWidthClass} flex-shrink-0`}>
-          <ResponsiveImage 
-            image={image} 
-            alt={imageAlt || ''} 
-            class={`rounded-lg shadow-lg object-cover w-full ${imageHeightClass}`}
-          />
+        <div class={`${imageWidthClass} flex-shrink-0 flex items-center justify-center`}>
+          <div class="relative w-full h-full min-h-[350px] lg:min-h-[500px]">
+            <!-- Marco de fondo con rotación contraria -->
+            <div class={`absolute inset-0 ${frameColor === 'primary' ? 'bg-primary-200' : 'bg-secondary-200'} ${frameRotationDirection} rounded-lg`}></div>
+            
+            <!-- Imagen con rotación -->
+            <div class={`relative ${rotationDirection} transform transition-transform duration-300 hover:scale-105 h-full`}>
+              <ResponsiveImage 
+                image={image} 
+                alt={imageAlt || ''} 
+                class="rounded-lg shadow-lg object-cover w-full h-full"
+                aspectRatio="auto"
+              />
+            </div>
+          </div>
         </div>
       </div>
     ) : image ? (
       <div class="flex justify-center">
         <div class={`${imageWidthClass} max-w-md w-full`}>
-          <ResponsiveImage 
-            image={image} 
-            alt={imageAlt || ''} 
-            class={`rounded-lg shadow-lg object-cover w-full ${imageHeightClass}`}
-          />
+          <div class="relative w-full h-full min-h-[350px] lg:min-h-[500px]">
+            <!-- Marco de fondo con rotación contraria -->
+            <div class={`absolute inset-0 ${frameColor === 'primary' ? 'bg-primary-200' : 'bg-secondary-200'} ${frameRotationDirection} rounded-lg`}></div>
+            
+            <!-- Imagen con rotación -->
+            <div class={`relative ${rotationDirection} transform transition-transform duration-300 hover:scale-105 h-full`}>
+              <ResponsiveImage 
+                image={image} 
+                alt={imageAlt || ''} 
+                class="rounded-lg shadow-lg object-cover w-full h-full"
+                aspectRatio="auto"
+              />
+            </div>
+          </div>
         </div>
       </div>
     ) : content ? (

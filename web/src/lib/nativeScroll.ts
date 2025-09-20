@@ -158,31 +158,30 @@ class NativeEntranceAnimations {
     const duration = CONFIG.duration;
     const ease = CONFIG.ease;
 
-    // Configurar estado inicial para la animación
-    element.style.opacity = '0';
+    // No configurar opacidad inicial - los elementos son visibles por defecto
 
     switch (animationType) {
       case 'fadeInUp':
         await animate(element, 
-          { opacity: [0, 1], y: [30, 0] },
+          { y: [30, 0] },
           { duration, ease }
         );
         break;
       case 'fadeInLeft':
         await animate(element, 
-          { opacity: [0, 1], x: [-30, 0] },
+          { x: [-30, 0] },
           { duration, ease }
         );
         break;
       case 'fadeInRight':
         await animate(element, 
-          { opacity: [0, 1], x: [30, 0] },
+          { x: [30, 0] },
           { duration, ease }
         );
         break;
       case 'scaleIn':
         await animate(element, 
-          { opacity: [0, 1], scale: [0.8, 1] },
+          { scale: [0.8, 1] },
           { duration, ease }
         );
         break;

@@ -15,15 +15,11 @@ interface BlogHeroProps {
 
 const { title, mainImage, publishedAt, author, categories } = Astro.props;
 
-// Función para formatear fecha
-const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-};
+// Importar función de formato de fechas
+import { formatDateSpanish } from '../../lib/dateUtils';
+
+// Usar la función utilitaria para formatear fechas
+const formatDate = formatDateSpanish;
 
 // Crear subtítulo con información del post
 const createSubtitle = () => {
