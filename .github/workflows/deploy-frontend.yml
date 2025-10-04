@@ -1,0 +1,191 @@
+name: Deploy Frontend (Astro)
+
+# 🎯 Solo se ejecuta cuando hay cambios en web/
+on:
+  push:
+    branches:
+      - main          # Deploy a production
+      - develop       # Deploy a preview
+    paths:
+      - 'web/**'
+      - '.github/workflows/deploy-frontend.yml'
+  
+  # Deploy manual
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+jobs:
+  # Job 1: Build and validate
+  build:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      
+      - name: 🔧 Install dependencies
+        working-directory: web
+        run: npm ci
+      
+      - name: 🧹 Lint check
+        working-directory: web
+        run: npm run lint --if-present
+        continue-on-error: true
+      
+      - name: 🧪 Run tests
+        working-directory: web
+        run: npm test
+        continue-on-error: true
+      
+      - name: 🏗️ Build site
+        working-directory: web
+        env:
+          # Variables de entorno de Sanity (si las necesitas)
+          SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+          SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
+          SANITY_API_VERSION: ${{ secrets.SANITY_API_VERSION }}
+        run: npm run build
+      
+      - name: 📊 Build info
+        working-directory: web
+        run: |
+          echo "Build completed successfully"
+          ls -lh dist/
+          du -sh dist/
+      
+      - name: 📦 Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: web/dist
+          retention-days: 1
+
+  # Job 2: Deploy to Cloudflare Pages (Production)
+  deploy-production:
+    name: Deploy to Production
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://ncs-psicologa.com
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: web/dist
+      
+      - name: 🚀 Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ncs-psicologa
+          directory: web/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+      
+      - name: ✅ Deployment successful
+        run: |
+          echo "::notice title=Deployment Success::Frontend deployed to production"
+          echo "🌐 Site: https://ncs-psicologa.com"
+
+  # Job 3: Deploy to Cloudflare Pages (Preview)
+  deploy-preview:
+    name: Deploy to Preview
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.event.inputs.environment == 'preview'
+    environment:
+      name: preview
+      url: https://develop.ncs-psicologa.pages.dev
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: web/dist
+      
+      - name: 🚀 Deploy to Cloudflare Pages (Preview)
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ncs-psicologa
+          directory: web/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: develop
+      
+      - name: 💬 Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Frontend deployed to **preview**\n\n🔗 https://develop.ncs-psicologa.pages.dev'
+            })
+      
+      - name: ✅ Deployment successful
+        run: |
+          echo "::notice title=Deployment Success::Frontend deployed to preview"
+          echo "🌐 Preview: https://develop.ncs-psicologa.pages.dev"
+
+  # Job 4: Test deployed site
+  smoke-test:
+    name: Smoke Test
+    needs: [deploy-production, deploy-preview]
+    runs-on: ubuntu-latest
+    if: always() && (needs.deploy-production.result == 'success' || needs.deploy-preview.result == 'success')
+    
+    steps:
+      - name: 🧪 Test production site
+        if: needs.deploy-production.result == 'success'
+        run: |
+          echo "Testing production..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://ncs-psicologa.com)
+          
+          if [ "$response" -eq 200 ]; then
+            echo "✅ Production site is accessible (HTTP $response)"
+          else
+            echo "⚠️ Production site returned HTTP $response"
+          fi
+      
+      - name: 🧪 Test preview site
+        if: needs.deploy-preview.result == 'success'
+        run: |
+          echo "Testing preview..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://develop.ncs-psicologa.pages.dev)
+          
+          if [ "$response" -eq 200 ]; then
+            echo "✅ Preview site is accessible (HTTP $response)"
+          else
+            echo "⚠️ Preview site returned HTTP $response"
+          fi

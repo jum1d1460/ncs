@@ -1,0 +1,83 @@
+name: Deploy Webhook Worker
+
+# 🎯 Solo se ejecuta cuando hay cambios en el webhook worker
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'workers/sanity-webhook-dispatcher.js'
+      - 'workers/ncs-deploy-*.js'
+      - 'workers/wrangler.toml'
+      - 'workers/ncs-deploy-wrangler.toml'
+      - '.github/workflows/deploy-webhook-worker.yml'
+  
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  deploy-webhook:
+    name: Deploy Webhook Dispatcher
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 🔧 Install Wrangler
+        run: npm install -g wrangler
+      
+      - name: 🚀 Deploy Webhook Worker
+        working-directory: workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          wrangler deploy sanity-webhook-dispatcher.js \
+            --compatibility-date 2024-01-15
+      
+      - name: ✅ Deployment successful
+        run: |
+          echo "::notice title=Deployment Success::Webhook Worker deployed"
+  
+  deploy-ncs:
+    name: Deploy NCS Deploy Worker
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 🔧 Install dependencies
+        working-directory: workers
+        run: npm ci
+      
+      - name: 🚀 Deploy NCS Deploy Worker
+        working-directory: workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          wrangler deploy ncs-deploy-webhook.js \
+            --config ncs-deploy-wrangler.toml
+      
+      - name: ✅ Deployment successful
+        run: |
+          echo "::notice title=Deployment Success::NCS Deploy Worker deployed"

@@ -142,6 +142,8 @@ Thumbs.db
 
 # Cloudflare
 .wrangler/
+*.dev.vars
+.dev.vars
 
 # Sanity
 .sanity/

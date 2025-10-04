@@ -1,0 +1,31 @@
+{
+  "name": "contact-form-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker para procesar formularios de contacto de NCS Psicóloga",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "tail": "wrangler tail",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "contact-form",
+    "supabase",
+    "resend"
+  ],
+  "author": "NCS Psicóloga",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
+
