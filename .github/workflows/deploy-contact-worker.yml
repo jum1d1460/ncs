@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/contact-form/package-lock.json
+          cache-dependency-path: workers/contact-form/
       
       - name: 🔧 Install dependencies
         working-directory: workers/contact-form
@@ -77,7 +77,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/contact-form/package-lock.json
+          cache-dependency-path: workers/contact-form/
       
       - name: 🔧 Install dependencies
         working-directory: workers/contact-form
@@ -136,7 +136,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/contact-form/package-lock.json
+          cache-dependency-path: workers/contact-form/
       
       - name: 🔧 Install dependencies
         working-directory: workers/contact-form

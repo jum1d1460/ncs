@@ -85,6 +85,12 @@ jobs:
         working-directory: cms
         run: npm ci
       
+      - name: 🔐 Login to Sanity
+        working-directory: cms
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: npx sanity login --token $SANITY_AUTH_TOKEN
+      
       - name: 🚀 Deploy to Sanity
         working-directory: cms
         env:
