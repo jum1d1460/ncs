@@ -85,16 +85,18 @@ jobs:
         working-directory: cms
         run: npm ci
       
-      - name: 🔐 Configure Sanity Auth
+      - name: 🔐 Verify Sanity Configuration
         working-directory: cms
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
           SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
           SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
         run: |
-          # Configurar el token de autenticación para Sanity
-          echo "Configurando autenticación de Sanity..."
-          npx sanity config set auth-token $SANITY_AUTH_TOKEN
+          # Verificar configuración de Sanity
+          echo "Verificando configuración de Sanity..."
+          echo "Project ID: $SANITY_PROJECT_ID"
+          echo "Dataset: $SANITY_DATASET"
+          echo "Auth token configurado: ${SANITY_AUTH_TOKEN:0:10}..."
       
       - name: 🚀 Deploy to Sanity
         working-directory: cms
@@ -102,7 +104,7 @@ jobs:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
           SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
           SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
-        run: npx sanity deploy
+        run: npx sanity deploy --yes
       
       - name: ✅ Deployment successful
         run: |
