@@ -1,0 +1,15 @@
+# Variables de entorno para desarrollo local
+# Copia este archivo a .dev.vars y completa con tus credenciales reales
+# NUNCA subas el archivo .dev.vars a Git
+
+# Resend
+RESEND_API_KEY=re_your_api_key_here
+
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Emails
+CONTACT_EMAIL_FROM=noreply@ncs-psicologa.com
+CONTACT_EMAIL_TO=nelly@ncs-psicologa.com
+

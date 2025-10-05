@@ -1,0 +1,40 @@
+# Configuración de Wrangler para Persistence Worker
+name = "ncs-persistence"
+main = "src/index.js"
+compatibility_date = "2024-01-15"
+
+# Variables de entorno públicas (development)
+[vars]
+ENVIRONMENT = "development"
+CORS_ORIGIN = "http://localhost:4321"
+RATE_LIMIT_MAX = 10
+RATE_LIMIT_WINDOW = 3600
+
+# Entorno de producción
+[env.production]
+name = "ncs-persistence"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+CORS_ORIGIN = "https://ncs.jum1d1460.com"
+RATE_LIMIT_MAX = 10
+RATE_LIMIT_WINDOW = 3600
+
+# ============================================
+# SECRETS (configurar con wrangler secret put)
+# ============================================
+# Ejecutar estos comandos para configurar secrets:
+#
+# wrangler secret put RESEND_API_KEY
+# wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# wrangler secret put CONTACT_EMAIL_TO
+# wrangler secret put CONTACT_EMAIL_FROM
+#
+# Para production:
+# wrangler secret put RESEND_API_KEY --env production
+# wrangler secret put SUPABASE_URL --env production
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY --env production
+# wrangler secret put CONTACT_EMAIL_TO --env production
+# wrangler secret put CONTACT_EMAIL_FROM --env production
+
