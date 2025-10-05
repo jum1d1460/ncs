@@ -4,12 +4,12 @@ Esta guía te ayudará a configurar todos los workflows de CI/CD para el proyect
 
 ## 📊 Vista General
 
-Has configurado **5 workflows independientes** con path filters:
+Has configurado **4 workflows independientes** con path filters + deploy manual del CMS:
 
 | # | Workflow | Componente | Deploy a |
 |---|----------|------------|----------|
 | 1 | `deploy-frontend.yml` | Web (Astro) | Cloudflare Pages |
-| 2 | `deploy-cms.yml` | CMS (Sanity) | Sanity Studio |
+| 2 | **Deploy Manual** | CMS (Sanity) | Sanity Studio |
 | 3 | `deploy-contact-worker.yml` | Contact Worker | Cloudflare Workers |
 | 4 | `deploy-static-site-worker.yml` | Static Site Worker | Cloudflare Workers |
 | 5 | `deploy-webhook-worker.yml` | Webhook Workers | Cloudflare Workers |
@@ -55,7 +55,7 @@ Value: [tu-account-id]
 
 #### SANITY_AUTH_TOKEN
 
-**Usado por**: `deploy-cms.yml`
+**Usado por**: Deploy manual del CMS
 
 **Cómo obtenerlo**:
 1. [Sanity Manage](https://www.sanity.io/manage)
@@ -118,7 +118,7 @@ Value: 2024-01-01
 |--------|----------------------|-----------|
 | `CLOUDFLARE_API_TOKEN` | Frontend, Workers | ⭐⭐⭐ Crítico |
 | `CLOUDFLARE_ACCOUNT_ID` | Frontend | ⭐⭐⭐ Crítico |
-| `SANITY_AUTH_TOKEN` | CMS | ⭐⭐ Requerido para CMS |
+| `SANITY_AUTH_TOKEN` | CMS (Manual) | ⭐ Opcional para deploy manual |
 | `SANITY_PROJECT_ID` | Frontend | ⭐ Opcional |
 | `SANITY_DATASET` | Frontend | ⭐ Opcional |
 | `SANITY_API_VERSION` | Frontend | ⭐ Opcional |
@@ -139,9 +139,10 @@ Value: 2024-01-01
 # - Copiar ID
 # - GitHub > Settings > Secrets > Add: CLOUDFLARE_ACCOUNT_ID
 
-# 3. SANITY_AUTH_TOKEN (si usas CMS)
+# 3. SANITY_AUTH_TOKEN (para deploy manual del CMS)
 # - Sanity Manage > Project > API > Tokens
 # - Create token con "Deploy Studio"
+# - Solo necesario si haces deploy manual del CMS
 # - GitHub > Settings > Secrets > Add: SANITY_AUTH_TOKEN
 ```
 
@@ -181,9 +182,11 @@ npm install
 npm run build
 # Debe compilar sin errores
 
-# CMS
+# CMS (Deploy Manual)
 cd ../cms
 npm install
+# Para deploy manual cuando sea necesario:
+# npx sanity deploy
 npm run build
 # Debe compilar sin errores
 

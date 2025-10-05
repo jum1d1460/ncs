@@ -25,17 +25,18 @@ Despliega el sitio web Astro a Cloudflare Pages.
 
 ### 📝 CMS
 
-#### `deploy-cms.yml`
-Despliega Sanity Studio.
+**Deploy Manual**: El CMS de Sanity se despliega manualmente cuando es necesario.
 
-**Trigger**: 
-- ✅ Solo cuando hay cambios en `cms/`
-- ✅ Push a `main` → Deploy a Sanity
-- ✅ Ejecución manual desde GitHub UI
+**Cuándo hacer deploy**:
+- Cambios en configuración del CMS (`sanity.config.ts`)
+- Nuevos tipos de contenido (schemas)
+- Modificaciones en la estructura del CMS
 
-**Stages**:
-1. **Build** - Compila Sanity Studio
-2. **Deploy** - Despliega a Sanity hosting
+**Comando**:
+```bash
+cd cms
+npx sanity deploy
+```
 
 ---
 

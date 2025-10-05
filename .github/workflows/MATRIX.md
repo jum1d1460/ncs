@@ -7,7 +7,7 @@ Esta matriz muestra qué workflow se ejecuta cuando cambias archivos en cada dir
 | Cambios en | Workflow que se ejecuta | Deploy a |
 |------------|-------------------------|----------|
 | `web/**` | `deploy-frontend.yml` | Cloudflare Pages |
-| `cms/**` | `deploy-cms.yml` | Sanity Studio |
+| `cms/**` | **Deploy Manual** | Sanity Studio |
 | `workers/contact-form/**` | `deploy-contact-worker.yml` | Cloudflare Workers |
 | `workers/static-site-worker.js` | `deploy-static-site-worker.yml` | Cloudflare Workers |
 | `workers/sanity-webhook-dispatcher.js` | `deploy-webhook-worker.yml` | Cloudflare Workers |
@@ -31,7 +31,7 @@ git add cms/
 git commit -m "feat: add new schema"
 git push origin main
 ```
-**Resultado**: ✅ Solo se ejecuta `deploy-cms.yml`
+**Resultado**: ✅ **Deploy manual requerido** - Ejecuta `cd cms && npx sanity deploy`
 
 ### Escenario 3: Cambiar solo el Contact Worker
 ```bash
@@ -70,7 +70,7 @@ git push origin main
 | Workflow | Deploy a |
 |----------|----------|
 | `deploy-frontend.yml` | https://ncs-psicologa.com |
-| `deploy-cms.yml` | Sanity Studio (production) |
+| **Deploy Manual** | Sanity Studio (production) |
 | `deploy-contact-worker.yml` | Production worker |
 | `deploy-static-site-worker.yml` | Production worker |
 | `deploy-webhook-worker.yml` | Production workers |
@@ -79,7 +79,7 @@ git push origin main
 | Workflow | Deploy a |
 |----------|----------|
 | `deploy-frontend.yml` | https://develop.ncs-psicologa.pages.dev |
-| `deploy-cms.yml` | No se ejecuta (solo main) |
+| **Deploy Manual** | No se ejecuta (solo main) |
 | `deploy-contact-worker.yml` | Staging worker |
 | `deploy-static-site-worker.yml` | Staging worker |
 | `deploy-webhook-worker.yml` | Staging workers |
@@ -147,7 +147,7 @@ Si necesitas ejecutar un workflow sin hacer cambios:
 │   ├── public/
 │   └── package.json
 │
-├── 📝 cms/                    → deploy-cms.yml
+├── 📝 cms/                    → Deploy Manual
 │   ├── schemaTypes/
 │   ├── sanity.config.ts
 │   └── package.json
