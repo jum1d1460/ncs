@@ -5,7 +5,7 @@
  */
 
 import { validateAppointmentData } from '../utils/validation.js';
-import { saveToSupabase } from '../services/supabase.js';
+import { insertSubmission } from '../services/supabase.js';
 import { sendAppointmentEmail } from '../services/email.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { ERROR_CODES } from '../config/constants.js';
@@ -55,7 +55,7 @@ export async function handleAppointment(request, env) {
     };
 
     // Guardar en Supabase
-    const supabaseResult = await saveToSupabase('appointments', appointmentData, env);
+    const supabaseResult = await insertSubmission(appointmentData, metadata, env);
     if (!supabaseResult.success) {
       console.error('Error saving to Supabase:', supabaseResult.error);
       return errorResponse(

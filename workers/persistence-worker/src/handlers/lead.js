@@ -5,7 +5,7 @@
  */
 
 import { validateLeadData } from '../utils/validation.js';
-import { saveToSupabase } from '../services/supabase.js';
+import { insertSubmission } from '../services/supabase.js';
 import { sendLeadEmail } from '../services/email.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { ERROR_CODES } from '../config/constants.js';
@@ -55,7 +55,7 @@ export async function handleLead(request, env) {
     };
 
     // Guardar en Supabase
-    const supabaseResult = await saveToSupabase('leads', leadData, env);
+    const supabaseResult = await insertSubmission(leadData, metadata, env);
     if (!supabaseResult.success) {
       console.error('Error saving to Supabase:', supabaseResult.error);
       return errorResponse(
