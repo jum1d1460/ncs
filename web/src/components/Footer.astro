@@ -116,6 +116,15 @@ const { logoUrl, logoAlt, footerTitle, seoFooterText, navMain = [], legalLinks =
       <nav aria-label="Información" class="space-y-4">
         <h3 class="text-responsive-small font-semibold text-white">Información</h3>
         <ul class="space-y-2">
+          <!-- Enlace a Herramientas -->
+          <li>
+            <a 
+              class="text-responsive-small text-gray-300 hover:text-white transition-colors" 
+              href="/herramientas"
+            >
+              Herramientas de Evaluación
+            </a>
+          </li>
           {legalLinks?.map((item) => (
             <li>
               <a 

@@ -1,0 +1,164 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TDAHQuestionnaire from '../../components/TDAHQuestionnaire.astro';
+import { fetchGlobalSettings } from '../../lib/sanityClient';
+
+export const prerender = true;
+
+const settings = await fetchGlobalSettings();
+---
+
+<Layout title="Cuestionario de TDAH en Adultos - NCS Psicóloga" globalSettings={settings}>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+      <!-- Breadcrumb -->
+      <nav class="mb-8">
+        <ol class="flex items-center space-x-2 text-sm text-gray-600">
+          <li>
+            <a href="/" class="hover:text-blue-600 transition-colors">Inicio</a>
+          </li>
+          <li>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </li>
+          <li>
+            <a href="/herramientas" class="hover:text-blue-600 transition-colors">Herramientas</a>
+          </li>
+          <li>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </li>
+          <li class="font-medium text-gray-900">TDAH en Adultos</li>
+        </ol>
+      </nav>
+
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <div class="text-6xl mb-4">🧠</div>
+        <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          Cuestionario de TDAH en Adultos
+        </h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-6 leading-normal">
+          Esta evaluación te ayudará a identificar posibles síntomas de Trastorno por Déficit de Atención e Hiperactividad (TDAH) en adultos.
+        </p>
+        <div class="flex items-center justify-center space-x-6 text-sm text-gray-600">
+          <div class="flex items-center">
+            <svg class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            5-7 minutos
+          </div>
+          <div class="flex items-center">
+            <svg class="h-5 w-5 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            100% confidencial
+          </div>
+          <div class="flex items-center">
+            <svg class="h-5 w-5 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            18 preguntas
+          </div>
+        </div>
+      </div>
+
+      <!-- Información importante -->
+      <div class="max-w-4xl mx-auto mb-12">
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg mb-6">
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-blue-800">Información importante</h3>
+              <div class="mt-2 text-sm text-blue-700 space-y-2">
+                <p>
+                  Este cuestionario está basado en criterios diagnósticos estandarizados y evalúa síntomas comunes del TDAH en adultos.
+                </p>
+                <p>
+                  <strong>Importante:</strong> Este test es orientativo y no constituye un diagnóstico. 
+                  Solo un profesional cualificado puede realizar una evaluación completa y diagnóstico definitivo.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-lg">
+          <div class="flex items-start">
+            <div class="flex-shrink-0">
+              <svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-amber-800">Recomendaciones</h3>
+              <ul class="mt-2 text-sm text-amber-700 list-disc list-inside space-y-1">
+                <li>Responde con sinceridad pensando en tu comportamiento de los últimos 6 meses</li>
+                <li>No hay respuestas correctas o incorrectas</li>
+                <li>Busca un lugar tranquilo donde puedas concentrarte</li>
+                <li>No tardes demasiado en cada pregunta, responde con tu primera impresión</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuestionario -->
+      <TDAHQuestionnaire />
+
+      <!-- Información adicional -->
+      <div class="max-w-4xl mx-auto mt-12 bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+          ¿Qué es el TDAH en adultos?
+        </h2>
+        <div class="prose prose-blue max-w-none text-lg text-gray-700 space-y-4 leading-normal">
+          <p class="leading-normal">
+            El Trastorno por Déficit de Atención e Hiperactividad (TDAH) es una condición neurobiológica 
+            que afecta a entre el 2.5% y 4% de los adultos. Se caracteriza por patrones persistentes de 
+            inatención, hiperactividad e impulsividad que interfieren con el funcionamiento diario.
+          </p>
+          <p class="leading-normal">
+            <strong>Síntomas comunes en adultos:</strong>
+          </p>
+          <ul class="list-disc list-inside space-y-2 ml-4 leading-normal">
+            <li>Dificultad para mantener la atención en tareas</li>
+            <li>Problemas de organización y gestión del tiempo</li>
+            <li>Olvidos frecuentes en actividades cotidianas</li>
+            <li>Inquietud o sensación de estar "acelerado"</li>
+            <li>Dificultad para terminar proyectos iniciados</li>
+            <li>Impulsividad en decisiones</li>
+            <li>Dificultad para relajarse</li>
+          </ul>
+          <p class="leading-normal">
+            El TDAH en adultos es tratable con excelentes resultados. El tratamiento puede incluir 
+            terapia cognitivo-conductual, entrenamiento en habilidades organizativas, y en algunos casos, 
+            medicación. Un diagnóstico adecuado es el primer paso para mejorar tu calidad de vida.
+          </p>
+        </div>
+      </div>
+
+      <!-- CTA Final -->
+      <div class="max-w-4xl mx-auto mt-8 text-center">
+        <p class="text-gray-600 mb-6">
+          ¿Tienes preguntas sobre el TDAH o necesitas más información?
+        </p>
+        <a 
+          href="/contacto" 
+          class="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-lg hover:shadow-xl"
+        >
+          <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          Contactar con nosotros
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
+

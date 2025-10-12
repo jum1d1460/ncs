@@ -18,6 +18,14 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
+  font-size: 1.25rem; /* 20px base para mejor legibilidad */
+  line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 1.125rem; /* 18px en móvil */
+  }
 }
 
 /* Estilos para animaciones de entrada - solo para elementos específicos */
@@ -106,56 +114,61 @@ body {
 
   /* Estilos globales para headings con tipografía PP Editorial New Ultralight y colores de marca */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'PP Editorial New', Georgia, serif;
+    font-family: 'PP Editorial New Ultralight', 'PP Editorial New', Georgia, serif;
     color: #1B4D3E; /* brand-forest-500 */
     font-weight: 200;
     line-height: 1.2;
   }
 
   h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.125rem, 5vw, 3.25rem);
     font-weight: 200;
     color: #1B4D3E;
   }
 
   h2 {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
     font-weight: 200;
     color: #1B4D3E;
   }
 
   h3 {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: clamp(1.625rem, 3vw, 2.25rem);
     font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
   h4 {
-    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
     font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
   h5, h6 {
-    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
     font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
-  /* Párrafos y texto general con DM Sans */
+  /* Párrafos y texto general con Sofia Sans Condensed Light (300) */
   p, span, div, a {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Sofia Sans Condensed', sans-serif;
+    font-weight: 300;
   }
 
-  /* Bold text con color de marca */
+  /* Bold text con Sofia Sans Condensed Regular (400) y color de marca */
   strong, b {
     color: #1B4D3E; /* brand-forest-500 */
-    font-weight: 700;
+    font-weight: 400;
   }
 
-  /* Bold text sobre fondos oscuros (texto blanco) - usar color secundario */
+  /* Bold text sobre fondos oscuros (texto blanco) - usar Sofia Sans Condensed Regular y color secundario */
   .text-white strong, 
-  .text-white b,
+  .text-white b {
+    color: #D4A574; /* brand-warm-500 - color secundario para fondos oscuros */
+    font-weight: 400;
+  }
+  
   .text-white h1, 
   .text-white h2, 
   .text-white h3, 
@@ -178,9 +191,15 @@ body {
     color: #e2b87a; /* brand-warm-400 - más claro para headings secundarios */
   }
 
-  /* Elementos de formulario con DM Sans */
+  /* Elementos de formulario con Sofia Sans Condensed Light */
   button, input, select, textarea, .sans-serif {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Sofia Sans Condensed', sans-serif;
+    font-weight: 300;
+  }
+  
+  /* Botones pueden usar Regular para mejor legibilidad */
+  button {
+    font-weight: 400;
   }
 }
 

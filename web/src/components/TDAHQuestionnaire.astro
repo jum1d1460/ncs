@@ -1,0 +1,824 @@
+---
+// Componente del cuestionario TDAH estilo Typeform
+// Cada pregunta es una pantalla completa
+---
+
+<div id="tdah-questionnaire" class="w-full min-h-screen flex flex-col">
+  <!-- Barra de progreso fija -->
+  <div class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-medium text-gray-600">Pregunta <span id="current-question">0</span> de <span id="total-questions">19</span></span>
+        <span class="text-sm font-medium text-blue-600" id="progress-text">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+        <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor principal -->
+  <div id="steps-container" class="flex-1 flex items-center justify-center min-h-screen pt-24 pb-12 px-4">
+    <!-- Los pasos se cargarán dinámicamente -->
+  </div>
+
+  <!-- Navegación flotante -->
+  <div id="navigation-buttons" class="fixed bottom-8 right-8 flex gap-3 z-40">
+    <button
+      id="prev-button"
+      class="hidden px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      ← Anterior
+    </button>
+    <button
+      id="next-button"
+      class="hidden px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Continuar →
+    </button>
+  </div>
+</div>
+
+<script>
+  // Declaración de tipos para window
+  declare global {
+    interface Window {
+      tdahQuiz: {
+        selectAnswer: (questionId: string, value: number) => void;
+        nextStep: () => void;
+        previousStep: () => void;
+      };
+    }
+  }
+
+  // Tipos
+  interface Question {
+    id: string;
+    text: string;
+    category: string;
+  }
+
+  interface Answers {
+    [key: string]: number;
+  }
+
+  interface CategoryScores {
+    atencion: number;
+    distraccion: number;
+    hiperactividad: number;
+    impulsividad: number;
+  }
+
+  // Todas las preguntas en un array plano
+  const allQuestions: Question[] = [
+    // Atención y Concentración
+    { id: 'q1', text: '¿Con qué frecuencia tienes dificultad para concentrarte en los detalles o cometes errores por descuido en tu trabajo?', category: 'atencion' },
+    { id: 'q2', text: '¿Con qué frecuencia tienes dificultad para mantener la atención en tareas o actividades recreativas?', category: 'atencion' },
+    { id: 'q3', text: '¿Con qué frecuencia te cuesta escuchar cuando te hablan directamente?', category: 'atencion' },
+    { id: 'q4', text: '¿Con qué frecuencia tienes dificultad para organizar tareas y actividades?', category: 'atencion' },
+    { id: 'q5', text: '¿Con qué frecuencia evitas o te disgusta comenzar tareas que requieren esfuerzo mental sostenido?', category: 'atencion' },
+    { id: 'q6', text: '¿Con qué frecuencia pierdes cosas necesarias para tus tareas o actividades?', category: 'atencion' },
+    // Distracción y Memoria
+    { id: 'q7', text: '¿Con qué frecuencia te distraes fácilmente con estímulos externos?', category: 'distraccion' },
+    { id: 'q8', text: '¿Con qué frecuencia eres olvidadizo en actividades cotidianas?', category: 'distraccion' },
+    { id: 'q9', text: '¿Con qué frecuencia tienes dificultad para seguir instrucciones y terminar tareas?', category: 'distraccion' },
+    // Hiperactividad
+    { id: 'q10', text: '¿Con qué frecuencia mueves las manos o los pies o te retuerces en el asiento?', category: 'hiperactividad' },
+    { id: 'q11', text: '¿Con qué frecuencia te levantas en situaciones donde se espera que permanezcas sentado?', category: 'hiperactividad' },
+    { id: 'q12', text: '¿Con qué frecuencia sientes inquietud o necesidad de estar en movimiento?', category: 'hiperactividad' },
+    { id: 'q13', text: '¿Con qué frecuencia tienes dificultad para realizar actividades tranquilas en tu tiempo libre?', category: 'hiperactividad' },
+    // Impulsividad
+    { id: 'q14', text: '¿Con qué frecuencia respondes precipitadamente antes de que terminen de hacerte una pregunta?', category: 'impulsividad' },
+    { id: 'q15', text: '¿Con qué frecuencia tienes dificultad para esperar tu turno?', category: 'impulsividad' },
+    { id: 'q16', text: '¿Con qué frecuencia interrumpes o te entrometes en las conversaciones de otros?', category: 'impulsividad' },
+    { id: 'q17', text: '¿Con qué frecuencia hablas excesivamente?', category: 'impulsividad' },
+    { id: 'q18', text: '¿Con qué frecuencia tomas decisiones impulsivas sin considerar las consecuencias?', category: 'impulsividad' },
+  ];
+
+  const responseOptions = [
+    { value: 0, label: 'Nunca', shortLabel: '0', color: 'bg-green-50 hover:bg-green-100 border-green-300 text-green-900' },
+    { value: 1, label: 'Rara vez', shortLabel: '1', color: 'bg-blue-50 hover:bg-blue-100 border-blue-300 text-blue-900' },
+    { value: 2, label: 'A veces', shortLabel: '2', color: 'bg-yellow-50 hover:bg-yellow-100 border-yellow-300 text-yellow-900' },
+    { value: 3, label: 'A menudo', shortLabel: '3', color: 'bg-orange-50 hover:bg-orange-100 border-orange-300 text-orange-900' },
+    { value: 4, label: 'Muy frecuentemente', shortLabel: '4', color: 'bg-red-50 hover:bg-red-100 border-red-300 text-red-900' }
+  ];
+
+  // Estado del cuestionario
+  let currentStep = 0; // 0 = info, 1-18 = preguntas, 19 = resultados
+  let answers: Answers = {};
+  let userData = {
+    email: '',
+    localidad: '',
+    provincia: '',
+    pais: 'España'
+  };
+
+  // Listas de países y provincias españolas
+  const paises = [
+    'España',
+    'Argentina',
+    'Bolivia',
+    'Chile',
+    'Colombia',
+    'Costa Rica',
+    'Cuba',
+    'Ecuador',
+    'El Salvador',
+    'Guatemala',
+    'Honduras',
+    'México',
+    'Nicaragua',
+    'Panamá',
+    'Paraguay',
+    'Perú',
+    'República Dominicana',
+    'Uruguay',
+    'Venezuela',
+    'Otro'
+  ];
+
+  const provinciasEspana = [
+    'Álava',
+    'Albacete',
+    'Alicante',
+    'Almería',
+    'Asturias',
+    'Ávila',
+    'Badajoz',
+    'Barcelona',
+    'Burgos',
+    'Cáceres',
+    'Cádiz',
+    'Cantabria',
+    'Castellón',
+    'Ciudad Real',
+    'Córdoba',
+    'Cuenca',
+    'Gerona',
+    'Granada',
+    'Guadalajara',
+    'Guipúzcoa',
+    'Huelva',
+    'Huesca',
+    'Islas Baleares',
+    'Jaén',
+    'La Coruña',
+    'La Rioja',
+    'Las Palmas',
+    'León',
+    'Lérida',
+    'Lugo',
+    'Madrid',
+    'Málaga',
+    'Murcia',
+    'Navarra',
+    'Orense',
+    'Palencia',
+    'Pontevedra',
+    'Salamanca',
+    'Santa Cruz de Tenerife',
+    'Segovia',
+    'Sevilla',
+    'Soria',
+    'Tarragona',
+    'Teruel',
+    'Toledo',
+    'Valencia',
+    'Valladolid',
+    'Vizcaya',
+    'Zamora',
+    'Zaragoza'
+  ];
+
+  const totalSteps = allQuestions.length + 2; // info + preguntas + resultados
+
+  // Inicializar cuestionario
+  function initQuestionnaire() {
+    renderStep();
+    setupKeyboardNavigation();
+  }
+
+  // Configurar navegación por teclado
+  function setupKeyboardNavigation() {
+    document.addEventListener('keydown', (e) => {
+      // Enter para continuar
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const nextBtn = document.getElementById('next-button') as HTMLButtonElement;
+        if (nextBtn && !nextBtn.disabled && !nextBtn.classList.contains('hidden')) {
+          nextStep();
+        }
+      }
+      
+      // Números 0-4 para seleccionar respuestas
+      if (currentStep > 0 && currentStep <= allQuestions.length) {
+        const num = parseInt(e.key);
+        if (num >= 0 && num <= 4) {
+          const question = allQuestions[currentStep - 1];
+          selectAnswer(question.id, num);
+        }
+      }
+    });
+  }
+
+  // Actualizar barra de progreso
+  function updateProgress() {
+    const progress = (currentStep / totalSteps) * 100;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const currentQuestionEl = document.getElementById('current-question');
+    const totalQuestionsEl = document.getElementById('total-questions');
+    
+    if (progressBar && progressText) {
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `${Math.round(progress)}%`;
+    }
+    
+    if (currentQuestionEl && totalQuestionsEl) {
+      currentQuestionEl.textContent = currentStep.toString();
+      totalQuestionsEl.textContent = totalSteps.toString();
+    }
+  }
+
+  // Actualizar botones de navegación
+  function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prev-button');
+    const nextBtn = document.getElementById('next-button') as HTMLButtonElement;
+    
+    if (prevBtn) {
+      if (currentStep > 0 && currentStep < totalSteps - 1) {
+        prevBtn.classList.remove('hidden');
+      } else {
+        prevBtn.classList.add('hidden');
+      }
+    }
+    
+    if (nextBtn) {
+      // Mostrar/ocultar botón
+      if (currentStep < totalSteps - 1) {
+        nextBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.add('hidden');
+      }
+      
+      // Deshabilitar/habilitar según el paso
+      if (currentStep === 0) {
+        // Paso de información: validar campos
+        const email = (document.getElementById('email') as HTMLInputElement)?.value;
+        const localidad = (document.getElementById('localidad') as HTMLInputElement)?.value;
+        const provincia = (document.getElementById('provincia') as HTMLSelectElement)?.value;
+        const pais = (document.getElementById('pais') as HTMLSelectElement)?.value;
+        
+        // Si es España, provincia es obligatoria
+        if (pais === 'España') {
+          nextBtn.disabled = !email || !localidad || !provincia || !pais;
+        } else {
+          nextBtn.disabled = !email || !localidad || !pais;
+        }
+      } else if (currentStep > 0 && currentStep <= allQuestions.length) {
+        // Pasos de preguntas: validar respuesta
+        const question = allQuestions[currentStep - 1];
+        nextBtn.disabled = answers[question.id] === undefined;
+        
+        // Cambiar texto del botón en la última pregunta
+        if (currentStep === allQuestions.length) {
+          nextBtn.innerHTML = 'Ver Resultados →';
+        } else {
+          nextBtn.innerHTML = 'Continuar →';
+        }
+      }
+    }
+  }
+
+  // Renderizar paso actual
+  function renderStep() {
+    const container = document.getElementById('steps-container');
+    if (!container) return;
+
+    updateProgress();
+    updateNavigationButtons();
+
+    // Paso 0: Información del usuario
+    if (currentStep === 0) {
+      const esEspana = userData.pais === 'España';
+      
+      container.innerHTML = `
+        <div class="w-full max-w-3xl mx-auto fade-in">
+          <div class="text-center mb-12">
+            <div class="text-7xl mb-6">👋</div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              Bienvenido al Cuestionario de TDAH
+            </h1>
+            <p class="text-xl text-gray-600 leading-normal">
+              Antes de comenzar, necesitamos algunos datos para enviarte los resultados
+            </p>
+          </div>
+
+          <div class="space-y-6">
+            <!-- Email -->
+            <div>
+              <label class="block text-lg font-medium text-gray-700 mb-3">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                value="${userData.email}"
+                class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                placeholder="tu@email.com"
+                required
+              />
+            </div>
+
+            <!-- País y Provincia (en línea horizontal en desktop/tablet) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- País -->
+              <div>
+                <label class="block text-lg font-medium text-gray-700 mb-3">
+                  País <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="pais"
+                  class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors bg-white cursor-pointer"
+                  required
+                >
+                  ${paises.map(pais => `
+                    <option value="${pais}" ${userData.pais === pais ? 'selected' : ''}>${pais}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <!-- Provincia (solo para España) -->
+              <div id="provincia-container" class="${!esEspana ? 'hidden' : ''}">
+                <label class="block text-lg font-medium text-gray-700 mb-3">
+                  Provincia <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="provincia"
+                  class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors bg-white cursor-pointer"
+                  ${esEspana ? 'required' : ''}
+                >
+                  ${provinciasEspana.map(provincia => `
+                    <option value="${provincia}" ${userData.provincia === provincia || (!userData.provincia && provincia === 'Zaragoza') ? 'selected' : ''}>${provincia}</option>
+                  `).join('')}
+                </select>
+              </div>
+            </div>
+
+            <!-- Localidad -->
+            <div>
+              <label class="block text-lg font-medium text-gray-700 mb-3">
+                Localidad <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="localidad"
+                value="${userData.localidad}"
+                class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
+                placeholder="${esEspana ? 'Zaragoza' : 'Tu ciudad'}"
+                required
+              />
+            </div>
+
+            <!-- Nota de privacidad -->
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-xl mt-8">
+              <div class="flex items-start">
+                <svg class="h-6 w-6 text-blue-600 mr-3 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p class="text-blue-900 leading-normal">
+                    <strong>Tu privacidad es importante.</strong> Tus datos son confidenciales y solo se usarán para enviarte los resultados del test.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Event listener para cambio de país
+      const paisSelect = document.getElementById('pais') as HTMLSelectElement;
+      if (paisSelect) {
+        paisSelect.addEventListener('change', (e) => {
+          const selectedPais = (e.target as HTMLSelectElement).value;
+          userData.pais = selectedPais;
+          
+          // Si no es España, limpiar provincia
+          if (selectedPais !== 'España') {
+            userData.provincia = '';
+          } else {
+            // Si es España y no hay provincia, poner Zaragoza por defecto
+            if (!userData.provincia) {
+              userData.provincia = 'Zaragoza';
+            }
+          }
+          
+          // Re-renderizar para mostrar/ocultar provincia
+          renderStep();
+        });
+      }
+      
+      // Añadir event listeners para validación
+      ['email', 'localidad', 'provincia', 'pais'].forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.addEventListener('input', updateNavigationButtons);
+          field.addEventListener('change', updateNavigationButtons);
+        }
+      });
+      
+      return;
+    }
+
+    // Pasos 1-18: Preguntas
+    if (currentStep > 0 && currentStep <= allQuestions.length) {
+      const questionIndex = currentStep - 1;
+      const question = allQuestions[questionIndex];
+      const currentAnswer = answers[question.id];
+      
+      // Emoji según categoría
+      const categoryEmojis: {[key: string]: string} = {
+        atencion: '🎯',
+        distraccion: '🧩',
+        hiperactividad: '⚡',
+        impulsividad: '💭'
+      };
+      
+      container.innerHTML = `
+        <div class="w-full max-w-3xl mx-auto fade-in">
+          <!-- Icono de categoría -->
+          <div class="text-center mb-8">
+            <div class="text-6xl mb-4">${categoryEmojis[question.category] || '❓'}</div>
+          </div>
+
+          <!-- Pregunta -->
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center leading-tight px-4">
+            ${question.text}
+          </h2>
+
+          <!-- Opciones de respuesta -->
+          <div class="space-y-4">
+            ${responseOptions.map((opt, index) => `
+              <button
+                class="w-full px-8 py-6 border-2 ${opt.color} rounded-2xl text-left transition-all transform hover:scale-102 hover:shadow-lg ${currentAnswer === opt.value ? 'ring-4 ring-blue-400 scale-102 shadow-lg' : ''} group"
+                data-question="${question.id}"
+                data-value="${opt.value}"
+                onclick="window.tdahQuiz.selectAnswer('${question.id}', ${opt.value})"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                    <!-- Indicador numérico -->
+                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-50 font-bold text-lg">
+                      ${opt.shortLabel}
+                    </div>
+                    <!-- Texto -->
+                    <span class="text-xl md:text-2xl font-semibold">${opt.label}</span>
+                  </div>
+                  <!-- Checkmark -->
+                  ${currentAnswer === opt.value ? `
+                    <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                  ` : ''}
+                </div>
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Hint de teclado -->
+          <div class="text-center mt-8 text-sm text-gray-500">
+            Tip: Usa las teclas <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">0-4</kbd> para seleccionar o <kbd class="px-2 py-1 bg-gray-100 border border-gray-300 rounded">Enter</kbd> para continuar
+          </div>
+        </div>
+      `;
+      
+      return;
+    }
+
+    // Paso 19: Resultados
+    if (currentStep === allQuestions.length + 1) {
+      calculateAndShowResults();
+    }
+  }
+
+  // Seleccionar respuesta
+  function selectAnswer(questionId: string, value: number) {
+    answers[questionId] = value;
+    updateNavigationButtons();
+    
+    // Auto-avanzar después de 500ms
+    setTimeout(() => {
+      nextStep();
+    }, 500);
+  }
+
+  // Siguiente paso
+  function nextStep() {
+    // Validar paso de información personal
+    if (currentStep === 0) {
+      const email = (document.getElementById('email') as HTMLInputElement)?.value;
+      const localidad = (document.getElementById('localidad') as HTMLInputElement)?.value;
+      const provincia = (document.getElementById('provincia') as HTMLSelectElement)?.value;
+      const pais = (document.getElementById('pais') as HTMLSelectElement)?.value;
+
+      // Validar campos obligatorios (provincia solo si es España)
+      if (!email || !localidad || !pais) {
+        alert('Por favor, completa todos los campos obligatorios');
+        return;
+      }
+
+      if (pais === 'España' && !provincia) {
+        alert('Por favor, selecciona una provincia');
+        return;
+      }
+
+      // Validar email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Por favor, introduce un email válido');
+        return;
+      }
+
+      userData = { 
+        email, 
+        localidad, 
+        provincia: pais === 'España' ? provincia : '', 
+        pais 
+      };
+    }
+
+    if (currentStep < totalSteps - 1) {
+      currentStep++;
+      renderStep();
+      
+      // Scroll suave al inicio
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Paso anterior
+  function previousStep() {
+    if (currentStep > 0) {
+      currentStep--;
+      renderStep();
+      
+      // Scroll suave al inicio
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Calcular resultados y mostrarlos
+  async function calculateAndShowResults() {
+    const container = document.getElementById('steps-container');
+    if (!container) return;
+
+    // Calcular puntuaciones por categoría
+    const scores: CategoryScores = {
+      atencion: 0,
+      distraccion: 0,
+      hiperactividad: 0,
+      impulsividad: 0
+    };
+
+    let totalScore = 0;
+    let maxScore = allQuestions.length * 4;
+
+    allQuestions.forEach((q: Question) => {
+      const answer = answers[q.id] || 0;
+      scores[q.category as keyof CategoryScores] += answer;
+      totalScore += answer;
+    });
+
+    const percentage = (totalScore / maxScore) * 100;
+
+    // Determinar nivel y recomendaciones
+    let nivel, mensaje, recomendaciones, colorClass;
+
+    if (percentage < 30) {
+      nivel = 'Bajo';
+      colorClass = 'bg-green-50 border-green-200';
+      mensaje = 'Los resultados sugieren que presentas pocos síntomas compatibles con TDAH.';
+      recomendaciones = [
+        'No se observan indicios significativos de TDAH',
+        'Si tienes otras preocupaciones, podemos ayudarte en otras áreas',
+        'Mantén hábitos saludables de organización y gestión del tiempo'
+      ];
+    } else if (percentage < 55) {
+      nivel = 'Moderado';
+      colorClass = 'bg-yellow-50 border-yellow-200';
+      mensaje = 'Los resultados muestran algunos síntomas que podrían estar relacionados con TDAH u otras condiciones.';
+      recomendaciones = [
+        'Te recomendamos una evaluación profesional para aclarar dudas',
+        'Algunos síntomas pueden deberse a estrés, ansiedad u otras causas',
+        'Una consulta nos permitirá diseñar estrategias personalizadas'
+      ];
+    } else {
+      nivel = 'Alto';
+      colorClass = 'bg-red-50 border-red-200';
+      mensaje = 'Los resultados indican la presencia de varios síntomas compatibles con TDAH.';
+      recomendaciones = [
+        'Es importante realizar una evaluación diagnóstica completa',
+        'El TDAH en adultos es tratable con resultados muy positivos',
+        'Podemos ayudarte a confirmar el diagnóstico y desarrollar un plan de tratamiento'
+      ];
+    }
+
+    // Guardar resultados en la base de datos
+    await saveResults(totalScore, percentage, nivel, scores);
+
+    // Mostrar resultados
+    container.innerHTML = `
+      <div class="w-full max-w-4xl mx-auto fade-in">
+        <div class="text-center mb-12">
+          <div class="text-7xl mb-6">📊</div>
+          <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            Tus Resultados
+          </h1>
+          <p class="text-xl text-gray-600 leading-normal">
+            Basado en tus respuestas al cuestionario
+          </p>
+        </div>
+
+        <!-- Puntuación principal -->
+        <div class="${colorClass} border-2 rounded-2xl p-8 mb-8">
+          <div class="text-center">
+            <div class="text-6xl font-bold text-gray-900 mb-2">${Math.round(percentage)}%</div>
+            <div class="text-2xl font-semibold text-gray-700 mb-4">Nivel: ${nivel}</div>
+            <p class="text-lg text-gray-700 leading-normal">${mensaje}</p>
+          </div>
+        </div>
+
+        <!-- Puntuaciones por categoría -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">🎯</div>
+            <div class="text-sm font-medium text-blue-900 mb-1">Atención</div>
+            <div class="text-3xl font-bold text-blue-700">${scores.atencion}/24</div>
+          </div>
+          <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">🧩</div>
+            <div class="text-sm font-medium text-purple-900 mb-1">Distracción</div>
+            <div class="text-3xl font-bold text-purple-700">${scores.distraccion}/12</div>
+          </div>
+          <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">⚡</div>
+            <div class="text-sm font-medium text-orange-900 mb-1">Hiperactividad</div>
+            <div class="text-3xl font-bold text-orange-700">${scores.hiperactividad}/16</div>
+          </div>
+          <div class="bg-pink-50 border-2 border-pink-200 rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">💭</div>
+            <div class="text-sm font-medium text-pink-900 mb-1">Impulsividad</div>
+            <div class="text-3xl font-bold text-pink-700">${scores.impulsividad}/20</div>
+          </div>
+        </div>
+
+        <!-- Recomendaciones -->
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8 mb-8">
+          <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="text-3xl mr-3">💡</span>
+            Recomendaciones
+          </h3>
+          <ul class="space-y-4">
+            ${recomendaciones.map(rec => `
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-blue-600 mr-3 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-lg text-gray-700 leading-normal">${rec}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <!-- Acciones -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white mb-8">
+          <h3 class="text-3xl font-bold mb-4">¿Qué hacer ahora?</h3>
+          <p class="text-lg mb-6 leading-normal opacity-90">
+            ${nivel === 'Bajo' 
+              ? 'Si tienes otras preocupaciones o necesitas apoyo en diferentes áreas, estamos aquí para ayudarte.'
+              : nivel === 'Moderado'
+              ? 'Te recomendamos agendar una consulta para evaluar tus síntomas de manera profesional y personalizada.'
+              : 'Te recomendamos encarecidamente agendar una evaluación diagnóstica completa. El TDAH tiene tratamientos muy efectivos.'
+            }
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href="/contacto"
+              class="flex-1 px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl text-center hover:bg-blue-50 transition-colors text-lg"
+            >
+              📧 Contactar
+            </a>
+            <a
+              href="/contacto?action=cita"
+              class="flex-1 px-8 py-4 bg-blue-700 text-white font-semibold rounded-xl text-center hover:bg-blue-800 transition-colors text-lg"
+            >
+              📅 Agendar Primera Cita
+            </a>
+          </div>
+        </div>
+
+        <!-- Nota de confidencialidad -->
+        <div class="text-center text-gray-600 mb-8">
+          <p class="mb-2 leading-normal">
+            Hemos enviado una copia de estos resultados a <strong>${userData.email}</strong>
+          </p>
+          <p class="text-sm leading-normal">
+            Estos resultados son orientativos y no sustituyen un diagnóstico profesional.
+          </p>
+        </div>
+
+        <!-- Botón volver -->
+        <div class="text-center">
+          <a
+            href="/herramientas"
+            class="inline-block px-8 py-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-xl transition-colors text-lg"
+          >
+            ← Volver a Herramientas
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  // Guardar resultados en la base de datos
+  async function saveResults(totalScore: number, percentage: number, nivel: string, categoryScores: CategoryScores) {
+    try {
+      const persistenceURL = import.meta.env.PUBLIC_PERSISTENCE_WORKER_URL || 'https://ncs-persistence.workers.dev';
+      
+      const response = await fetch(`${persistenceURL}/api/lead`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: userData.localidad,
+          email: userData.email,
+          test_type: 'TDAH Adultos',
+          test_results: {
+            answers: answers,
+            category_scores: categoryScores,
+            location: {
+              localidad: userData.localidad,
+              provincia: userData.provincia,
+              pais: userData.pais
+            }
+          },
+          score: totalScore,
+          recommendations: [`Nivel: ${nivel}`, `Porcentaje: ${Math.round(percentage)}%`],
+          source: 'tdah_questionnaire'
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Error al guardar resultados:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error al guardar resultados:', error);
+    }
+  }
+
+  // Exponer funciones globalmente
+  window.tdahQuiz = {
+    selectAnswer,
+    nextStep,
+    previousStep
+  };
+
+  // Event listeners para botones
+  document.addEventListener('DOMContentLoaded', () => {
+    const prevBtn = document.getElementById('prev-button');
+    const nextBtn = document.getElementById('next-button');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', previousStep);
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', nextStep);
+    }
+    
+    initQuestionnaire();
+  });
+</script>
+
+<style>
+  .fade-in {
+    animation: fadeIn 0.4s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  kbd {
+    font-family: ui-monospace, monospace;
+  }
+</style>

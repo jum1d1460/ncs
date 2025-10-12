@@ -6,26 +6,26 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'heading': ['PP Editorial New', 'Georgia', 'serif'],
-        'sans': ['DM Sans', 'system-ui', 'sans-serif'],
-        'serif': ['PP Editorial New', 'Georgia', 'serif'],
+        'heading': ['PP Editorial New Ultralight', 'PP Editorial New', 'Georgia', 'serif'],
+        'sans': ['Sofia Sans Condensed', 'system-ui', 'sans-serif'],
+        'serif': ['PP Editorial New Ultralight', 'PP Editorial New', 'Georgia', 'serif'],
       },
       fontSize: {
-        // Sistema de tipografía responsiva con PP Editorial New para headings y DM Sans para body
-        'heading-1': ['3rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 48px
-        'heading-1-mobile': ['2rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 32px
-        'heading-2': ['2.5rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 40px
-        'heading-2-mobile': ['1.75rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 28px
-        'heading-3': ['2rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 32px
-        'heading-3-mobile': ['1.5rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 24px
-        'heading-4': ['1.5rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 24px
-        'heading-4-mobile': ['1.25rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 20px
-        'body-large': ['1.125rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 18px
-        'body-large-mobile': ['1rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 16px
-        'body': ['1rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 16px
-        'body-mobile': ['0.875rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 14px
-        'small': ['0.875rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 14px
-        'small-mobile': ['0.75rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 12px
+        // Sistema de tipografía responsiva con PP Editorial New para headings y Sofia Sans Condensed para body
+        'heading-1': ['3.25rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 52px
+        'heading-1-mobile': ['2.125rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 34px
+        'heading-2': ['2.75rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 44px
+        'heading-2-mobile': ['1.875rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 30px
+        'heading-3': ['2.25rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 36px
+        'heading-3-mobile': ['1.625rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 26px
+        'heading-4': ['1.75rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 28px
+        'heading-4-mobile': ['1.375rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New Ultralight, PP Editorial New, Georgia, serif' }], // 22px
+        'body-large': ['1.375rem', { lineHeight: '1.2', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 22px
+        'body-large-mobile': ['1.25rem', { lineHeight: '1.2', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 20px
+        'body': ['1.25rem', { lineHeight: '1.2', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 20px
+        'body-mobile': ['1.125rem', { lineHeight: '1.2', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 18px
+        'small': ['1.125rem', { lineHeight: '1.1', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 18px
+        'small-mobile': ['1rem', { lineHeight: '1.1', fontWeight: '300', fontFamily: 'Sofia Sans Condensed, sans-serif' }], // 16px
       },
       colors: {
         // Paleta basada en el logotipo de Nelly Castro Sánchez

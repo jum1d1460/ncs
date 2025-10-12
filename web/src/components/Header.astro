@@ -39,6 +39,11 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
               </a>
             )
           })}
+          <!-- Enlace a Herramientas -->
+          <a href="/herramientas" class="nav-link text-base font-sans-modern font-semibold text-gray-700 hover:text-brand-forest-500 transition-all duration-300 ease-in-out relative group px-3 py-2 rounded-lg hover:bg-brand-forest-50">
+            <span class="relative z-10">Herramientas</span>
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-forest-500 transition-all duration-300 ease-in-out group-hover:w-full"></span>
+          </a>
         </nav>
 
         <!-- Botones desktop -->
@@ -99,6 +104,13 @@ const { logoUrl, logoAlt, navMain = [], phone, whatsapp, bookingUrl } = Astro.pr
             </li>
           )
         })}
+        <!-- Enlace a Herramientas -->
+        <li>
+          <a href="/herramientas" class="mobile-nav-link block py-5 px-5 text-lg font-sans-modern font-semibold text-gray-700 hover:text-brand-forest-500 hover:bg-brand-forest-50 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 border-b border-gray-100">
+            <span class="relative z-10">🧠 Herramientas</span>
+            <span class="absolute left-0 top-0 w-1 h-full bg-brand-forest-500 transform scale-y-0 transition-transform duration-300 ease-in-out group-hover:scale-y-100"></span>
+          </a>
+        </li>
       </ul>
     </nav>
 
