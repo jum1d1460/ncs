@@ -6,7 +6,7 @@ compatibility_date = "2024-01-15"
 # Variables de entorno públicas (development)
 [vars]
 ENVIRONMENT = "development"
-CORS_ORIGIN = "http://localhost:4321"
+CORS_ORIGIN = "*"
 RATE_LIMIT_MAX = 10
 RATE_LIMIT_WINDOW = 3600
 

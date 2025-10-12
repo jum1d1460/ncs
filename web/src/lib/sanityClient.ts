@@ -84,7 +84,7 @@ export type BlockContact = {
         schedule?: string;
     };
     map?: {
-        embedUrl?: string;
+        mapUrl?: string;
         title?: string;
     };
 }

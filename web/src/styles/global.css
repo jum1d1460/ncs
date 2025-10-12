@@ -101,50 +101,50 @@ body {
     --sl-border-radius-large: 1rem;
     --sl-border-radius-x-large: 1.5rem;
     
-    --sl-font-family: theme('fontFamily.serif-elegant');
+    --sl-font-family: theme('fontFamily.sans');
   }
 
-  /* Estilos globales para headings con tipografía Libre Baskerville y colores de marca */
+  /* Estilos globales para headings con tipografía PP Editorial New Ultralight y colores de marca */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    font-family: 'PP Editorial New', Georgia, serif;
     color: #1B4D3E; /* brand-forest-500 */
-    font-weight: 700;
+    font-weight: 200;
     line-height: 1.2;
   }
 
   h1 {
     font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
+    font-weight: 200;
     color: #1B4D3E;
   }
 
   h2 {
     font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
+    font-weight: 200;
     color: #1B4D3E;
   }
 
   h3 {
     font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
+    font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
   h4 {
     font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-    font-weight: 600;
+    font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
   h5, h6 {
     font-size: clamp(1.125rem, 2vw, 1.25rem);
-    font-weight: 600;
+    font-weight: 200;
     color: #164033; /* brand-forest-600 - más suave */
   }
 
-  /* Párrafos y texto general con Libre Baskerville */
+  /* Párrafos y texto general con DM Sans */
   p, span, div, a {
-    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    font-family: 'DM Sans', sans-serif;
   }
 
   /* Bold text con color de marca */
@@ -178,9 +178,9 @@ body {
     color: #e2b87a; /* brand-warm-400 - más claro para headings secundarios */
   }
 
-  /* Excepciones para elementos que deben ser sans-serif */
+  /* Elementos de formulario con DM Sans */
   button, input, select, textarea, .sans-serif {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'DM Sans', sans-serif;
   }
 }
 

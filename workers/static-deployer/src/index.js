@@ -1,12 +1,15 @@
 /**
- * Contact Form Worker - Punto de entrada principal
+ * Static Deployer Worker - Punto de entrada principal
  * 
- * Worker de Cloudflare para procesar formularios de contacto de NCS Psicóloga.
- * Maneja validación, envío de emails, y almacenamiento en Supabase.
+ * Worker de Cloudflare para:
+ * 1. Recibir webhooks de Sanity y disparar despliegues
+ * 2. Servir archivos estáticos del sitio web
+ * 3. Manejar health checks y monitoreo
  */
 
+import { handleWebhook } from './handlers/webhook.js';
+import { handleStatic } from './handlers/static.js';
 import { handleHealth } from './handlers/health.js';
-import { handleContact } from './handlers/contact.js';
 import { optionsResponse, errorResponse } from './utils/response.js';
 import { ERROR_CODES, ERROR_MESSAGES } from './config/constants.js';
 
@@ -29,9 +32,14 @@ export default {
         return handleHealth(request, env);
       }
 
-      // Endpoint de contacto
-      if (url.pathname === '/api/contact' && method === 'POST') {
-        return handleContact(request, env);
+      // Webhook de Sanity para disparar despliegues
+      if (url.pathname === '/webhook/sanity' && method === 'POST') {
+        return handleWebhook(request, env);
+      }
+
+      // Servir archivos estáticos (fallback)
+      if (method === 'GET') {
+        return handleStatic(request, env);
       }
 
       // Ruta no encontrada
@@ -55,4 +63,3 @@ export default {
     }
   },
 };
-

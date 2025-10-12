@@ -1,31 +1,32 @@
 {
-  "name": "contact-form-worker",
+  "name": "ncs-static-deployer",
   "version": "1.0.0",
-  "description": "Cloudflare Worker para procesar formularios de contacto de NCS Psicóloga",
+  "description": "Cloudflare Worker para desplegar estáticos y manejar webhooks de Sanity",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
     "tail": "wrangler tail",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tail:staging": "wrangler tail --env staging",
+    "tail:production": "wrangler tail --env production"
   },
   "keywords": [
     "cloudflare",
     "worker",
-    "contact-form",
-    "supabase",
-    "resend"
+    "sanity",
+    "webhook",
+    "static-site",
+    "deployment"
   ],
   "author": "NCS Psicóloga",
   "license": "MIT",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.38.0",
-    "zod": "^3.22.0"
-  },
   "devDependencies": {
     "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
-

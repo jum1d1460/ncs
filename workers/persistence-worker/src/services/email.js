@@ -172,10 +172,15 @@ export async function sendEmail(contactData, metadata, env) {
   // Crear el HTML del email
   const html = createEmailTemplate(contactData, metadata);
 
+  // Preparar lista de destinatarios (soporta múltiples emails separados por coma)
+  const recipients = CONTACT_EMAIL_TO.includes(',') 
+    ? CONTACT_EMAIL_TO.split(',').map(email => email.trim())
+    : CONTACT_EMAIL_TO;
+
   // Preparar payload para Resend
   const payload = {
     from: CONTACT_EMAIL_FROM,
-    to: CONTACT_EMAIL_TO,
+    to: recipients,
     reply_to: contactData.email,
     subject: `Nueva consulta: ${contactData.subject}`,
     html,
@@ -479,9 +484,14 @@ export async function sendAppointmentEmail(data, env) {
 
   const html = createAppointmentEmailTemplate(data, metadata);
 
+  // Preparar lista de destinatarios (soporta múltiples emails separados por coma)
+  const recipients = CONTACT_EMAIL_TO.includes(',') 
+    ? CONTACT_EMAIL_TO.split(',').map(email => email.trim())
+    : CONTACT_EMAIL_TO;
+
   const payload = {
     from: CONTACT_EMAIL_FROM,
-    to: CONTACT_EMAIL_TO,
+    to: recipients,
     reply_to: data.email,
     subject: `Nueva solicitud de cita: ${data.name}`,
     html,
@@ -543,9 +553,14 @@ export async function sendLeadEmail(data, env) {
 
   const html = createLeadEmailTemplate(data, metadata);
 
+  // Preparar lista de destinatarios (soporta múltiples emails separados por coma)
+  const recipients = CONTACT_EMAIL_TO.includes(',') 
+    ? CONTACT_EMAIL_TO.split(',').map(email => email.trim())
+    : CONTACT_EMAIL_TO;
+
   const payload = {
     from: CONTACT_EMAIL_FROM,
-    to: CONTACT_EMAIL_TO,
+    to: recipients,
     reply_to: data.email,
     subject: `Nuevo lead de test: ${data.test_type} - ${data.name}`,
     html,

@@ -1,0 +1,56 @@
+# Configuración de Wrangler para Static Deployer Worker
+name = "ncs-static-deployer"
+main = "src/index.js"
+compatibility_date = "2024-01-15"
+
+# Variables de entorno públicas (development)
+[vars]
+ENVIRONMENT = "development"
+SITE_NAME = "NCS Psicóloga Zaragoza"
+SITE_URL = "https://ncs-psicologa.com"
+
+# Entorno de staging
+[env.staging]
+name = "ncs-static-deployer-staging"
+vars = { 
+  ENVIRONMENT = "staging",
+  SITE_NAME = "NCS Psicóloga Zaragoza (Staging)",
+  SITE_URL = "https://staging.ncs-psicologa.com"
+}
+
+# Entorno de producción
+[env.production]
+name = "ncs-static-deployer"
+vars = { 
+  ENVIRONMENT = "production",
+  SITE_NAME = "NCS Psicóloga Zaragoza",
+  SITE_URL = "https://ncs-psicologa.com"
+}
+
+# ============================================
+# SECRETS (configurar con wrangler secret put)
+# ============================================
+# Ejecutar estos comandos para configurar secrets:
+#
+# wrangler secret put GITHUB_TOKEN
+# wrangler secret put GITHUB_REPO
+# wrangler secret put WEBHOOK_SECRET
+#
+# Para staging:
+# wrangler secret put GITHUB_TOKEN --env staging
+# wrangler secret put GITHUB_REPO --env staging
+# wrangler secret put WEBHOOK_SECRET --env staging
+#
+# Para production:
+# wrangler secret put GITHUB_TOKEN --env production
+# wrangler secret put GITHUB_REPO --env production
+# wrangler secret put WEBHOOK_SECRET --env production
+
+# Configuración de logging
+[observability.logs]
+enabled = true
+
+# Configuración de CORS
+[[routes]]
+pattern = "*"
+custom_domain = false

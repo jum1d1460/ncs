@@ -63,10 +63,22 @@ const layoutProps = buildLayoutPropsWithSEO({
 			globalSettings={globalSettings}
 		/>
 		
-		<!-- Google Fonts - Poppins, Libre Baskerville, Inter -->
+		<!-- Google Fonts - DM Sans -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+		
+		<!-- PP Editorial New Ultralight - Fuente local (asegúrate de tener los archivos en /public/fonts/) -->
+		<style>
+			@font-face {
+				font-family: 'PP Editorial New';
+				src: url('/fonts/PPEditorialNew-Ultralight.woff2') format('woff2'),
+					 url('/fonts/PPEditorialNew-Ultralight.woff') format('woff');
+				font-weight: 200;
+				font-style: normal;
+				font-display: swap;
+			}
+		</style>
 		
 		<!-- Shoelace CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
@@ -74,7 +86,7 @@ const layoutProps = buildLayoutPropsWithSEO({
 		<!-- TailwindCSS inyectado via import en el frontmatter -->
 		
 	</head>
-	<body class="font-serif-elegant">
+	<body class="font-sans">
 		<script type="module" src={motionClientUrl}></script>
 		<PageTransition />
 		<Header 

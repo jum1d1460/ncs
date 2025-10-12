@@ -1,13 +1,12 @@
-name: Deploy Contact Form Worker
+name: Deploy Persistence Worker
 
-# 🎯 Solo se ejecuta cuando hay cambios en workers/contact-form/
+# 🎯 Solo se ejecuta cuando hay cambios en workers/persistence-worker/
 on:
   push:
     branches:
       - main          # Deploy a production
-      - develop       # Deploy a staging
     paths:
-      - 'workers/contact-form/**'
+      - 'workers/persistence-worker/**'
       - '.github/workflows/deploy-contact-worker.yml'  # Si cambia el workflow
   
   # Permitir ejecución manual desde la UI de GitHub
@@ -20,7 +19,6 @@ on:
         type: choice
         options:
           - production
-          - staging
 
 jobs:
   # Job 1: Validar y testear
@@ -37,20 +35,20 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/contact-form/
+          cache-dependency-path: workers/persistence-worker/
       
       - name: 🔧 Install dependencies
-        working-directory: workers/contact-form
+        working-directory: workers/persistence-worker
         run: npm ci
       
       - name: ✅ Lint check
-        working-directory: workers/contact-form
+        working-directory: workers/persistence-worker
         run: |
           # Agregar scripts de lint si existen
           echo "✓ Dependencies installed successfully"
       
       - name: 📊 Show package info
-        working-directory: workers/contact-form
+        working-directory: workers/persistence-worker
         run: |
           echo "Worker version:"
           node -p "require('./package.json').version"
@@ -58,66 +56,7 @@ jobs:
           echo "Dependencies:"
           npm list --depth=0
 
-  # Job 2: Deploy a staging (solo si push a develop)
-  deploy-staging:
-    name: Deploy to Staging
-    needs: validate
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
-    environment:
-      name: staging
-      url: https://contact-form-worker-staging.your-account.workers.dev
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-      
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: workers/contact-form/
-      
-      - name: 🔧 Install dependencies
-        working-directory: workers/contact-form
-        run: npm ci
-      
-      - name: 🚀 Deploy to Cloudflare (Staging)
-        working-directory: workers/contact-form
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler deploy --env staging
-      
-      - name: 🧪 Test deployed worker
-        run: |
-          echo "Testing staging deployment..."
-          # Esperar 5 segundos para que el deploy se propague
-          sleep 5
-          
-          # Test health endpoint
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://contact-form-worker-staging.your-account.workers.dev/health)
-          
-          if [ "$response" -eq 200 ]; then
-            echo "✅ Health check passed (HTTP $response)"
-          else
-            echo "❌ Health check failed (HTTP $response)"
-            exit 1
-          fi
-      
-      - name: 💬 Comment on PR (if applicable)
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ Contact Form Worker deployed to **staging**\n\n🔗 https://contact-form-worker-staging.your-account.workers.dev'
-            })
-
-  # Job 3: Deploy a production (solo si push a main)
+  # Job 2: Deploy a production (solo si push a main)
   deploy-production:
     name: Deploy to Production
     needs: validate
@@ -125,7 +64,7 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'production'
     environment:
       name: production
-      url: https://contact-form-worker.your-account.workers.dev
+      url: https://ncs-deploy.jum1d1460.workers.dev
     
     steps:
       - name: 📥 Checkout code
@@ -136,14 +75,14 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/contact-form/
+          cache-dependency-path: workers/persistence-worker/
       
       - name: 🔧 Install dependencies
-        working-directory: workers/contact-form
+        working-directory: workers/persistence-worker
         run: npm ci
       
       - name: 🚀 Deploy to Cloudflare (Production)
-        working-directory: workers/contact-form
+        working-directory: workers/persistence-worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx wrangler deploy --env production
@@ -153,7 +92,7 @@ jobs:
           echo "Testing production deployment..."
           sleep 5
           
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://contact-form-worker.your-account.workers.dev/health)
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://ncs-deploy.jum1d1460.workers.dev/health)
           
           if [ "$response" -eq 200 ]; then
             echo "✅ Health check passed (HTTP $response)"
@@ -165,17 +104,17 @@ jobs:
       - name: 📝 Create deployment annotation
         if: success()
         run: |
-          echo "::notice title=Deployment Success::Contact Form Worker deployed to production successfully"
+          echo "::notice title=Deployment Success::Persistence Worker deployed to production successfully"
       
       - name: 🔔 Notify on failure
         if: failure()
         run: |
-          echo "::error title=Deployment Failed::Contact Form Worker deployment to production failed"
+          echo "::error title=Deployment Failed::Persistence Worker deployment to production failed"
 
-  # Job 4: Notify en Slack/Discord (opcional)
+  # Job 3: Notify en Slack/Discord (opcional)
   notify:
     name: Send Notification
-    needs: [deploy-staging, deploy-production]
+    needs: [deploy-production]
     runs-on: ubuntu-latest
     if: always()
     
@@ -183,7 +122,6 @@ jobs:
       - name: 📊 Deployment Status
         run: |
           echo "Deployment workflow completed"
-          echo "Staging: ${{ needs.deploy-staging.result }}"
           echo "Production: ${{ needs.deploy-production.result }}"
       
       # Descomentar y configurar si quieres notificaciones en Slack
@@ -192,13 +130,13 @@ jobs:
       #   with:
       #     payload: |
       #       {
-      #         "text": "Contact Form Worker deployed",
+      #         "text": "Persistence Worker deployed",
       #         "blocks": [
       #           {
       #             "type": "section",
       #             "text": {
       #               "type": "mrkdwn",
-      #               "text": "🚀 *Contact Form Worker Deployment*\n*Status:* ${{ job.status }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}"
+      #               "text": "🚀 *Persistence Worker Deployment*\n*Status:* ${{ job.status }}\n*Branch:* ${{ github.ref_name }}\n*Commit:* ${{ github.sha }}"
       #             }
       #           }
       #         ]

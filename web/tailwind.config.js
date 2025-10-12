@@ -6,28 +6,26 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'poppins': ['Poppins', 'sans-serif'],
-        'serif-elegant': ['Libre Baskerville', 'Georgia', 'Times New Roman', 'serif'],
-        'sans-modern': ['Inter', 'system-ui', 'sans-serif'],
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
-        'serif': ['Libre Baskerville', 'Georgia', 'Times New Roman', 'serif'],
+        'heading': ['PP Editorial New', 'Georgia', 'serif'],
+        'sans': ['DM Sans', 'system-ui', 'sans-serif'],
+        'serif': ['PP Editorial New', 'Georgia', 'serif'],
       },
       fontSize: {
-        // Sistema de tipografía responsiva con Libre Baskerville por defecto
-        'heading-1': ['3rem', { lineHeight: '1.1', fontWeight: '800', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 48px
-        'heading-1-mobile': ['2rem', { lineHeight: '1.1', fontWeight: '800', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 32px
-        'heading-2': ['2.5rem', { lineHeight: '1.2', fontWeight: '700', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 40px
-        'heading-2-mobile': ['1.75rem', { lineHeight: '1.2', fontWeight: '700', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 28px
-        'heading-3': ['2rem', { lineHeight: '1.3', fontWeight: '600', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 32px
-        'heading-3-mobile': ['1.5rem', { lineHeight: '1.3', fontWeight: '600', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 24px
-        'heading-4': ['1.5rem', { lineHeight: '1.4', fontWeight: '600', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 24px
-        'heading-4-mobile': ['1.25rem', { lineHeight: '1.4', fontWeight: '600', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 20px
-        'body-large': ['1.125rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 18px
-        'body-large-mobile': ['1rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 16px
-        'body': ['1rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 16px
-        'body-mobile': ['0.875rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 14px
-        'small': ['0.875rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 14px
-        'small-mobile': ['0.75rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'Libre Baskerville, Georgia, serif' }], // 12px
+        // Sistema de tipografía responsiva con PP Editorial New para headings y DM Sans para body
+        'heading-1': ['3rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 48px
+        'heading-1-mobile': ['2rem', { lineHeight: '1.1', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 32px
+        'heading-2': ['2.5rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 40px
+        'heading-2-mobile': ['1.75rem', { lineHeight: '1.2', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 28px
+        'heading-3': ['2rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 32px
+        'heading-3-mobile': ['1.5rem', { lineHeight: '1.3', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 24px
+        'heading-4': ['1.5rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 24px
+        'heading-4-mobile': ['1.25rem', { lineHeight: '1.4', fontWeight: '200', fontFamily: 'PP Editorial New, Georgia, serif' }], // 20px
+        'body-large': ['1.125rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 18px
+        'body-large-mobile': ['1rem', { lineHeight: '1.6', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 16px
+        'body': ['1rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 16px
+        'body-mobile': ['0.875rem', { lineHeight: '1.5', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 14px
+        'small': ['0.875rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 14px
+        'small-mobile': ['0.75rem', { lineHeight: '1.4', fontWeight: '400', fontFamily: 'DM Sans, sans-serif' }], // 12px
       },
       colors: {
         // Paleta basada en el logotipo de Nelly Castro Sánchez
