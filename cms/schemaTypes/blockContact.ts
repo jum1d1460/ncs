@@ -44,9 +44,22 @@ export default defineType({
             name: "map",
             title: "Mapa",
             type: "object",
+            description: "Configuración del mapa de ubicación",
             fields: [
-                defineField({ name: "embedUrl", title: "URL de iframe del mapa (https)", type: "url", validation: (Rule) => Rule.uri({ scheme: ["https"] }) }),
-                defineField({ name: "title", title: "Título accesible del mapa", type: "string" })
+                defineField({ 
+                    name: "mapUrl", 
+                    title: "URL de Google Maps", 
+                    type: "url", 
+                    description: "Pega cualquier URL de Google Maps: puede ser el enlace de compartir, la URL completa, o el código de iframe embed. El sistema lo procesará automáticamente.",
+                    validation: (Rule) => Rule.uri({ scheme: ["https", "http"] })
+                }),
+                defineField({ 
+                    name: "title", 
+                    title: "Título accesible del mapa", 
+                    type: "string",
+                    description: "Texto alternativo para accesibilidad (ej: 'Ubicación de nuestra oficina')",
+                    initialValue: "Mapa de ubicación"
+                })
             ]
         }),
         defineField({
